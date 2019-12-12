@@ -69,6 +69,7 @@ class LoginPage(tk.Frame):
         tk.Frame.__init__(self) 
         self.master.title("運彩模擬器")
         self.master.geometry("300x300")  #出現視窗的大小
+        self.master.configure(bg="lemon chiffon")
         self.pack()
         self.createWidgets()
         # self.master.configure(bg="misty rose")
@@ -76,11 +77,12 @@ class LoginPage(tk.Frame):
     def createWidgets(self):
         # welcome page
         self.canvas=tk.Canvas(self, height=1000, width=500) #??
-        self.img=Image.open("NBALogo.gif")
-        self.img=self.img.resize((200, 200), Image.ANTIALIAS) 
-        self.img=ImageTk.PhotoImage(self.img)
-        self.canvas.create_image(0, 0, anchor="nw", image=self.img)
+        # self.img=Image.open("NBALogo.gif")
+        # self.img=self.img.resize((200, 200), Image.ANTIALIAS) 
+        # self.img=ImageTk.PhotoImage(self.img)
+        # self.canvas.create_image(0, 0, anchor="nw", image=self.img)
         self.canvas.pack(fill=BOTH,expand=Y)
+        self.canvas.configure(bg="misty rose")
 
         f1=tkFont.Font(size=15, family="Didot")
         self.l1=tk.Label(self.canvas, text="User name:", font=f1)
