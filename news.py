@@ -1,9 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-#
-#
-#
-#
+
 class news():
     def __init__(self):
         response = requests.get("https://nba.udn.com/nba/cate/6754/6780")
@@ -54,8 +51,8 @@ class news():
 
         return self.data
 
+
+
 news = news()
 final = news.get_news()
 print(final)
-
-
