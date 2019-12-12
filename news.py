@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-
+#
+#
+#
+#
 class news():
     '''
     抓NBA新聞資訊
@@ -63,3 +66,5 @@ class news():
 news = news()
 final = news.get_news()
 print(final)
+
+
