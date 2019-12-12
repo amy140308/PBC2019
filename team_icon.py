@@ -39,10 +39,16 @@ def click_team_button(btn_txt):
     window.title(btn_txt)
     window.geometry("300x500")
 
-imageteam = Image.open("C:\co-work\ATL_logo.png")
+# 用image抓取png檔並resize
+imageteam = Image.open("C:\logo\ATL_logo.png")
 imageteam = imageteam.resize((100, 100), Image.ANTIALIAS)
+# 用「ImageTk.PhotoImage」轉換成tk可以讀的樣子
+imageteam = ImageTk.PhotoImage(image = imageteam)
 button_team = tk.Button(frame, image = imageteam)
-button_team.pack(side=TOP, pady=10, padx=20)
+button_team.pack(side = LEFT, pady = 10, padx = 20)
+
+
+
 
 
 
