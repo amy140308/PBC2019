@@ -52,11 +52,15 @@ for function in reversed(functions):
 
 # 放賽事
 wow=tk.Label(frame, text="今日賽事", font="Didot",bg="lemon chiffon").pack()
+def click_game_button(btn_txt):
+    window=Toplevel(root)
+    window.title(btn_txt)
+    window.geometry("300x500")
 
 for i in lis:
     btn = tk.Button(frame, height=2, width=30,relief=tk.RAISED,bg="lemon chiffon",fg="purple3",font="Dosis",text=i)
-    # btn_txt=btn.cget("text")
-    # btn.configure(command=click_game_button(btn_txt))
+    btn_txt=btn.cget("text")
+    btn.configure(command=click_game_button(btn_txt))
     btn.pack(side=TOP, pady=10, padx=20) # 不能用grid，顯示固定位置不能滑動
 
 root.mainloop()
