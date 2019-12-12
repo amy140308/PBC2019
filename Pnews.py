@@ -5,10 +5,13 @@ import tkinter.font as tkFont
 import requests
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
-
+from PIL import Image, ImageTk
+import io 
+from io import BytesIO
+import ssl
 root = tk.Tk()
 root.title("賽事下注")
-root.geometry("500x500")
+root.geometry("1000x1000")
 
 class news():
     def __init__(self):
@@ -68,7 +71,6 @@ canvas.pack(side=BOTTOM,fill=BOTH,expand=Y)
 
 F1=tk.Frame(root,bg="misty rose",width=500, height=300)
 F1.pack(side=TOP,fill=BOTH) 
-
 frame=tk.Frame(canvas, bg="lemon chiffon",width=500, height=1200)
 frame.pack(side=TOP, fill=BOTH)
 functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
@@ -89,16 +91,23 @@ for one_news in final:
         intro=intro[:15]+"\n"+intro[16:]
     elif 30<=len(intro):
         intro=intro[:15]+"\n"+intro[16:30]+"\n"+intro[31:]
-
     image_url=one_news[-1]
-    image_byt = urlopen(image_url).read()
-    image_b64 = base64.encodestring(image_byt)
-    photo = tk.PhotoImage(data=image_b64)
-    canvas.create_image(10+i, 10+i, image=photo, anchor="nw")
+    ssl._create_default_https_context = ssl._create_unverified_context
+    u = urlopen(image_url)
+    raw_data = u.read()
+    u.close()
+    img = Image.open(BytesIO(raw_data))
+    img=img.resize((200, 100), Image.ANTIALIAS) 
+    img=ImageTk.PhotoImage(img)
+    picLabel = tk.Label(frame,image=img)
+    picLabel.image = img
+    picLabel.pack(side=TOP, pady=10, padx=10,anchor=W)
+    
     btn=tk.Label(frame, text=title, font=f1,bg="lemon chiffon",cursor="hand2")
     btnsmall=tk.Label(frame, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify=LEFT)
     btn.bind("<Button-1>", callback)
     btnsmall.bind("<Button-1>", callback)
+    picLabel.bind("<Button-1>", callback)
     btn.pack(side=TOP, pady=10,padx=10, anchor=W)
     btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W)
     i+=20
