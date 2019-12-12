@@ -2,6 +2,14 @@ import requests
 from bs4 import BeautifulSoup
 
 class news():
+    '''
+    抓NBA新聞資訊
+
+    def get_news() 不用input
+    return: 一則新聞一個list[標題, 時間, 簡短內文, 新聞超連結網址, 圖片鏈結]
+            三個list裝在一個二維list裡面回傳
+    '''
+
     def __init__(self):
         response = requests.get("https://nba.udn.com/nba/cate/6754/6780")
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -42,15 +50,16 @@ class news():
             html = self.pa[pistart + 10:piend - 1]
 
             count += 1
-            tmp.append(title)
-            tmp.append(time)
-            tmp.append(p)
-            tmp.append(href)
-            tmp.append(html)
+            tmp.append(title)  # 標題
+            tmp.append(time)   # 多久前的新聞
+            tmp.append(p)      # 簡短內文
+            tmp.append(href)   # 新聞超連結
+            tmp.append(html)   # 新聞圖片鏈結
             self.data.append(tmp)
 
         return self.data
 
+# 以下為試class的功能
 news = news()
 final = news.get_news()
 print(final)
