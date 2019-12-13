@@ -11,6 +11,9 @@
 # cal=Calculator()
 # cal.master.title("My Cal") # Frame寫的函數：視窗那條標題字樣
 # cal.mainloop() # show up
+
+# 老師上課寫的計算機程式，參考對照tkinter的功能用
+
 import tkinter as tk
 import tkinter.font as tkFont
 import math

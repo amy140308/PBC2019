@@ -9,6 +9,9 @@ from PIL import Image, ImageTk
 import io 
 from io import BytesIO
 import ssl
+
+# 這份檔案是NewsPage的初稿，未放入class的形式，存著以備不時之需
+
 root = tk.Tk()
 root.title("賽事下注")
 root.geometry("1000x1000")
