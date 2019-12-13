@@ -110,7 +110,7 @@ for one_news in final:
     picLabel.bind("<Button-1>", callback)
     btn.pack(side=TOP, pady=10,padx=10, anchor=W)
     btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W)
-    i+=20
+    
 
 root.mainloop()
 
