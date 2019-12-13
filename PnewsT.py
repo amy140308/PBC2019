@@ -9,9 +9,7 @@ from PIL import Image, ImageTk
 import io 
 from io import BytesIO
 import ssl
-root = tk.Tk()
-root.title("賽事下注")
-root.geometry("1000x1000")
+
 
 class news():
     def __init__(self):
@@ -70,32 +68,63 @@ final = news.get_news()
 # canvas=tk.Canvas(self, width=500, height=1200, bg="lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
 # canvas.pack(side=BOTTOM,fill=BOTH,expand=Y)
 
+
+
+
+class SportsLottery(tk.Tk):
+    # 相當於開一個視窗
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        self.geometry("500x1000")
+        self.title("運彩模擬器")
+        # self.title_font=tkFont.Font(family="Didot", size=20)
+        # the container is where we'll stack a bunch of frames
+        # on top of each other, then the one we want visible
+        # will be raised above the others
+        # self.canvas=tk.Canvas(self, width=500, height=1000)
+        # self.canvas.pack(fill=BOTH,expand=Y)
+        # canvas.configure(bg="misty rose")
+        
+        container = tk.Frame(self,bg="papaya whip",width=500, height=700)
+        container.pack(side=TOP, fill=BOTH, expand=TRUE)
+        container.grid_rowconfigure(1, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+        for page in (NewsPage, StartPage): # StartPage：測試用
+            page_name = page.__name__
+            frame = page(parent=container, controller=self)
+            self.frames[page_name] = frame # 存進dictionary
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            frame.grid(row=1, column=0, sticky="nsew")
+        self.show_frame("StartPage")
+        
+        
+    def show_frame(self, page_name):
+        '''Show a frame for the given page name'''
+        frame = self.frames[page_name]
+        frame.tkraise()
+        
+    
 class NewsPage(tk.Frame):
     
-    def __init__(self, master):
-        tk.Frame.__init__(self) 
-        self.master.title("News")
-        self.master.geometry("1000x1000")  #出現視窗的大小
-        self.master.configure(bg="lemon chiffon")
-        self.pack()
-        self.createWidgets()
-    
-    def createWidgets(self):
-        canvas=tk.Canvas(root, height=1000, width=500)
-        canvas.pack(fill=BOTH,expand=Y)
-        canvas.configure(bg="misty rose")
-        F1=tk.Frame(canvas,bg="misty rose",width=500, height=300)
-        F1.pack(side=TOP,fill=BOTH) 
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent) 
+        self.controller=controller
+        self.configure(bg="lemon chiffon",width=500, height=700)
+        self.pack(side=BOTTOM, fill=BOTH, expand=TRUE)
         # welcome page
-        self.frame=tk.Frame(self.canvas, bg="lemon chiffon",width=500, height=1200)
-        self.frame.pack(side=TOP, fill=BOTH)
+        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
+        self.F1.pack(side=TOP, fill=BOTH)
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
-        f1=tkFont.Font(size=20, family="標楷體")
-        f2=tkFont.Font(size=10, family="微軟正黑體")
         for function in reversed(functions):
-            self.btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            self.btn.pack(side=RIGHT, pady=30, anchor=N)
-    
+            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn_txt=btn.cget("text")
+            if btn_txt == "球隊介紹":
+                btn.configure(command=lambda: controller.show_frame("StartPage"))
         for one_news in final:
             title=one_news[0]
             time=one_news[1]
@@ -110,22 +139,46 @@ class NewsPage(tk.Frame):
             raw_data = u.read()
             u.close()
             self.img = Image.open(BytesIO(raw_data))
-            self.img=img.resize((200, 100), Image.ANTIALIAS) 
+            self.img=self.img.resize((200, 100), Image.ANTIALIAS) 
             self.img=ImageTk.PhotoImage(self.img)
-            self.picLabel = tk.Label(self.frame,image=img)
+            self.picLabel = tk.Label(self,image=self.img)
             self.picLabel.image = self.img
             self.picLabel.pack(side=TOP, pady=10, padx=10, anchor=W)
-            self.btn=tk.Label(self.frame, text=title, font=f1,bg="lemon chiffon",cursor="hand2")
-            self.btnsmall=tk.Label(self.frame, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify=LEFT)
-            def callback(self,event):
+            
+            f1=tkFont.Font(size=20, family="標楷體")
+            f2=tkFont.Font(size=10, family="微軟正黑體")
+            self.btn=tk.Label(self, text=title, font=f1,bg="lemon chiffon",cursor="hand2")
+            self.btnsmall=tk.Label(self, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify=LEFT)
+            def callback(event):
                 webbrowser.open_new(one_news[-2])
             self.btn.bind("<Button-1>", callback)
             self.btnsmall.bind("<Button-1>", callback)
             self.picLabel.bind("<Button-1>", callback)
-            self.btn.pack(side=TOP, pady=10,padx=10, anchor=W)
+            self.btn.pack(side=TOP, pady=2,padx=10, anchor=W)
             self.btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W)
 
-root.mainloop()        
+class StartPage(tk.Frame):
 
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(width=500, height=700)
+        self.controller = controller
+        self.configure(width=500, height=700)
+        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
+        self.F1.pack(side=TOP, fill=BOTH)
+        label = tk.Label(self, text="This is the start page", font="Didot")
+        label.pack(side=TOP, fill="x", pady=10)
+        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
+        for function in reversed(functions):
+            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn_txt=btn.cget("text")
+            if btn_txt == "新聞介紹":
+                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+        
+app=SportsLottery()
+app.mainloop()        
 
+# 目前進度：新聞鈕可以按了幹這個frame真的殺死我
 

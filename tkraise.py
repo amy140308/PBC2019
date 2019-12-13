@@ -24,8 +24,8 @@ class SportsLottery(tk.Tk):
         # on top of each other, then the one we want visible
         # will be raised above the others
         
-        container = tk.Frame(self,bg="misty rose",width=500, height=1000)
-        container.pack(side=TOP, fill="both", expand=True)
+        container = tk.Frame(self,bg="misty rose",width=500, height=500)
+        container.pack(side=TOP, fill=BOTH , expand=TRUE)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
         
@@ -46,7 +46,7 @@ class SportsLottery(tk.Tk):
             # put all of the pages in the same location;
             # the one on the top of the stacking order
             # will be the one that is visible.
-            frame.grid(row=0, column=0, sticky="sew")
+            frame.grid(row=1, column=0, sticky="nsew")
 
         self.show_frame("StartPage")
     
@@ -61,6 +61,7 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        self.configure(width=500, height=300)
         label = tk.Label(self, text="This is the start page", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
