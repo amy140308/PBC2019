@@ -10,11 +10,11 @@ root.title("隊伍資訊")
 root.geometry("500x500")
 
 # 創建畫布
-canvas = tk.Canvas(root, width = 500, height = 1500, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+canvas = tk.Canvas(root, width = 500, height = 1500, bg = "lemon chiffon")  # height調整canvas的長度，要手動調（或寫def）
 canvas.pack(side = BOTTOM,fill = BOTH,expand = Y)
 
 # 要建立frame，透過create_widget放在canvas上面才能滾動
-F1 = tk.Frame(root,bg = "misty rose",width = 500, height = 300)
+F1 = tk.Frame(root,bg = "wheat2",width = 500, height = 300)
 F1.pack(side = TOP,fill = BOTH) 
 
 frame = tk.Frame(canvas, bg = "lemon chiffon",width = 500, height = 1200)
