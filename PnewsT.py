@@ -65,10 +65,15 @@ class news():
 news = news()
 final = news.get_news()
 
-class NewsPage(tk.Tk):
+# 上排粉色固定 圖
+
+# canvas=tk.Canvas(self, width=500, height=1200, bg="lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+# canvas.pack(side=BOTTOM,fill=BOTH,expand=Y)
+
+class NewsPage(tk.Frame):
     
     def __init__(self, master):
-        tk.Tk.__init__(self) 
+        tk.Frame.__init__(self) 
         self.master.title("News")
         self.master.geometry("1000x1000")  #出現視窗的大小
         self.master.configure(bg="lemon chiffon")
@@ -76,16 +81,12 @@ class NewsPage(tk.Tk):
         self.createWidgets()
     
     def createWidgets(self):
+        canvas=tk.Canvas(root, height=1000, width=500)
+        canvas.pack(fill=BOTH,expand=Y)
+        canvas.configure(bg="misty rose")
+        F1=tk.Frame(canvas,bg="misty rose",width=500, height=300)
+        F1.pack(side=TOP,fill=BOTH) 
         # welcome page
-        self.canvas=tk.Canvas(self, height=1000, width=500)
-        self.canvas.pack(fill=BOTH,expand=Y)
-        self.canvas.configure(bg="misty rose")
-
-        # canvas=tk.Canvas(self, width=500, height=1200, bg="lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-        # canvas.pack(side=BOTTOM,fill=BOTH,expand=Y)
-
-        self.F1=tk.Frame(self.canvas,bg="misty rose",width=500, height=300)
-        self.F1.pack(side=TOP,fill=BOTH) 
         self.frame=tk.Frame(self.canvas, bg="lemon chiffon",width=500, height=1200)
         self.frame.pack(side=TOP, fill=BOTH)
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
@@ -94,7 +95,7 @@ class NewsPage(tk.Tk):
         for function in reversed(functions):
             self.btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
             self.btn.pack(side=RIGHT, pady=30, anchor=N)
-        i=0
+    
         for one_news in final:
             title=one_news[0]
             time=one_news[1]
@@ -123,10 +124,8 @@ class NewsPage(tk.Tk):
             self.picLabel.bind("<Button-1>", callback)
             self.btn.pack(side=TOP, pady=10,padx=10, anchor=W)
             self.btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W)
-            
 
-    
+root.mainloop()        
 
-    root.mainloop()
 
 
