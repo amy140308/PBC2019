@@ -10,7 +10,7 @@ root.title("隊伍資訊")
 root.geometry("500x500")
 
 # 創建畫布
-canvas = tk.Canvas(root, width = 500, height = 1500, bg = "lemon chiffon")  # height調整canvas的長度，要手動調（或寫def）
+canvas = tk.Canvas(root, width = 500, height = 1500, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
 canvas.pack(side = BOTTOM,fill = BOTH,expand = Y)
 
 # 要建立frame，透過create_widget放在canvas上面才能滾動
@@ -39,15 +39,6 @@ def click_team_button(btn_txt):
     window.title(btn_txt)
     window.geometry("300x500")
 
-"""
-# 用image抓取png檔並resize
-logo_image = Image.open("C:\logo\ATL_logo.png")
-logo_image = logo_image.resize((150, 150), Image.ANTIALIAS)
-# 用「ImageTk.PhotoImage」轉換成tk可以讀的樣子
-logo_image = ImageTk.PhotoImage(image = logo_image)
-button_logo = tk.Button(frame, image = logo_image)
-button_logo.pack(side = TOP, pady = 10, padx = 20)
-"""
 
 Logo_road_list = ["C:\\logo\\ATL_logo.png","C:\\logo\\BKN_logo.png","C:\\logo\\BOS_logo.png","C:\\logo\\CHA_logo.png",
              "C:\\logo\\CHI_logo.png","C:\\logo\\CLE_logo.png","C:\\logo\\DAL_logo.png","C:\\logo\\DEN_logo.png",
