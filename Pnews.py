@@ -110,53 +110,8 @@ for one_news in final:
     picLabel.bind("<Button-1>", callback)
     btn.pack(side=TOP, pady=10,padx=10, anchor=W)
     btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W)
-    
+    i+=20
 
 root.mainloop()
 
 
-
-
-# 成功開完class的狀態
-class NewsPage(tk.Frame):
-    
-    def __init__(self, master, parent, controller):
-        tk.Frame.__init__(self) 
-        self.master.title("News")
-        self.master.geometry("500x1000")  
-        self.master.configure(bg="lemon chiffon")
-        self.pack()
-        self.createWidgets()
-    
-    def createWidgets(self):
-        # welcome page
-        self.frame=tk.Frame(canvas, bg="lemon chiffon",width=500, height=1200)
-        self.frame.pack(side=TOP, fill=BOTH, expand=TRUE)
-        for one_news in final:
-            title=one_news[0]
-            time=one_news[1]
-            intro=one_news[2]
-            if 15<=len(intro)<=30:
-                intro=intro[:15]+"\n"+intro[16:]
-            elif 30<=len(intro):
-                intro=intro[:15]+"\n"+intro[16:30]+"\n"+intro[31:]
-            image_url=one_news[-1]
-            ssl._create_default_https_context = ssl._create_unverified_context
-            u = urlopen(image_url)
-            raw_data = u.read()
-            u.close()
-            self.img = Image.open(BytesIO(raw_data))
-            self.img=self.img.resize((200, 100), Image.ANTIALIAS) 
-            self.img=ImageTk.PhotoImage(self.img)
-            self.picLabel = tk.Label(self.frame,image=self.img)
-            self.picLabel.image = self.img
-            self.picLabel.pack(side=TOP, pady=10, padx=10, anchor=W)
-            self.btn=tk.Label(self.frame, text=title, font=f1,bg="lemon chiffon",cursor="hand2")
-            self.btnsmall=tk.Label(self.frame, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify=LEFT)
-            def callback(event):
-                webbrowser.open_new(one_news[-2])
-            self.btn.bind("<Button-1>", callback)
-            self.btnsmall.bind("<Button-1>", callback)
-            self.picLabel.bind("<Button-1>", callback)
-            self.btn.pack(side=TOP, pady=2,padx=10, anchor=W)
-            self.btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W)
