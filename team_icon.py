@@ -32,7 +32,7 @@ for function in reversed(functions):
     btn.pack(side = RIGHT, pady = 30, anchor = N)
 
 # 放賽事
-wow=tk.Label(frame, text="球隊介紹", font="Didot", bg="lemon chiffon").pack(side = TOP)
+PageLabel=tk.Label(frame, text="球隊介紹", font="Didot", bg="lemon chiffon").pack(side = TOP)
 
 def click_team_button(btn_txt):
     window = Toplevel(root)
