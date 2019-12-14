@@ -148,7 +148,7 @@ class SportsLottery(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for page in (NewsPage, TeamPage): # StartPage：測試用，之後會換掉
+        for page in (NewsPage, StartPage): # StartPage：測試用，之後會換掉
             page_name = page.__name__
             frame = page(parent=container, controller=self)
             self.frames[page_name] = frame # 存進dictionary
@@ -156,7 +156,7 @@ class SportsLottery(tk.Tk):
             # the one on the top of the stacking order
             # will be the one that is visible.
             frame.grid(row=1, column=0, sticky="nsew")
-        self.show_frame("NewsPage")
+        self.show_frame("StartPage")
         
         
     def show_frame(self, page_name):
@@ -187,10 +187,7 @@ class NewsPage(tk.Frame):
             btn.pack(side=RIGHT, pady=30, anchor=N)
             btn_txt=btn.cget("text")
             if btn_txt == "球隊介紹":
-                btn.configure(command=lambda: controller.show_frame("TeamPage"))
-            elif btn_txt == "新聞介紹":
-                btn.configure(command=lambda: controller.show_frame("NewsPage"))
-
+                btn.configure(command=lambda: controller.show_frame("StartPage"))
         
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.FN, text="最新消息", font=f0, bg="lemon chiffon")
@@ -265,17 +262,19 @@ class NewsPage(tk.Frame):
             self.btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W) # 傷兵：anchor=E
 
 
+# StartPage僅試驗跳轉功能用，之後會移除  
+class StartPage(tk.Frame):
 
-class TeamPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        self.configure(width=500, height=700,bg = "lemon chiffon")
+        self.configure(width=500, height=700)
         self.controller = controller
         self.configure(width=500, height=700)
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
         self.F1.pack(side=TOP, fill=BOTH)
-        
+        label = tk.Label(self, text="This is a page waiting for team logos.", font="Didot")
+        label.pack(side=TOP, fill="x", pady=10)
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
@@ -283,63 +282,6 @@ class TeamPage(tk.Frame):
             btn_txt=btn.cget("text")
             if btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
-            elif btn_txt == "新聞介紹":
-                btn.configure(command=lambda: controller.show_frame("NewsPage"))
-
-        self.canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-        self.canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
-        # 要建立frame，透過create_widget放在canvas上面才能滾動
-        self.frame = tk.Frame(self.canvas, bg = "lemon chiffon", width = 500, height = 1200)
-        self.frame.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
-        self.canvas.create_window((300,300), window = self.frame, anchor = NW) 
-        # 滾動條
-        gameBar = tk.Scrollbar(self.canvas, orient = "vertical", command = self.canvas.yview)
-        gameBar.pack(side = "right", fill = "y")
-        self.canvas.configure(scrollregion = self.canvas.bbox('all'), yscrollcommand = gameBar.set)
-
-        # 放賽事
-        f0=tkFont.Font(family="標楷體", size=20)
-        self.TitleLbl=tk.Label(self.frame, text="球隊介紹", font=f0 ,bg="lemon chiffon").pack(side = TOP)
-
-        Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/LAC_logo.png","/Users/yangqingwen/Desktop/team_logo/LAL_logo.png","/Users/yangqingwen/Desktop/team_logo/MEM_logo.png","/Users/yangqingwen/Desktop/team_logo/MIA_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/MIL_logo.png","/Users/yangqingwen/Desktop/team_logo/MIN_logo.png","/Users/yangqingwen/Desktop/team_logo/NOP_logo.png","/Users/yangqingwen/Desktop/team_logo/NYK_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/OKC_logo.png","/Users/yangqingwen/Desktop/team_logo/ORL_logo.png","/Users/yangqingwen/Desktop/team_logo/PHI_logo.png","/Users/yangqingwen/Desktop/team_logo/PHX_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/POR_logo.png","/Users/yangqingwen/Desktop/team_logo/SAC_logo.png","/Users/yangqingwen/Desktop/team_logo/SAS_logo.png","/Users/yangqingwen/Desktop/team_logo/TOR_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/UTA_logo.png","/Users/yangqingwen/Desktop/team_logo/WAS_logo.png"]
-                    
-        self.Logo_image_list = []
-        Frame_List = []
-        # 打開隊伍資訊
-        def click_team_button():
-            window = Toplevel()  #??
-            window.title("hey")
-            window.geometry("300x500")
-            # 點按鈕為各隊伍資訊
-            F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
-            F10.pack(side = TOP, fill = BOTH) 
-        for i in range(30):
-            
-            # 用image抓取png檔並resize
-            self.logo_image = Image.open(Logo_road_list[i])
-            self.logo_image = self.logo_image.resize((100, 100), Image.ANTIALIAS)
-            # 用「ImageTk.PhotoImage」轉換成tk可以讀的樣子
-            self.logo_image = ImageTk.PhotoImage(image = self.logo_image)
-            self.Logo_image_list.append(self.logo_image)
-            
-            # 每五個建立新的Frame
-            if i % 5 == 0:
-                self.team_frame = tk.Frame(self.frame, bg = "wheat2",width = 1000, height = 120)
-                Frame_List.append(self.team_frame)
-                self.team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = N, fill = "x")  
-            
-            
-            self.button_logo = tk.Button(self.team_frame, image = self.Logo_image_list[i], command = click_team_button())
-            self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
-
-        
         
 app=SportsLottery()
 app.mainloop()        

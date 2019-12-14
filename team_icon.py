@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 import tkinter.ttk as ttk
-import tkinter.font as tkFont
+
 import PIL
 from PIL import ImageTk, Image
 
@@ -11,14 +11,15 @@ root.geometry("500x500")
 
 
 # 創建畫布
-canvas = tk.Canvas(root, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+canvas = tk.Canvas(root, width = 500, height = 1500, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
 canvas.pack(side = BOTTOM,fill = BOTH,expand = Y)
 # 要建立frame，透過create_widget放在canvas上面才能滾動
 F1 = tk.Frame(root,bg = "misty rose",width = 500, height = 300)
 F1.pack(side = TOP,fill = BOTH) 
 
-frame = tk.Frame(canvas, bg = "lemon chiffon", width = 500, height = 1200)
-frame.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
+
+frame = tk.Frame(canvas, bg = "lemon chiffon",width = 500, height = 1200)
+frame.pack(side = BOTTOM, fill = BOTH)
 canvas.create_window((300,300), window = frame, anchor = NW) 
 # 滾動條
 gameBar = tk.Scrollbar(canvas, orient = "vertical", command = canvas.yview)
@@ -31,8 +32,7 @@ for function in reversed(functions):
     btn.pack(side=RIGHT, pady=30, anchor=N)
 
 # 放賽事
-f0=tkFont.Font(family="標楷體", size=20)
-wow=tk.Label(frame, text="球隊介紹", font=f0 ,bg="lemon chiffon").pack(side = TOP)
+wow=tk.Label(frame, text="球隊介紹", font="Didot",bg="lemon chiffon").pack(side = TOP)
 
 # 打開隊伍資訊
 def click_team_button():
@@ -43,14 +43,14 @@ def click_team_button():
     F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
     F10.pack(side = TOP, fill = BOTH) 
 
-Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
-             "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
-             "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
-             "/Users/yangqingwen/Desktop/team_logo/LAC_logo.png","/Users/yangqingwen/Desktop/team_logo/LAL_logo.png","/Users/yangqingwen/Desktop/team_logo/MEM_logo.png","/Users/yangqingwen/Desktop/team_logo/MIA_logo.png",
-             "/Users/yangqingwen/Desktop/team_logo/MIL_logo.png","/Users/yangqingwen/Desktop/team_logo/MIN_logo.png","/Users/yangqingwen/Desktop/team_logo/NOP_logo.png","/Users/yangqingwen/Desktop/team_logo/NYK_logo.png",
-             "/Users/yangqingwen/Desktop/team_logo/OKC_logo.png","/Users/yangqingwen/Desktop/team_logo/ORL_logo.png","/Users/yangqingwen/Desktop/team_logo/PHI_logo.png","/Users/yangqingwen/Desktop/team_logo/PHX_logo.png",
-             "/Users/yangqingwen/Desktop/team_logo/POR_logo.png","/Users/yangqingwen/Desktop/team_logo/SAC_logo.png","/Users/yangqingwen/Desktop/team_logo/SAS_logo.png","/Users/yangqingwen/Desktop/team_logo/TOR_logo.png",
-             "/Users/yangqingwen/Desktop/team_logo/UTA_logo.png","/Users/yangqingwen/Desktop/team_logo/WAS_logo.png"]
+Logo_road_list = ["C:\\logo\\ATL_logo.png","C:\\logo\\BKN_logo.png","C:\\logo\\BOS_logo.png","C:\\logo\\CHA_logo.png",
+             "C:\\logo\\CHI_logo.png","C:\\logo\\CLE_logo.png","C:\\logo\\DAL_logo.png","C:\\logo\\DEN_logo.png",
+             "C:\\logo\\DET_logo.png","C:\\logo\\GSW_logo.png","C:\\logo\\HOU_logo.png","C:\\logo\\IND_logo.png",
+             "C:\\logo\\LAC_logo.png","C:\\logo\\LAL_logo.png","C:\\logo\\MEM_logo.png","C:\\logo\\MIA_logo.png",
+             "C:\\logo\\MIL_logo.png","C:\\logo\\MIN_logo.png","C:\\logo\\NOP_logo.png","C:\\logo\\NYK_logo.png",
+             "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
+             "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
+             "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
              
 Logo_image_list = []
 Frame_List = []
