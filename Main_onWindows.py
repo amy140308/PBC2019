@@ -271,8 +271,9 @@ class TeamPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(width=500, height=700,bg = "lemon chiffon")
-        self.controller = controller
-        self.configure(width=500, height=700)
+        self.createWidgets()
+        
+    def createWidgets(self):
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
         self.F1.pack(side=TOP, fill=BOTH)
         
@@ -312,14 +313,8 @@ class TeamPage(tk.Frame):
                     
         self.Logo_image_list = []
         Frame_List = []
-        # 打開隊伍資訊
-        def click_team_button():
-            window = Toplevel()
-            window.title("hey")
-            window.geometry("300x500")
-            # 點按鈕為各隊伍資訊
-            F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
-            F10.pack(side = TOP, fill = BOTH) 
+        
+
         for i in range(30):
             
             # 用image抓取png檔並resize
@@ -336,10 +331,17 @@ class TeamPage(tk.Frame):
                 self.team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = N, fill = "x")  
             
             
-            self.button_logo = tk.Button(self.team_frame, image = self.Logo_image_list[i], command = click_team_button())
+            self.button_logo = tk.Button(self.team_frame, image = self.Logo_image_list[i], command = self.click_team_button)
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
 
-        
+    # 打開隊伍資訊
+    def click_team_button(self):
+        window = Toplevel(self)
+        window.title("hey")
+        window.geometry("300x500")
+        # 點按鈕為各隊伍資訊
+        F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
+        F10.pack(side = TOP, fill = BOTH) 
         
 app=SportsLottery()
 app.mainloop()        
