@@ -339,7 +339,7 @@ class TeamPage(tk.Frame):
                 self.team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = N, fill = "x")  
             
             # 
-            self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM) #command = click_team_button()
+            self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM) #command = self.click_team_button()
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
     def click_team_button(self, btn_txt):
         window = Toplevel(self)
