@@ -339,7 +339,30 @@ class TeamPage(tk.Frame):
             self.button_logo = tk.Button(self.team_frame, image = self.Logo_image_list[i], command = click_team_button())
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
 
+class PersonalPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(width=500, height=700)
+        self.controller = controller
+        self.configure(width=500, height=700)
+        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
+        self.F1.pack(side=TOP, fill=BOTH)
         
+        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
+        for function in reversed(functions):
+            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn_txt=btn.cget("text")
+            if btn_txt == "新聞介紹":
+                btn.configure(command = lambda: controller.show_frame("NewsPage"))
+            elif btn_txt == "個人帳戶":
+                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+        # 帳戶組要給的餘額數字：
+        self.Balabce=5
+        self.BalanceLbl=tk.Label(self,text="帳戶餘額:"+str(self.Balance))
+        self.Balance.pack(side=TOP, anchor=CENTER)
+       
         
 app=SportsLottery()
 app.mainloop()        
