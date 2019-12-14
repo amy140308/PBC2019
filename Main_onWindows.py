@@ -284,13 +284,16 @@ class TeamPage(tk.Frame):
         
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
-            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side=RIGHT, pady=30, anchor=N)
-            btn_txt=btn.cget("text")
-            if btn_txt == "新聞介紹":
-                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+            self.btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            self.btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn_txt=self.btn.cget("text")
+            if btn_txt == "球隊介紹":
+                self.btn.configure(command=lambda: self.controller.show_frame("TeamPage"))
+            elif btn_txt == "新聞介紹":
+                self.btn.configure(command=lambda: self.controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                self.btn.configure(command = lambda: self.controller.show_frame("PersonalPage"))
+
         self.canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
         self.canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
         # 要建立frame，透過create_widget放在canvas上面才能滾動
@@ -315,13 +318,16 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
                     
-        self.Logo_image_list = []
+        
         Frame_List = []
         # 打開隊伍資訊
-        self.Team_name_List=[]
-        for i in range(30):
-            self.Team_name_List.append("大牛隊")
-            
+        self.Team_name_List = ["亞特蘭大老鷹", "布魯克林籃網", "波士頓塞爾蒂克", "夏洛特黄蜂", "芝加哥公牛",
+                         "克里夫蘭騎士", "達拉斯獨行俠", "丹佛金塊","底特律活塞", "金州勇士", 
+                         "休士頓火箭","印第安納溜馬", "洛杉磯快艇", "洛杉磯湖人", "曼菲斯灰熊", 
+                         "邁阿密熱火", "密爾瓦基公鹿", "明尼蘇達灰狼", "紐奧良鵜鶘", "紐約尼克",
+                         "奧克拉荷馬城 雷霆", "奧蘭多魔術", "費城76人","鳳凰城太陽", "波特蘭拓荒者", 
+                         "沙加緬度國王","聖安東尼奧馬刺", "多倫多暴龍", "猶他爵士", "華盛頓巫師"] 
+        self.Logo_image_list=[]
         for i in range(30):
             
             # 用image抓取png檔並resize
@@ -338,11 +344,11 @@ class TeamPage(tk.Frame):
                 Frame_List.append(self.team_frame)
                 self.team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = N, fill = "x")  
             
+            # 
             self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM, command = self.click_team_button)
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
-    def click_team_button(self, btn_txt):
+    def click_team_button(self):
         window = Toplevel(self)
-
         window.title("")
         window.geometry("300x500")
         # 點按鈕為各隊伍資訊
@@ -362,10 +368,13 @@ class PersonalPage(tk.Frame):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
             btn.pack(side=RIGHT, pady=30, anchor=N)
             btn_txt=btn.cget("text")
-            if btn_txt == "新聞介紹":
-                btn.configure(command = lambda: controller.show_frame("NewsPage"))
-            elif btn_txt == "球隊介紹":
-                btn.configure(command = lambda: controller.show_frame("TeamPage"))
+            if btn_txt == "球隊介紹":
+                btn.configure(command=lambda: controller.show_frame("TeamPage"))
+            elif btn_txt == "新聞介紹":
+                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+            elif btn_txt == "個人帳戶":
+                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+
         # 帳戶組要給的餘額數字：
         Balance=5
         f1=tkFont.Font(family="Didot", size=30)
