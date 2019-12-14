@@ -34,22 +34,44 @@ for function in reversed(functions):
 # 放賽事
 wow=tk.Label(frame, text="球隊介紹", font="Didot",bg="lemon chiffon").pack(side = TOP)
 
+# 打開隊伍資訊
 def click_team_button(btn_txt):
     window = Toplevel(root)
     window.title(btn_txt)
     window.geometry("300x500")
+    
+    F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
+    F10.pack(side = TOP, fill = BOTH) 
 
-# 用image抓取png檔並resize
-imageteam = Image.open("C:\logo\ATL_logo.png")
-imageteam = imageteam.resize((100, 100), Image.ANTIALIAS)
-# 用「ImageTk.PhotoImage」轉換成tk可以讀的樣子
-imageteam = ImageTk.PhotoImage(image = imageteam)
-button_team = tk.Button(frame, image = imageteam)
-button_team.pack(side = LEFT, pady = 10, padx = 20)
+Logo_road_list = ["C:\\logo\\ATL_logo.png","C:\\logo\\BKN_logo.png","C:\\logo\\BOS_logo.png","C:\\logo\\CHA_logo.png",
+             "C:\\logo\\CHI_logo.png","C:\\logo\\CLE_logo.png","C:\\logo\\DAL_logo.png","C:\\logo\\DEN_logo.png",
+             "C:\\logo\\DET_logo.png","C:\\logo\\GSW_logo.png","C:\\logo\\HOU_logo.png","C:\\logo\\IND_logo.png",
+             "C:\\logo\\LAC_logo.png","C:\\logo\\LAL_logo.png","C:\\logo\\MEM_logo.png","C:\\logo\\MIA_logo.png",
+             "C:\\logo\\MIL_logo.png","C:\\logo\\MIN_logo.png","C:\\logo\\NOP_logo.png","C:\\logo\\NYK_logo.png",
+             "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
+             "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
+             "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
+             
+Logo_image_list = []
+Frame_List = []
 
-
-
-
-
+for i in range(30):
+    
+    # 用image抓取png檔並resize
+    logo_image = Image.open(Logo_road_list[i])
+    logo_image = logo_image.resize((100, 100), Image.ANTIALIAS)
+    # 用「ImageTk.PhotoImage」轉換成tk可以讀的樣子
+    logo_image = ImageTk.PhotoImage(image = logo_image)
+    Logo_image_list.append(logo_image)
+    
+    # 每五個建立新的Frame
+    if i % 5 == 0:
+        team_frame = tk.Frame(frame, bg = "wheat2",width = 1000, height = 120)
+        Frame_List.append(team_frame)
+        team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = NW, fill = "x")  
+    
+    
+    button_logo = tk.Button(team_frame, image = Logo_image_list[i], command = click_team_button)
+    button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
 
 root.mainloop()
