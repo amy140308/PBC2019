@@ -284,13 +284,16 @@ class TeamPage(tk.Frame):
         
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
-            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side=RIGHT, pady=30, anchor=N)
-            btn_txt=btn.cget("text")
-            if btn_txt == "新聞介紹":
-                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+            self.btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            self.btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn_txt=self.btn.cget("text")
+            if btn_txt == "球隊介紹":
+                self.btn.configure(command=lambda: self.controller.show_frame("TeamPage"))
+            elif btn_txt == "新聞介紹":
+                self.btn.configure(command=lambda: self.controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                self.btn.configure(command = lambda: self.controller.show_frame("PersonalPage"))
+
         self.canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
         self.canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
         # 要建立frame，透過create_widget放在canvas上面才能滾動
@@ -344,7 +347,7 @@ class TeamPage(tk.Frame):
             # 
             self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM, command = self.click_team_button)
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
-    def click_team_button(self, btn_txt):
+    def click_team_button(self):
         window = Toplevel(self)
         window.title("")
         window.geometry("300x500")
@@ -365,10 +368,13 @@ class PersonalPage(tk.Frame):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
             btn.pack(side=RIGHT, pady=30, anchor=N)
             btn_txt=btn.cget("text")
-            if btn_txt == "新聞介紹":
-                btn.configure(command = lambda: controller.show_frame("NewsPage"))
-            elif btn_txt == "球隊介紹":
-                btn.configure(command = lambda: controller.show_frame("TeamPage"))
+            if btn_txt == "球隊介紹":
+                btn.configure(command=lambda: controller.show_frame("TeamPage"))
+            elif btn_txt == "新聞介紹":
+                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+            elif btn_txt == "個人帳戶":
+                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+
         # 帳戶組要給的餘額數字：
         Balance=5
         f1=tkFont.Font(family="Didot", size=30)
