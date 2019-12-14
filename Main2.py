@@ -148,7 +148,7 @@ class SportsLottery(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for page in (NewsPage, TeamPage, PersonalPage): # StartPage：測試用，之後會換掉
+        for page in (NewsPage, TeamPage): # StartPage：測試用，之後會換掉
             page_name = page.__name__
             frame = page(parent=container, controller=self)
             self.frames[page_name] = frame # 存進dictionary
@@ -156,7 +156,6 @@ class SportsLottery(tk.Tk):
             # the one on the top of the stacking order
             # will be the one that is visible.
             frame.grid(row=1, column=0, sticky="nsew")
-        # 預設開啟頁面為新聞頁
         self.show_frame("NewsPage")
         
         
@@ -284,8 +283,8 @@ class TeamPage(tk.Frame):
             btn_txt=btn.cget("text")
             if btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
-            elif btn_txt == "":
-                btn.configure(command=lambda: controller.show_frame(""))
+            elif btn_txt == "新聞介紹":
+                btn.configure(command=lambda: controller.show_frame("NewsPage"))
 
         self.canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
         self.canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
@@ -315,7 +314,7 @@ class TeamPage(tk.Frame):
         Frame_List = []
         # 打開隊伍資訊
         def click_team_button():
-            window = Toplevel(SportsLottery)  #??
+            window = Toplevel()  #??
             window.title("hey")
             window.geometry("300x500")
             # 點按鈕為各隊伍資訊
@@ -340,30 +339,7 @@ class TeamPage(tk.Frame):
             self.button_logo = tk.Button(self.team_frame, image = self.Logo_image_list[i], command = click_team_button())
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
 
-class PersonalPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        self.configure(width=500, height=700)
-        self.controller = controller
-        self.configure(width=500, height=700)
-        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-        self.F1.pack(side=TOP, fill=BOTH)
         
-        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
-        for function in reversed(functions):
-            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side=RIGHT, pady=30, anchor=N)
-            btn_txt=btn.cget("text")
-            if btn_txt == "新聞介紹":
-                btn.configure(command = lambda: controller.show_frame("NewsPage"))
-            elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
-        # 帳戶組要給的餘額數字：
-        self.Balabce=5
-        self.BalanceLbl=tk.Label(self,text="帳戶餘額:"+str(self.Balance))
-        self.Balance.pack(side=TOP, anchor=CENTER)
-
         
 app=SportsLottery()
 app.mainloop()        
