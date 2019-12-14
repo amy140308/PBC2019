@@ -35,9 +35,9 @@ f0=tkFont.Font(family="標楷體", size=20)
 wow=tk.Label(frame, text="球隊介紹", font=f0 ,bg="lemon chiffon").pack(side = TOP)
 
 # 打開隊伍資訊
-def click_team_button(btn_txt):
+def click_team_button():
     window = Toplevel(root)
-    window.title(btn_txt)
+    window.title("hey")
     window.geometry("300x500")
     
     F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
