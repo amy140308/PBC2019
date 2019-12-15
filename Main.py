@@ -69,7 +69,7 @@ class news():
 news = news()
 final_n = news.get_news()
 
-# 以下會放抓wounded的class
+# 抓wounded的class
 class wounded():
     '''
     抓NBA傷兵情報
@@ -129,6 +129,64 @@ class wounded():
 wounded = wounded()
 final_w = wounded.get_news()
 
+# 抓賽事的功能
+class bet():
+    '''
+    抓明日的比賽資訊(for 下注)
+    用的driver是google chrome
+
+    def get_data() 不用input
+    return: 一場比賽一個list[時間, 客隊, 主隊, 場地]
+            list數量不定, 視當天比賽場數, 全數包裝在一個二維list裡面回傳
+    '''
+
+    def __init__(self):   
+        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver")
+        driver.get('https://tw.global.nba.com/schedule/#!/7')
+        html = driver.page_source
+        driver.close()
+        soup = BeautifulSoup(html, 'html.parser')
+        attr = {'data-ng-repeat' : 'date in group.dates'}
+        bet_tag = soup.find_all('tbody', attrs = attr)
+
+        for tag in bet_tag:
+            date = tag.find('h6').string.strip()
+            m_end = date.find('月')
+            month = int(date[:m_end])
+            d_end = date.find('日')
+            day = int(date[m_end + 2 : d_end])
+            today = datetime.date.today()
+            year = today.year
+            d = datetime.datetime(year, month, day)
+            if d == datetime.datetime(year, today.month, today.day + 1):
+                self.data = tag.find_all('tr')
+                break
+
+    def get_data(self):
+
+        data_list = list()
+        for i in self.data:
+            p = str(i)
+            start = p.find('<span bo-hide')
+            if start == -1:
+                continue
+            end = p.find('</span>', start)
+            time = p[start + 62: end - 1]
+            team = i.find_all('a', limit = 2)
+            team_list = list()
+            for j in team:
+                team_list.append(j.get_text())
+            away = team_list[0]
+            home = team_list[1]
+            attrr = {'bo-text' : 'game.profile.arenaName'}
+            arena = i.find('td', attrs = attrr).string
+            data_list.append([time, away, home, arena])
+
+        return data_list
+
+# 以下為試class的功能
+bet = bet()
+final_g = bet.get_data()
 
 
 #  SportsLottery相當於開一個主視窗
@@ -149,17 +207,20 @@ class SportsLottery(tk.Tk):
         container.grid_rowconfigure(1, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
-        self.frames = {}
-        for page in (LoginPage, NewsPage, TeamPage, PersonalPage): # StartPage：測試用，之後會換掉
-            page_name = page.__name__
-            frame = page(parent=container, controller=self)
-            self.frames[page_name] = frame # 存進dictionary
-            # put all of the pages in the same location;
-            # the one on the top of the stacking order
-            # will be the one that is visible.
-            frame.grid(row=1, column=0, sticky="nsew")
+        LoginPage(parent=container, controller=self).grid(row=1, column=0, sticky="nsew")
+        # ?? 
+        if LoginPage.if_login == True:
+            self.frames = {}
+            for page in (NewsPage, TeamPage, PersonalPage, GamePage, HistoryPage): 
+                page_name = page.__name__
+                frame = page(parent=container, controller=self)
+                self.frames[page_name] = frame # 存進dictionary
+                # put all of the pages in the same location;
+                # the one on the top of the stacking order
+                # will be the one that is visible.
+                frame.grid(row=1, column=0, sticky="nsew")
+            self.show_frame("NewsPage")
         # 預設開啟頁面為新聞頁
-        self.show_frame("LoginPage")
         
         
     def show_frame(self, page_name):
@@ -168,6 +229,7 @@ class SportsLottery(tk.Tk):
         frame.tkraise()
 
 class LoginPage(tk.Frame):
+    OpenPages=False
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent) 
         self.controller=controller
@@ -190,20 +252,25 @@ class LoginPage(tk.Frame):
         self.entry_usr_name.pack()
         # 默認值
         # var_usr_name.set("")
-        self.l2.pack(side=TOP,padx=20, pady=10) #fill=X, 
+        self.l2.pack(side=TOP,padx=20, pady=10) #fill=X
 
         self.var_usr_pwd=tk.StringVar()
         self.entry_usr_pwd=tk.Entry(self.canvas, textvariable=self.var_usr_pwd, show="*") 
         self.entry_usr_pwd.pack(side=TOP, padx=10, pady=10)
         # 以下login command之後要寫成判斷式並用configure結合
-        self.btn_login=tk.Button(self.canvas, text="Log in", font=f1, command=lambda: controller.show_frame("NewsPage"))
+        self.btn_login=tk.Button(self.canvas, text="Log in", font=f1, command=self.if_login)
         self.btn_login.pack(side=RIGHT, padx=10, pady=10)
         self.btn_signup=tk.Button(self.canvas, text="Sign up", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side=RIGHT, padx=10, pady=10)
 
     def usr_signup(self):
         pass
-    
+    # ??
+    def if_login(self):
+        return True
+        
+        # command=lambda: controller.show_frame("NewsPage")
+        
     
 
 # NewsPage新聞頁
@@ -234,6 +301,11 @@ class NewsPage(tk.Frame):
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
                 btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+            elif btn_txt == "歷史資料":
+                btn.configure(command=lambda: controller.show_frame("HistoryPage"))
+            elif btn_txt == "賽事下注":
+                btn.configure(command = lambda: controller.show_frame("GamePage"))
+
 
         
         f0=tkFont.Font(family="標楷體", size=20)
@@ -332,6 +404,12 @@ class TeamPage(tk.Frame):
                 self.btn.configure(command=lambda: self.controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
                 self.btn.configure(command = lambda: self.controller.show_frame("PersonalPage"))
+            elif btn_txt == "賽事下注":
+                self.btn.configure(command=lambda: self.controller.show_frame("GamePage"))
+            elif btn_txt == "歷史資料":
+                self.btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
+     
+
 
         self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
         self.F2_canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
@@ -405,6 +483,83 @@ class TeamPage(tk.Frame):
         F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
         F10.pack(side = TOP, fill = BOTH) 
 
+
+class GamePage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(width=500, height=700, bg = "lemon chiffon")
+        """
+        以下是宗勳做成def create_common_frames的部分，但用mac有些問題，暫且先不寫成def看看
+        """
+        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
+        self.F1.pack(side=TOP, fill=BOTH,anchor=N)
+        self.F2=tk.Frame(self,bg="lemon chiffon",width=500, height=700)
+        self.F2.pack(side=TOP, fill=BOTH, expand=TRUE)
+        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
+        for function in reversed(functions):
+            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn_txt=btn.cget("text")
+            if btn_txt == "球隊介紹":
+                btn.configure(command=lambda: controller.show_frame("TeamPage"))
+            elif btn_txt == "新聞介紹":
+                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+            elif btn_txt == "個人帳戶":
+                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+            elif btn_txt == "賽事下注":
+                btn.configure(command=lambda: self.controller.show_frame("GamePage"))
+            elif btn_txt == "歷史資料":
+                btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
+     
+
+
+        
+
+# HistoryPage歷史紀錄頁面
+class HistoryPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        self.configure(width=500, height=700, bg = "lemon chiffon")
+        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
+        self.F1.pack(side=TOP, fill=BOTH,anchor=N)
+        self.F2=tk.Frame(self,bg="lemon chiffon",width=500, height=700)
+        self.F2.pack(side=TOP, fill=BOTH, expand=TRUE)
+        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
+        for function in reversed(functions):
+            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn_txt=btn.cget("text")
+            if btn_txt == "球隊介紹":
+                btn.configure(command=lambda: controller.show_frame("TeamPage"))
+            elif btn_txt == "新聞介紹":
+                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+            elif btn_txt == "個人帳戶":
+                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+            elif btn_txt == "賽事下注":
+                btn.configure(command=lambda: self.controller.show_frame("GamePage"))
+            elif btn_txt == "歷史資料":
+                btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
+    # 頁面功能 (之後可能要融合到Main_onWindows.py)
+    # 現在的點就是登入之前會先跳chrome的東西...真的是滿尷尬
+        for i in range(len(final_g)):
+            self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
+            time=final_g[i][0]
+            team1=final_g[i][1]
+            team2=final_g[i][2]
+            arena=final_g[i][3]
+            self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena,font="標楷體")
+            self.btn.pack(anchor=N, side=TOP, pady=10, padx=5)
+    
+    # def click_game_button(self):
+
+
+
+        
+
+
+
 class PersonalPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -424,6 +579,12 @@ class PersonalPage(tk.Frame):
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
                 btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+            elif btn_txt == "賽事下注":
+                btn.configure(command=lambda: self.controller.show_frame("GamePage"))
+            elif btn_txt == "歷史資料":
+                btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
+     
+
 
         # 帳戶組要給的餘額數字：
         Balance=5
@@ -431,6 +592,8 @@ class PersonalPage(tk.Frame):
 
         self.BalanceLbl=tk.Label(self,text="帳戶餘額："+str(Balance), font=f1,bg="lemon chiffon")
         self.BalanceLbl.pack(side=TOP, anchor=CENTER,pady=20)
+
+
 
         
 app=SportsLottery()

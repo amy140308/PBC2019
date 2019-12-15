@@ -22,12 +22,13 @@ class history():
     '''
 
     def __init__(self):
-        self.driver = webdriver.Chrome(executable_path = '/Users/joneschou/Downloads/chromedriver')
+        self.driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver')
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
 
     def update(self):
         stop = False  # 控制什麼時候就不用再按日期回鍵抓資訊
         while not stop:
+            t.sleep(3)
             self.driver.find_element_by_xpath('//*[@class="icon-caret-left days"]').click()
             t.sleep(3)  # 按下日期回鍵後等一下下再抓程式碼，免得瀏覽器跑太慢
             html = self.driver.page_source
@@ -50,7 +51,7 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath = '/Users/joneschou/Downloads/data.csv'
+                filepath = '/Users/yangqingwen/Downloads/data.csv'
                 wf = open(file=filepath, mode="a+", encoding="utf-8")
                 writer = csv.writer(wf)
                 rf = open(file=filepath, mode="r", encoding="utf-8")
@@ -100,7 +101,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = '/Users/joneschou/Downloads/data.csv'
+        filepath = '/Users/yangqingwen/Downloads/data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
         

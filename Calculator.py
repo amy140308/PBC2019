@@ -63,7 +63,6 @@ class Calculator(tk.Frame):
         self.btnSqrt.grid(row=4,column=2) 
     def clickBtnNum0(self):
         self.lblNum.configure(text="0")
-
     def clickBtnNum1(self):
         self.lblNum.configure(text="1")
     def clickBtnNum2(self):
@@ -88,7 +87,7 @@ class Calculator(tk.Frame):
         self.shouldReset=True
         # cget取得當前計算得出的數字（lblNum是顯示欄）
     def setNumStr(self,content):
-        if self.shouldReset==True:
+        if self.shouldReset == True:
             self.lblNum.configure(text=content)
             self.shouldReset=False
         else:

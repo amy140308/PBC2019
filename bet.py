@@ -58,5 +58,5 @@ class bet():
 
 # 以下為試class的功能
 bet = bet()
-final = bet.get_data()
-print(final)
+final_g = bet.get_data()
+# 
