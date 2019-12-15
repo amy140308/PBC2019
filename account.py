@@ -27,7 +27,6 @@ def register(userAccount):
         #writer=csv.writer(f)
         #writer.writerow([username, password, start_money])
         #f.close()
-        
     return userAccount
 
 
