@@ -1,5 +1,6 @@
 import datetime
 
+# 帳號註冊
 def register(userAccount):
 
     username = input("username:")
