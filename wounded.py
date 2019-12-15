@@ -30,23 +30,28 @@ class wounded():
         hend = 0
         piend = 0
         
-        while count < 3:
+        while count < 3:  # 抓三則新聞即可
+            # 抓標題
             tstart = self.pa.find('<h3>', tend)
             tend = self.pa.find('</h3>', tstart)
             title = self.pa[tstart + 4:tend]
 
+            # 抓新聞時間
             tistart = self.pa.find('h24">', tiend)
             tiend = self.pa.find('</b>', tistart)
             time = self.pa[tistart + 5:tiend]
 
+            # 抓簡略內文
             pstart = self.pa.find('<p>', pend)
             pend = self.pa.find('</p>', pstart)
             p = self.pa[pstart + 3:pend]
-            
+
+            # 抓該則新聞超連結
             hstart = self.pa.find('/nba/story/', hend)
             hend = self.pa.find('">', hstart)
             href = 'https://nba.udn.com' + self.pa[hstart:hend]
 
+            # 抓圖片src
             pistart = self.pa.find('data-src', piend)
             piend = self.pa.find('/><', pistart)
             html = self.pa[pistart + 10:piend - 1]

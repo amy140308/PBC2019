@@ -42,20 +42,23 @@ class bet():
         data_list = list()
         try:
             for i in self.data:
-                p = str(i)
+                p = str(i)  # 因為soup抓不到'bo-hide'標籤的資訊，所以手動用字串分析的方式
                 start = p.find('<span bo-hide')
-                if start == -1:
+                if start == -1:  # 如果找不到該tag就跳過
                     continue
                 end = p.find('</span>', start)
                 time = p[start + 62: end - 1]
-                team = i.find_all('a', limit = 2)
+
+                team = i.find_all('a', limit = 2)  # 前兩個<a>放的是客隊跟主隊的隊名
                 team_list = list()
                 for j in team:
                     team_list.append(j.get_text())
                 away = team_list[0]
                 home = team_list[1]
-                attrr = {'bo-text' : 'game.profile.arenaName'}
-                arena = i.find('td', attrs = attrr).string
+
+                attr_s = {'bo-text' : 'game.profile.arenaName'}  # 場地資訊
+                arena = i.find('td', attrs = attr_s).string
+
                 data_list.append([time, away, home, arena])
         except:
             pass
