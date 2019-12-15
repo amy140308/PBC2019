@@ -53,7 +53,7 @@ def login(userAccount):
         return False
 
 
-userlist = [['username', 'password', 10000, 'login_time'], ['abc', 'abc']]
+userlist = [['username', 'password', 10000, 'login_time']]
 ID_num = login(userlist)
 if ID_num is False:
     print("查無此帳號")
