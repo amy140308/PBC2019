@@ -333,21 +333,21 @@ class TeamPage(tk.Frame):
             elif btn_txt == "個人帳戶":
                 self.btn.configure(command = lambda: self.controller.show_frame("PersonalPage"))
 
-        self.canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-        self.canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
+        self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+        self.F2_canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
         # 要建立frame，透過create_widget放在canvas上面才能滾動
-        self.frame = tk.Frame(self.canvas, bg = "lemon chiffon", width = 500, height = 1200)
+        self.frame = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 1200)
         self.frame.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
-        self.canvas.create_window((200,200), window = self.frame, anchor = NW) 
+        self.F2_canvas.create_window((200,200), window = self.frame, anchor = NW) 
         # 滾動條
-        gameBar = tk.Scrollbar(self.canvas, orient = "vertical", command = self.canvas.yview)
+        gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
         gameBar.pack(side = "right", fill = "y")
-        self.canvas.configure(scrollregion = self.canvas.bbox('all'), yscrollcommand = gameBar.set)
+        self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = gameBar.set)
 
         # 放賽事
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.frame, text="球隊介紹", font=f0 ,bg="lemon chiffon").pack(side = TOP)
-
+        
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -396,6 +396,7 @@ class TeamPage(tk.Frame):
             # 
             self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM, command = self.click_team_button)
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
+    
     # 點按鈕為各隊伍資訊
     def click_team_button(self):
         window = Toplevel(self)
