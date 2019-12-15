@@ -9,6 +9,8 @@ from PIL import Image, ImageTk
 import io 
 from io import BytesIO
 import ssl
+from selenium import webdriver
+import datetime
 
  
 
@@ -394,11 +396,11 @@ class TeamPage(tk.Frame):
             # 
             self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM, command = self.click_team_button)
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
+    # 點按鈕為各隊伍資訊
     def click_team_button(self):
         window = Toplevel(self)
         window.title("")
         window.geometry("300x500")
-        # 點按鈕為各隊伍資訊
         F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
         F10.pack(side = TOP, fill = BOTH) 
 
@@ -431,5 +433,5 @@ class PersonalPage(tk.Frame):
 
         
 app=SportsLottery()
-app.mainloop()        
+app.mainloop()      
 

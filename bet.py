@@ -13,7 +13,7 @@ class bet():
     '''
 
     def __init__(self):   
-        driver = webdriver.Chrome(executable_path = '/Users/joneschou/Downloads/chromedriver')
+        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver")
         driver.get('https://tw.global.nba.com/schedule/#!/7')
         html = driver.page_source
         driver.close()
