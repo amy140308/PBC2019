@@ -14,7 +14,7 @@ import datetime
 
  
 
-
+"""爬蟲組"""
 
 # 抓news（尚未更新至最新的code版本，明日更）
 class news():
@@ -129,7 +129,7 @@ class wounded():
 wounded = wounded()
 final_w = wounded.get_news()
 
-
+"""UI部分"""
 
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
@@ -210,7 +210,8 @@ def create_common_frames(self, controller):
     
     # 建立頁面的上面區域"F1"，擺放五個按鈕與其他資訊
     self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-    self.F1.pack(side=TOP, fill=BOTH)
+    self.F1.pack(side=TOP, fill=BOTH,anchor=N)
+    
     functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
     for function in reversed(functions):
         self.btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
@@ -221,7 +222,7 @@ def create_common_frames(self, controller):
         elif btn_txt == "球隊介紹":
             self.btn.configure(command=lambda: self.controller.show_frame("TeamPage"))
         elif btn_txt == "賽事下注":
-            self.btn.configure(command = lambda: self.controller.show_frame("GamePage"))
+            self.btn.configure(command=lambda: self.controller.show_frame("GamePage"))
         elif btn_txt == "歷史資料":
             self.btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
         elif btn_txt == "個人帳戶":
@@ -229,12 +230,12 @@ def create_common_frames(self, controller):
     
     # 建立頁面的下面區域"F2_canvas"，再把"F2"放進去
     # 要建立canvas才能滾動
-    self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-    self.F2_canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
+    self.F2_canvas = tk.Canvas(self, width = 500, height = 1000, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+    self.F2_canvas.pack(side = TOP, fill = BOTH, expand = TRUE)
     
     # frame建立在canvas上，透過create_widget放在canvas上面才能滾動
-    self.F2 = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 1200)
-    self.F2.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
+    self.F2 = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 500)
+    self.F2.pack(side = TOP, fill = BOTH ,expand = TRUE,anchor = N)
     self.F2_canvas.create_window((200,200), window = self.F2, anchor = NW) 
     
     # 滾動條放在canvas上
