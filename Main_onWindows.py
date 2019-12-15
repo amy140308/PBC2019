@@ -207,10 +207,9 @@ class LoginPage(tk.Frame):
 
 # 登入後五個頁面共同的板塊建立方式
 def create_common_frames(self, controller):
-    
-    # 建立頁面的上面區域"F1"，擺放五個按鈕與其他資訊
+
     self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-    self.F1.pack(side=TOP, fill=BOTH,anchor=N)
+    self.F1.pack(side=TOP, fill=BOTH)
     
     functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
     for function in reversed(functions):
@@ -227,21 +226,20 @@ def create_common_frames(self, controller):
             self.btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
         elif btn_txt == "個人帳戶":
             self.btn.configure(command=lambda: self.controller.show_frame("PersonalPage"))
+
+    self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+    self.F2_canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
     
-    # 建立頁面的下面區域"F2_canvas"，再把"F2"放進去
-    # 要建立canvas才能滾動
-    self.F2_canvas = tk.Canvas(self, width = 500, height = 1000, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-    self.F2_canvas.pack(side = TOP, fill = BOTH, expand = TRUE)
-    
-    # frame建立在canvas上，透過create_widget放在canvas上面才能滾動
-    self.F2 = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 500)
-    self.F2.pack(side = TOP, fill = BOTH ,expand = TRUE,anchor = N)
+    # 要建立frame，透過create_widget放在canvas上面才能滾動
+    self.F2 = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 1200)
+    self.F2.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
     self.F2_canvas.create_window((200,200), window = self.F2, anchor = NW) 
-    
-    # 滾動條放在canvas上
-    gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
-    gameBar.pack(side = "right", fill = "y")
-    self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = gameBar.set)
+
+    # 滾動條
+    self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
+    self.gameBar.pack(side = "right", fill = "y")
+    self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
+
 
 # NewsPage新聞介紹頁
 class NewsPage(tk.Frame):
