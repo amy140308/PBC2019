@@ -10,16 +10,21 @@ class UserAccount():
         self.password = Login.var_usr_pwd
 
 
-    # 帳號註冊
+    # 使用者註冊
     def register(self):
-
+        
+        # 輸入使用者名稱
         username = input("username:")
+
+        # 讀取csv檔中的使用者資料至list
         userinformation = []
         with open("userInformation.csv", newline = '') as f:
             rows = csv.reader(f)
             for row in rows:
                 userinformation.append(row)
         # 檢查ID使否重複
+        # ID重複跳出提示訊息
+        # 再次輸入ID
         while True:
             for i in range(len(userinformation)):
                 if username == userinformation[i][0]:
@@ -28,6 +33,8 @@ class UserAccount():
                 else:
                     break
             break
+
+        # 輸入密碼
         password=input("password: ")
 
         # 成立登入時間
@@ -36,17 +43,22 @@ class UserAccount():
         # 初始帳戶有10000元
         start_money = 10000
 
-        # 使用者資料建檔(csv檔)
+        # 使用者資料建檔(寫入csv檔)
         with open("userInformation.csv", "a", newline='') as f:
             writer=csv.writer(f)
             writer.writerow([username, password, start_money, login_time])
             f.close()
 
-
+    # 使用者登入
     def login(self):
         check = 0
+        # 這個使用者在list中的編號
         ID_num = 0
+
+        # 輸入使用者名稱
         username = input("username: ")
+
+        # 讀取csv檔中的使用者資料至list
         userinformation = []
         with open("userInformation.csv", newline = '') as f:
             rows = csv.reader(f)
@@ -58,15 +70,20 @@ class UserAccount():
                 check += 1
                 ID_num = i
                 user_password = userAccount[i][1]
+        # 帳號存在
+        # 輸入密碼並檢查密碼是否正確
         if check > 0:
+            # 輸入密碼
             password = input()
             # 檢查密碼是否正確
             while True:
                 if password == user_password:
                     return ID_num
+                    # 進到登入後的畫面
                 else:
                     tk.MessageBox.showWarning(text="密碼錯誤")
                     password = input()
+        # 如果沒有此帳號跳出提示訊息
         else:
             tk.MessageBox.showWarning(text="查無此帳號")
 
