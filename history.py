@@ -118,5 +118,5 @@ class history():
 # 以下為試class的功能
 history = history()
 history.update()
-final_h = history.get_data('2019-12-06')
+final_h = history.get_data('2019-12-16')
 print(final_h)

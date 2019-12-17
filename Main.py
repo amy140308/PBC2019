@@ -446,7 +446,6 @@ class NewsPage(tk.Frame):
                 btn.configure(command = lambda: controller.show_frame("GamePage"))
 
 
-        
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.FN, text="最新消息", font=f0, bg="lemon chiffon")
         self.TitleLbl.pack(side=TOP)
@@ -551,7 +550,7 @@ class TeamPage(tk.Frame):
 
 
         self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-        self.F2_canvas.pack(side = BOTTOM,fill = BOTH, expand = TRUE)
+        self.F2_canvas.pack(side = TOP,fill = BOTH, expand = TRUE)
         # 要建立frame，透過create_widget放在canvas上面才能滾動
         self.frame = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 1200)
         self.frame.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
@@ -603,17 +602,19 @@ class TeamPage(tk.Frame):
             self.logo_image = ImageTk.PhotoImage(image = self.logo_image)
             self.Logo_image_list.append(self.logo_image)
         
-        
             # 每五個建立新的Frame
             if i % 5 == 0:
                 self.team_frame = tk.Frame(self.frame, bg = "wheat2",width = 1000, height = 120)
                 Frame_List.append(self.team_frame)
                 self.team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = N, fill = "x")  
-            
             # 
             self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM, command = self.click_team_button)
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
-    
+        def click_team_button(self):
+            # window=Toplevel()
+            team_name=self.cget("text")
+            window.title(team_name)
+        
     # 點按鈕為各隊伍資訊
     def click_team_button(self):
         window = Toplevel(self)
@@ -666,6 +667,7 @@ class GamePage(tk.Frame):
 
             self.Label=tk.Label(text="今日無賽事", font=f1)
             self.Label.pack(anchor=N, side=TOP, pady=20)
+        
 
             
 # HistoryPage歷史紀錄頁面
@@ -676,8 +678,6 @@ class HistoryPage(tk.Frame):
         self.configure(width=500, height=700, bg = "lemon chiffon")
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
         self.F1.pack(side=TOP, fill=BOTH,anchor=N)
-        self.F2=tk.Frame(self,bg="lemon chiffon",width=500, height=700)
-        self.F2.pack(side=TOP, fill=BOTH, expand=TRUE)
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
@@ -693,23 +693,39 @@ class HistoryPage(tk.Frame):
                 btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
                 btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
+        
+        # scrollbar
+        self.F2_canvas = tk.Canvas(self, width = 500, height = 800, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+        self.F2_canvas.pack(side = TOP,fill = BOTH, expand = TRUE)
+        
+        # 要建立frame，透過create_widget放在canvas上面才能滾動
+        self.F2 = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 800, height = 1200)
+        self.F2.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
+        self.F2_canvas.create_window((200,200), window = self.F2, anchor = NW) 
+
+        # 滾動條
+        self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
+        self.gameBar.pack(side = "right", fill = "y")
+        self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
+
         self.createWidgets()
-# 抓昨天的時間
+
     def createWidgets(self):
+        # 抓昨天的時間
         yesterday=datetime.datetime.now()-datetime.timedelta(days=1)    
         dstr=yesterday.strftime("%Y-%m-%d")
         final_h = history.get_data(dstr)
         # print(final_h)
         f1=tkFont.Font(size=20, family="標楷體")
         f2=tkFont.Font(size=15, family="Didot")
-        self.Title=tk.Label(self.F2, text="今日賽事", font=f1)
-        self.Title.pack(side=TOP)
+        self.Title=tk.Label(self.F2, text="昨日賽事"+"("+dstr+")", font=f1, bg="lemon chiffon")
+        self.Title.pack(side=LEFT, anchor="nw")
+        
         for i in range(len(final_h)):
-            self.lbl=tk.Label(self.F2, text=str(i+1)+"\n"+"日期:"＋final_h[i][0]+"\n"+"時間:"＋final_h[i][1]+"\n"+"客隊:"+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊:"+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場"+final_h[i][6])
-            
-            self.lbl.configure(font=f2, bg="LightBlue1", anchor=W)
-            self.lbl.pack(side=TOP, anchor=CENTER)
-
+            self.lbl=tk.Label(self.F2, width=40, text=str(i+1)+"\n"+"時間："+final_h[i][1]+"\n"+"客隊："+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊："+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場："+final_h[i][6])
+            self.lbl.configure(font=f2, bg="lemon chiffon", justify=CENTER)
+            self.lbl.pack(side=TOP, pady=5, anchor=CENTER)
+        
     # def click_game_button(self):
 class PersonalPage(tk.Frame):
     def __init__(self, parent, controller):
