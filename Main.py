@@ -16,7 +16,7 @@ import datetime
 
 
 
-# 抓news（尚未更新至最新的code版本，明日更）
+# 抓news
 class news():
     def __init__(self):
         response = requests.get("https://nba.udn.com/nba/cate/6754/6780")
@@ -129,7 +129,7 @@ class wounded():
 wounded = wounded()
 final_w = wounded.get_news()
 
-# 抓賽事的功能
+# 抓賽事的功能（不會跳瀏覽器）
 class bet():
     '''
     抓明日的比賽資訊(for 下注)
@@ -188,7 +188,6 @@ class bet():
 bet = bet()
 final_g = bet.get_data()
 
-
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
    
@@ -208,9 +207,7 @@ class SportsLottery(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         LoginPage(parent=container, controller=self).grid(row=1, column=0, sticky="nsew")
-        # ?? 
-        if LoginPage.if_login == True:
-            self.frames = {}
+
             for page in (NewsPage, TeamPage, PersonalPage, GamePage, HistoryPage): 
                 page_name = page.__name__
                 frame = page(parent=container, controller=self)
@@ -229,7 +226,7 @@ class SportsLottery(tk.Tk):
         frame.tkraise()
 
 class LoginPage(tk.Frame):
-    OpenPages=False
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent) 
         self.controller=controller
@@ -258,16 +255,23 @@ class LoginPage(tk.Frame):
         self.entry_usr_pwd=tk.Entry(self.canvas, textvariable=self.var_usr_pwd, show="*") 
         self.entry_usr_pwd.pack(side=TOP, padx=10, pady=10)
         # 以下login command之後要寫成判斷式並用configure結合
-        self.btn_login=tk.Button(self.canvas, text="Log in", font=f1, command=self.if_login)
+        self.btn_login=tk.Button(self.canvas, text="Log in", font=f1, command=self.login)
         self.btn_login.pack(side=RIGHT, padx=10, pady=10)
         self.btn_signup=tk.Button(self.canvas, text="Sign up", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side=RIGHT, padx=10, pady=10)
 
     def usr_signup(self):
         pass
-    # ??
-    def if_login(self):
-        return True
+    
+    def login(self):
+        button = Tkinter.Button(self.root, text = 'root quit', command=self.quit)
+        button.pack()
+        # 以下
+        app=SportsLottery()
+        app.mainloop()
+
+    def quit(self):
+        self.root.destroy()
         
         # command=lambda: controller.show_frame("NewsPage")
         
@@ -511,11 +515,18 @@ class GamePage(tk.Frame):
                 btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
                 btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
-     
-
+        # 頁面功能 (之後可能要融合到Main_onWindows.py)
+        # 現在的點就是登入之前會先跳chrome的東西...真的是滿尷尬
+        for i in range(len(final_g)):
+            self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
+            time=final_g[i][0]
+            team1=final_g[i][1]
+            team2=final_g[i][2]
+            arena=final_g[i][3]
+            self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena,font="標楷體")
+            self.btn.pack(anchor=N, side=TOP, pady=10, padx=5)     
 
         
-
 # HistoryPage歷史紀錄頁面
 class HistoryPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -541,24 +552,13 @@ class HistoryPage(tk.Frame):
                 btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
                 btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
-    # 頁面功能 (之後可能要融合到Main_onWindows.py)
-    # 現在的點就是登入之前會先跳chrome的東西...真的是滿尷尬
-        for i in range(len(final_g)):
-            self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
-            time=final_g[i][0]
-            team1=final_g[i][1]
-            team2=final_g[i][2]
-            arena=final_g[i][3]
-            self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena,font="標楷體")
-            self.btn.pack(anchor=N, side=TOP, pady=10, padx=5)
+    
     
     # def click_game_button(self):
 
 
 
         
-
-
 
 class PersonalPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -595,7 +595,7 @@ class PersonalPage(tk.Frame):
 
 
 
-        
+LoginPage()   
 app=SportsLottery()
 app.mainloop()      
 
