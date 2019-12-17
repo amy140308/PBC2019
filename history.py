@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import csv
 import time as t
@@ -22,12 +23,16 @@ class history():
     '''
 
     def __init__(self):
-        self.driver = webdriver.Chrome(executable_path = '/Users/joneschou/Downloads/chromedriver')
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        self.driver = webdriver.Chrome(executable_path = '/Users/joneschou/Downloads/chromedriver', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
 
     def update(self):
         stop = False  # 控制什麼時候就不用再按日期回鍵抓資訊
         while not stop:
+            t.sleep(1)
             self.driver.find_element_by_xpath('//*[@class="icon-caret-left days"]').click()
             t.sleep(3)  # 按下日期回鍵後等一下下再抓程式碼，免得瀏覽器跑太慢
             html = self.driver.page_source

@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import datetime
 
@@ -12,8 +13,11 @@ class bet():
             list數量不定, 視當天比賽場數, 全數包裝在一個二維list裡面回傳
     '''
 
-    def __init__(self):   
-        driver = webdriver.Chrome(executable_path = '/Users/joneschou/Downloads/chromedriver')
+    def __init__(self):
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--disable-gpu')
+        driver = webdriver.Chrome(executable_path = '/Users/joneschou/Downloads/chromedriver', options=chrome_options)
         driver.get('https://tw.global.nba.com/schedule/#!/7')
         html = driver.page_source
         driver.close()
