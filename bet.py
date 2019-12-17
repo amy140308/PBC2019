@@ -1,7 +1,7 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import datetime
-
+# 不會跳瀏覽器的版本
 class bet():
     '''
     抓明日的比賽資訊(for 下注)

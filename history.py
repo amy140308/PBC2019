@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import csv
 import time as t
 import datetime
-
+# 不會跳瀏覽器的版本
 class history():
     '''
     抓2019/12/01以後的歷史比分紀錄
