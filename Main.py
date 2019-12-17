@@ -318,7 +318,8 @@ class history():
 # 以下為試class的功能
 history = history()
 history.update()
-final_h = history.get_data('2019-12-06')
+
+
 
 
 
@@ -651,16 +652,22 @@ class GamePage(tk.Frame):
                 btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
         # 頁面功能 (之後可能要融合到Main_onWindows.py)
         # 現在的點就是登入之前會先跳chrome的東西...真的是滿尷尬
-        for i in range(len(final_g)):
-            self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
-            time=final_g[i][0]
-            team1=final_g[i][1]
-            team2=final_g[i][2]
-            arena=final_g[i][3]
-            self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena,font="標楷體")
-            self.btn.pack(anchor=N, side=TOP, pady=10, padx=5)     
+        f1=tkFont.Font(size=20, family="標楷體")
+        if len(final_g)>0:
+            for i in range(len(final_g)):
+                self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
+                time=final_g[i][0]
+                team1=final_g[i][1]
+                team2=final_g[i][2]
+                arena=final_g[i][3]
+                self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
+                self.btn.pack(anchor=N, side=TOP, pady=10, padx=5)     
+        else:
 
-        
+            self.Label=tk.Label(text="今日無賽事", font=f1)
+            self.Label.pack(anchor=N, side=TOP, pady=20)
+
+            
 # HistoryPage歷史紀錄頁面
 class HistoryPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -686,8 +693,23 @@ class HistoryPage(tk.Frame):
                 btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
                 btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
-    
-    
+        self.createWidgets()
+# 抓昨天的時間
+    def createWidgets(self):
+        yesterday=datetime.datetime.now()-datetime.timedelta(days=1)    
+        dstr=yesterday.strftime("%Y-%m-%d")
+        final_h = history.get_data(dstr)
+        # print(final_h)
+        f1=tkFont.Font(size=20, family="標楷體")
+        f2=tkFont.Font(size=15, family="Didot")
+        self.Title=tk.Label(self.F2, text="今日賽事", font=f1)
+        self.Title.pack(side=TOP)
+        for i in range(len(final_h)):
+            self.lbl=tk.Label(self.F2, text=str(i+1)+"\n"+"日期:"＋final_h[i][0]+"\n"+"時間:"＋final_h[i][1]+"\n"+"客隊:"+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊:"+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場"+final_h[i][6])
+            
+            self.lbl.configure(font=f2, bg="LightBlue1", anchor=W)
+            self.lbl.pack(side=TOP, anchor=CENTER)
+
     # def click_game_button(self):
 class PersonalPage(tk.Frame):
     def __init__(self, parent, controller):

@@ -119,4 +119,4 @@ class history():
 history = history()
 history.update()
 final_h = history.get_data('2019-12-06')
-
+print(final_h)
