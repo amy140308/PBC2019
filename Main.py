@@ -141,7 +141,7 @@ class bet():
     '''
 
     def __init__(self):   
-        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver")
+        driver = webdriver.Chrome(executable_path = "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe")
         driver.get('https://tw.global.nba.com/schedule/#!/7')
         html = driver.page_source
         driver.close()
@@ -207,16 +207,17 @@ class SportsLottery(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         LoginPage(parent=container, controller=self).grid(row=1, column=0, sticky="nsew")
-
-            for page in (NewsPage, TeamPage, PersonalPage, GamePage, HistoryPage): 
-                page_name = page.__name__
-                frame = page(parent=container, controller=self)
-                self.frames[page_name] = frame # 存進dictionary
-                # put all of the pages in the same location;
-                # the one on the top of the stacking order
-                # will be the one that is visible.
-                frame.grid(row=1, column=0, sticky="nsew")
-            self.show_frame("NewsPage")
+        
+        self.frames = {}
+        for page in (NewsPage, TeamPage, PersonalPage, GamePage, HistoryPage): 
+            page_name = page.__name__
+            frame = page(parent=container, controller=self)
+            self.frames[page_name] = frame # 存進dictionary
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            frame.grid(row=1, column=0, sticky="nsew")
+        self.show_frame("NewsPage")
         # 預設開啟頁面為新聞頁
         
         
@@ -594,8 +595,7 @@ class PersonalPage(tk.Frame):
         self.BalanceLbl.pack(side=TOP, anchor=CENTER,pady=20)
 
 
-
-LoginPage()   
+  
 app=SportsLottery()
 app.mainloop()      
 
