@@ -2,9 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 
 
-class news():
+class wounded():
     '''
-    抓NBA新聞資訊
+    抓NBA傷兵情報
 
     def get_news() 不用input
     return: 一則新聞一個list[標題, 時間, 簡短內文, 新聞超連結網址, 圖片鏈結]
@@ -12,7 +12,7 @@ class news():
     '''
 
     def __init__(self):
-        response = requests.get("https://nba.udn.com/nba/cate/6754/6780")
+        response = requests.get("https://nba.udn.com/nba/cate/6754/6779")
         soup = BeautifulSoup(response.text, 'html.parser')
         attr = {'id' : 'news_list_body'}
         news_tag = soup.find_all('div', attrs = attr)
@@ -63,8 +63,6 @@ class news():
 
 
 # 以下為試class的功能
-news = news()
-final = news.get_news()
+wounded = wounded()
+final = wounded.get_news()
 print(final)
-
-
