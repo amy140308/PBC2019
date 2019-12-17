@@ -4,9 +4,10 @@ import csv
 
 class UserAccount():
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, historyrecords=[]):
         self.username = LoginPage.var_usr_name
         self.password = LoginPage.var_usr_pwd
+        self.historyrecords= 
 
     # 使用者註冊
     def register(self):
@@ -33,7 +34,6 @@ class UserAccount():
 
         # 成立登入時間
         self.login_time = datetime.datetime.today()
-
         # 初始帳戶有10000元
         self.start_money = 10000
 

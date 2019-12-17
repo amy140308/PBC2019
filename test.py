@@ -48,9 +48,9 @@ class LoginPage(tk.Frame):
         self.btn_signup=tk.Button(self.canvas, text="Sign up", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side=RIGHT, padx=10, pady=10)
     def login(self):
-        self.destroy()
         app=self.SportsLottery()
         app.mainloop()
+        self.destroy()
 
     def usr_signup(self):
         pass
@@ -126,9 +126,7 @@ class LoginPage(tk.Frame):
                     btn.configure(command=lambda: controller.show_frame("HistoryPage"))
                 elif btn_txt == "賽事下注":
                     btn.configure(command = lambda: controller.show_frame("GamePage"))
-
-
-            
+                    
             f0=tkFont.Font(family="標楷體", size=20)
             self.TitleLbl=tk.Label(self.FN, text="最新消息", font=f0, bg="lemon chiffon")
             self.TitleLbl.pack(side=TOP)
