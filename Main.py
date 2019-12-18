@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import *
+
 import webbrowser
 import tkinter.font as tkFont
 import requests
@@ -200,8 +200,8 @@ class bet():
         return data_list
 
 # 以下為試class的功能
-bet = bet()
-final_g = bet.get_data()
+# bet = bet()
+# final_g = bet.get_data()
 
 
 # 歷史資訊
@@ -316,8 +316,8 @@ class history():
         return data
 
 # 以下為試class的功能
-history = history()
-history.update()
+# history = history()
+# history.update()
 
 
 
@@ -363,39 +363,37 @@ class SportsLottery(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-class LoginPage(tk.Frame):
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent) 
-        self.controller=controller
-        self.configure(width=250, height=700)
-        self.pack(side=BOTTOM, expand=TRUE)
-        self.canvas=tk.Canvas(self, height=1000, width=500, bg="plum2") 
+class LoginPage(tk.Tk):
+    def __init__(self):
+        tk.Tk.__init__(self)
+        self.geometry("300x300")
+        self.title("運彩模擬器：登入")
+        self.configure(bg="misty rose")
+        
+       
         # self.img=Image.open("NBALogo.gif")
         # self.img=self.img.resize((200, 200), Image.ANTIALIAS) 
         # self.img=ImageTk.PhotoImage(self.img)
         # self.canvas.create_image(0, 0, anchor="nw", image=self.img)
-        self.canvas.pack(fill=BOTH,expand=Y)
-        self.canvas.configure(bg="misty rose")
-
+    
         f1=tkFont.Font(size=15, family="Didot")
-        self.l1=tk.Label(self.canvas, text="使用者名稱：", font=f1)
-        self.l2=tk.Label(self.canvas, text="密碼：", font=f1)
+        self.l1=tk.Label(self, text="使用者名稱：", font=f1)
+        self.l2=tk.Label(self, text="密碼：", font=f1)
         self.l1.pack(side=TOP, fill=X, padx=10, pady=10)
         self.var_usr_name=tk.StringVar(self)
-        self.entry_usr_name=tk.Entry(self.canvas, textvariable=self.var_usr_name)
+        self.entry_usr_name=tk.Entry(self, textvariable=self.var_usr_name)
         self.entry_usr_name.pack()
         # 默認值
         # var_usr_name.set("")
         self.l2.pack(side=TOP,padx=20, pady=10) #fill=X
 
         self.var_usr_pwd=tk.StringVar()
-        self.entry_usr_pwd=tk.Entry(self.canvas, textvariable=self.var_usr_pwd, show="*") 
+        self.entry_usr_pwd=tk.Entry(self, textvariable=self.var_usr_pwd, show="*") 
         self.entry_usr_pwd.pack(side=TOP, padx=10, pady=10)
         # 以下login command之後要寫成判斷式並用configure結合
-        self.btn_login=tk.Button(self.canvas, text="Log in", font=f1, command=self.usr_login)
+        self.btn_login=tk.Button(self, text="Log in", font=f1, command=self.usr_login)
         self.btn_login.pack(side=RIGHT, padx=10, pady=10)
-        self.btn_signup=tk.Button(self.canvas, text="Sign up", font=f1, command=self.usr_signup)
+        self.btn_signup=tk.Button(self, text="Sign up", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side=RIGHT, padx=10, pady=10)
 
     
@@ -707,6 +705,8 @@ class GamePage(tk.Frame):
         # 頁面功能 (之後可能要融合到Main_onWindows.py)
         # 現在的點就是登入之前會先跳chrome的東西...真的是滿尷尬
         f1=tkFont.Font(size=20, family="標楷體")
+        bet = bet()
+        final_g = bet.get_data()
         if len(final_g)>0:
             for i in range(len(final_g)):
                 self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
@@ -812,5 +812,5 @@ class PersonalPage(tk.Frame):
 
         self.BalanceLbl=tk.Label(self,text="帳戶餘額："+str(Balance), font=f1,bg="lemon chiffon")
         self.BalanceLbl.pack(side=TOP, anchor=CENTER,pady=20)
-app=SportsLottery()
-app.mainloop()
+
+LoginPage()
