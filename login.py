@@ -55,7 +55,10 @@ class LoginPage(tk.Tk):
         password=self.entry_usr_pwd.get()
         for i in range(len(userinformation)):
             if username == userinformation[i][0]:
-                check += 1  "check是什麼啊...qq"
+                check += 1  
+                """
+                check是什麼啊...qq
+                """
                 user_password = userinformation[i][1]
         # 帳號存在
         # 輸入密碼並檢查密碼是否正確
@@ -63,9 +66,10 @@ class LoginPage(tk.Tk):
             # 檢查密碼是否正確
             if password == user_password:
                 # 這行危險
-                app=self.SportsLottery()
-                app.mainloop()
-                self.destroy()
+                # app=self.SportsLottery()
+                # app.mainloop()
+                # self.destroy()
+                tk.messagebox.showinfo("Info", "這邊應該要跑sportslottery的主頁面ㄌ但是...")
             else:
                 tk.messagebox.showwarning("Warning", "密碼錯誤")
                 self.entry_usr_name.delete(0, "end")
