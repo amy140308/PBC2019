@@ -47,13 +47,69 @@ class LoginPage(tk.Frame):
         self.btn_login.pack(side=RIGHT, padx=10, pady=10)
         self.btn_signup=tk.Button(self.canvas, text="Sign up", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side=RIGHT, padx=10, pady=10)
-    def login(self):
-        app=self.SportsLottery()
-        app.mainloop()
-        self.destroy()
 
+    def login(self):
+        check = 0
+        user_password = 0
+        # 讀取csv檔中的使用者資料至list
+        userinformation = []
+        with open("userInformation.csv", newline = '') as f:
+            rows = csv.reader(f)
+            for row in rows:
+                userinformation.append(row)
+        # 檢查是否有此帳號
+        username=self.entry_usr_name.get()
+        for i in range(len(userinformation)):
+            if username == userinformation[i][0]:
+                check += 1
+                user_password = userinformation[i][1]
+        # 帳號存在
+        # 輸入密碼並檢查密碼是否正確
+        if check > 0:
+            # 輸入密碼
+            password=self.entry_usr_pwd.get()
+            # 檢查密碼是否正確
+            if password == user_password:
+                self.destroy()
+                app=self.SportsLottery()
+                app.mainloop()
+            else:
+                tk.messagebox.showwarning("Warning", "密碼錯誤")
+                password=self.entry_usr_pwd.get()
+        # 如果沒有此帳號跳出提示訊息
+        else:
+            tk.messagebox.showwarning("Warning", "查無此帳號")
+    
     def usr_signup(self):
-        pass
+        # 讀取csv檔中的使用者資料至list
+        userinformation = []
+        with open("userInformation.csv", newline = '') as f:
+            rows = csv.reader(f)
+            for row in rows:
+                userinformation.append(row)
+        # 檢查ID使否重複
+        # ID重複跳出提示訊息
+        check=0
+        username=self.entry_usr_name.get()
+        for i in range(len(userinformation)):
+            if username == userinformation[i][0]:
+                check+=1
+                username=self.entry_usr_name.get()     
+        if check==0:
+            # 輸入密碼
+            password=self.entry_usr_pwd.get()
+            # 成立登入時間
+            login_time = datetime.datetime.today()
+            # 初始帳戶有10000元
+            start_money = 10000
+            # 使用者資料建檔(寫入csv檔)
+            with open("userInformation.csv", "a+", newline='') as f:
+                writer=csv.writer(f)
+                writer.writerow([username, password, start_money, login_time])
+                f.close()
+            self.destroy()
+        else:
+            tk.messagebox.showwarning("Warning", "使用者名稱重複")
 
     
     class SportsLottery(tk.Frame):
