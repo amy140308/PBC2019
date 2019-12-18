@@ -41,7 +41,7 @@ class LoginPage(tk.Tk):
         check = 0
         user_password = 0
         # 讀取csv檔中的使用者資料至list
-        filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+        # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
         userinformation = []
         try:
             with open("userInformation.csv", "r", newline = '') as f:
@@ -55,7 +55,7 @@ class LoginPage(tk.Tk):
         password=self.entry_usr_pwd.get()
         for i in range(len(userinformation)):
             if username == userinformation[i][0]:
-                check += 1
+                check += 1  "check是什麼啊...qq"
                 user_password = userinformation[i][1]
         # 帳號存在
         # 輸入密碼並檢查密碼是否正確
@@ -68,7 +68,8 @@ class LoginPage(tk.Tk):
                 self.destroy()
             else:
                 tk.messagebox.showwarning("Warning", "密碼錯誤")
-                password=self.entry_usr_pwd.get()
+                self.entry_usr_name.delete(0, "end")
+                self.entry_usr_pwd.delete(0, "end")
         # 如果沒有此帳號跳出提示訊息
         else:
             tk.messagebox.showwarning("Warning", "查無此帳號")
@@ -77,7 +78,7 @@ class LoginPage(tk.Tk):
         # 讀取csv檔中的使用者資料至list
         try:
             # r必須打開已有的文件
-            filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+            # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             userinformation = []
             with open("userInformation.csv", "r", newline = '') as f:
                 rows = csv.reader(f)
@@ -103,7 +104,7 @@ class LoginPage(tk.Tk):
             # 初始帳戶有10000元
             start_money = 10000
             # 使用者資料建檔(寫入csv檔)
-            filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+            # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             with open("userInformation.csv", "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
