@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 class Team:
     def __init__(self, city_name):  # 用字典連動網址，用Chrome打開網站取得原始碼
+        # 台灣版網站
         team_url = {"波士頓塞爾蒂克": "https://tw.global.nba.com/teams/#!/celtics", 
                 "芝加哥公牛": "https://tw.global.nba.com/teams/#!/bulls", 
                 "亞特蘭大老鷹": "https://tw.global.nba.com/teams/#!/hawks", 
@@ -37,14 +38,56 @@ class Team:
                 "聖安東尼奧馬刺": "https://tw.global.nba.com/teams/#!/spurs"}
         url = team_url[city_name]
         
+        # 美國版網站，取隊伍勝率
+        team_us_url = {"波士頓塞爾蒂克": "https://www.nba.com/teams/celtics",
+                "芝加哥公牛": "https://www.nba.com/teams/bulls",
+                "亞特蘭大老鷹": "https://www.nba.com/teams/hawks",
+                "布魯克林籃網": "https://www.nba.com/teams/nets",
+                "克里夫蘭騎士": "https://www.nba.com/teams/cavaliers",
+                "夏洛特黃蜂": "https://www.nba.com/teams/hornets",
+                "紐約尼克": "https://www.nba.com/teams/knicks",
+                "底特律活塞": "https://www.nba.com/teams/pistons",
+                "邁阿密熱火": "https://www.nba.com/teams/heat",
+                "費城76人": "https://www.nba.com/teams/sixers",
+                "印第安納溜馬": "https://www.nba.com/teams/pacers",
+                "奧蘭多魔術": "https://www.nba.com/teams/magic",
+                "多倫多暴龍": "https://www.nba.com/teams/raptors",
+                "密爾瓦基公鹿": "https://www.nba.com/teams/bucks",
+                "華盛頓巫師": "https://www.nba.com/teams/wizards",
+                "丹佛金塊": "https://www.nba.com/teams/nuggets",
+                "金州勇士": "https://www.nba.com/teams/warriors",
+                "達拉斯獨行俠": "https://www.nba.com/teams/mavericks",
+                "明尼蘇達灰狼": "https://www.nba.com/teams/timberwolves",
+                "洛杉磯快艇": "https://www.nba.com/teams/clippers",
+                "休士頓火箭": "https://www.nba.com/teams/rockets",
+                "奧克拉荷馬城雷霆": "https://www.nba.com/teams/thunder",
+                "洛杉磯湖人": "https://www.nba.com/teams/lakers",
+                "曼菲斯灰熊": "https://www.nba.com/teams/grizzlies",
+                "波特蘭拓荒者": "https://www.nba.com/teams/blazers",
+                "鳳凰城太陽": "https://www.nba.com/teams/suns",
+                "紐奧良鵜鶘": "https://www.nba.com/teams/pelicans",
+                "猶他爵士": "https://www.nba.com/teams/jazz",
+                "沙加緬度國王": "https://www.nba.com/teams/kings",
+                "聖安東尼奧馬刺": "https://www.nba.com/teams/spurs"}
+        url_us = team_us_url[city_name]
+
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
+        
+        # 台灣網站
         driver = webdriver.Chrome(executable_path = '/Users/amy1226/Downloads/chromedriver', options=chrome_options)
         driver.get(url)
         html = driver.page_source
         driver.close()
         self.soup = BeautifulSoup(html, 'html.parser')
+
+        # 美國官網
+        driver = webdriver.Chrome(executable_path = '/Users/amy1226/Downloads/chromedriver', options=chrome_options)
+        driver.get(url_us)
+        html_us = driver.page_source
+        driver.close()
+        self.soup_us = BeautifulSoup(html_us, 'html.parser')
 
         # 每個隊伍包含基本資料、球員資料、賽程
         self.info = [city_name]
@@ -83,15 +126,23 @@ class Team:
             EW = str(self.soup.find_all('a', attrs = attr))
             information.append(self.clear("\">", "</", EW))
 
-        #排名
+        # 排名
         attr = {'class': 'conference-ranking'}
         rank = str(self.soup.find_all('p', attrs = attr))
         information.append(self.clear("名#", "\'>", rank))
+        
+        # 轉成適當的格式放入list
         for i in range(len(information)):
             try:
                 self.info.append(information[i][0])
             except:
                 self.info.append("西區聯盟")
+                    
+        # 勝率
+        attr = {'class': 'team_stat percentage'}
+        wp = self.soup_us.find_all('div', attrs = attr)
+        wp = self.clear("> ", " <", str(wp))
+        self.info.append(wp[0])
 
 
     def get_player(self): # 球員資料
@@ -122,11 +173,14 @@ class Team:
                     img['src'] = "https:" + str(img['src'])
                     photo.append(img['src'])
         members.append(photo)
-        
+
         # 依照名、姓、位置、照片網址順序存入
         for i in range(5):
             for j in range(4):
-                self.player[i][j] = members[j][i]
+                try:
+                    self.player[i][j] = members[j][i]
+                except:  # 避免網頁缺少部分資料造成錯誤
+                    self.player[i][j] = "No Exist"
 
     def get_game(self): # 賽程資訊
         
@@ -194,9 +248,7 @@ class Team:
                         list.append(j.get_text())
                     self.game[num][2] = list[2]
                     self.game[num][3] = list[3]
-
                     num += 1
-
 
 team = Team(input())  # 輸入單一隊伍全名（中間不加空格）
 
@@ -207,3 +259,4 @@ team.get_game()
 print(team.info)
 print(team.player)
 print(team.game)
+
