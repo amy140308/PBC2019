@@ -4,18 +4,16 @@ from bs4 import BeautifulSoup
 import csv
 import time as t
 import datetime
-
+# 不會跳瀏覽器
 class history():
     '''
     抓2019/12/01以後的歷史比分紀錄
     如果單純建構的話chrome會被打開且不會被關閉
-
     必須使用
     def update() 不用input
     沒有return 會更新檔案到上次紀錄的地方 或是建立新檔案追溯到2019/12/1
     csv格式：日期, 時間, 客隊, 主隊, 客隊分數, 主隊分數, 場地
     更新完之後chrome會被關閉
-
     def get_date(date)
     input: date格式須為%Y-%m-%d
     return: 會把選取的日期的資料抓出來, 一場比賽一個list
@@ -26,7 +24,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome(executable_path = '/Users/joneschou/Downloads/chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
 
     def update(self):
@@ -55,12 +53,13 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath = '/Users/joneschou/Downloads/data.csv'
-                wf = open(file=filepath, mode="a+", encoding="utf-8")
+                filepath = 'data.csv'
+                wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
                 rf = open(file=filepath, mode="r", encoding="utf-8")
                 reader = csv.reader(rf)
                 
+                #print(reader)
                 exist = False  # 看這個日期的比賽資訊是不是已經抓過了
                 for row in reader:
                     if row[0] == d.strftime('%Y-%m-%d'):
@@ -105,7 +104,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = '/Users/joneschou/Downloads/data.csv'
+        filepath = 'data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
         
@@ -118,5 +117,5 @@ class history():
 # 以下為試class的功能
 history = history()
 history.update()
-final = history.get_data('2019-12-06')
-print(final)
+final_h = history.get_data('2019-12-16')
+print(final_h)
