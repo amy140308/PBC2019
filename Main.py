@@ -327,7 +327,7 @@ class history():
 
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
-   
+    
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.geometry("1000x1000")
@@ -339,7 +339,7 @@ class SportsLottery(tk.Tk):
         
         # container中，堆疊frames，跳轉頁面用
         container = tk.Frame(self, width=500, height=700)
-        container.pack(side=TOP, fill=BOTH, expand=TRUE)
+        container.pack(side="top", fill="both", expand="true")
         container.grid_rowconfigure(1, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
@@ -403,7 +403,7 @@ class LoginPage(tk.Tk):
         # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
         userinformation = []
         try:
-            with open("userInformation.csv", "r", newline = '') as f:
+            with open("C:\\co-work\\userInformation.csv", "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -424,7 +424,7 @@ class LoginPage(tk.Tk):
                 # 想問這裏
                 app2=SportsLottery()
                 app2.mainloop()
-                self.destroy()
+                #　self.destroy()
             else:
                 tk.messagebox.showwarning("Warning", "密碼錯誤")
                 self.entry_usr_name.delete(0, "end")
@@ -464,13 +464,15 @@ class LoginPage(tk.Tk):
             start_money = 10000
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
-            with open("userInformation.csv", "a+", newline='') as f:
+            # "C:\\co-work\\userInformation.csv"
+            with open("C:\\co-work\\userInformation.csv", "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
             self.entry_usr_name.delete(0, "end")
             self.entry_usr_pwd.delete(0,"end")
             tk.messagebox.showinfo("Info", "User successfully registered.\nPlease log in.")
+
 # NewsPage新聞頁
 class NewsPage(tk.Frame):
     
@@ -481,17 +483,17 @@ class NewsPage(tk.Frame):
         # self.pack(side=BOTTOM, expand=TRUE)
         # welcome page
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-        self.F1.pack(side=TOP, fill=BOTH,anchor=N)
+        self.F1.pack(side="top", fill="both",anchor="n")
         self.F2=tk.Frame(self,bg="sienna4",width=500, height=700)
-        self.F2.pack(side=TOP, fill=BOTH, expand=TRUE)
+        self.F2.pack(side="top", fill="both", expand="TRUE")
         self.FN=tk.Frame(self.F2,bg="lemon chiffon",width=250, height=700)
-        self.FN.pack(side=LEFT, anchor=W,fill=BOTH, expand=TRUE)
+        self.FN.pack(side="left", anchor="w",fill="both", expand="TRUE")
         self.FW=tk.Frame(self.F2, bg="floral white", width=300, height=700)
-        self.FW.pack(side=LEFT,fill=BOTH, expand=TRUE)
+        self.FW.pack(side="left",fill="both", expand="TRUE")
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn.pack(side="right", pady=30, anchor="n")
             btn_txt=btn.cget("text")
             if btn_txt == "球隊介紹":
                 btn.configure(command=lambda: controller.show_frame("TeamPage"))
@@ -507,7 +509,7 @@ class NewsPage(tk.Frame):
 
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.FN, text="最新消息", font=f0, bg="lemon chiffon")
-        self.TitleLbl.pack(side=TOP)
+        self.TitleLbl.pack(side="top")
         for one_news in final_n:
             title=one_news[0]
             time=one_news[1]
@@ -527,7 +529,7 @@ class NewsPage(tk.Frame):
             self.img=ImageTk.PhotoImage(self.img)
             self.picLabel = tk.Label(self.FN,image=self.img)
             self.picLabel.image = self.img
-            self.picLabel.pack(side=TOP, pady=10, padx=10, anchor=W) 
+            self.picLabel.pack(side="top", pady=10, padx=10, anchor="w") 
             
             f1=tkFont.Font(size=20, family="標楷體")
             f2=tkFont.Font(size=10, family="微軟正黑體")
@@ -538,11 +540,11 @@ class NewsPage(tk.Frame):
             self.btn.bind("<Button-1>", callback)
             self.btnsmall.bind("<Button-1>", callback)
             self.picLabel.bind("<Button-1>", callback)
-            self.btn.pack(side=TOP, pady=2,padx=10, anchor=W) # 傷兵：anchor=E
-            self.btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W) # 傷兵：anchor=E
+            self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
+            self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.FW, text="傷兵資訊", font=f0, bg="floral white")
-        self.TitleLbl.pack(side=TOP)
+        self.TitleLbl.pack(side="top")
         
         for one_wounded in final_w:
             title=one_wounded[0]
@@ -563,7 +565,7 @@ class NewsPage(tk.Frame):
             self.img=ImageTk.PhotoImage(self.img)
             self.picLabel = tk.Label(self.FW,image=self.img)
             self.picLabel.image = self.img
-            self.picLabel.pack(side=TOP, pady=10, padx=10, anchor=W) 
+            self.picLabel.pack(side="top", pady=10, padx=10, anchor="w") 
             
             f1=tkFont.Font(size=20, family="標楷體")
             f2=tkFont.Font(size=10, family="微軟正黑體")
@@ -574,8 +576,8 @@ class NewsPage(tk.Frame):
             self.btn.bind("<Button-1>", callback)
             self.btnsmall.bind("<Button-1>", callback)
             self.picLabel.bind("<Button-1>", callback)
-            self.btn.pack(side=TOP, pady=2,padx=10, anchor=W) # 傷兵：anchor=E
-            self.btnsmall.pack(side=TOP,pady=2,padx=10, anchor=W) # 傷兵：anchor=E
+            self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
+            self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
 
 
 
@@ -588,12 +590,12 @@ class TeamPage(tk.Frame):
 
     def createWidgets(self):
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-        self.F1.pack(side=TOP, fill=BOTH)
+        self.F1.pack(side="top", fill="both")
         
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
             self.btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            self.btn.pack(side=RIGHT, pady=30, anchor=N)
+            self.btn.pack(side="right", pady=30, anchor="n")
             btn_txt=self.btn.cget("text")
             if btn_txt == "球隊介紹":
                 self.btn.configure(command=lambda: self.controller.show_frame("TeamPage"))
@@ -609,11 +611,11 @@ class TeamPage(tk.Frame):
 
 
         self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-        self.F2_canvas.pack(side = TOP,fill = BOTH, expand = TRUE)
+        self.F2_canvas.pack(side ="top",fill = "both", expand = "TRUE")
         # 要建立frame，透過create_widget放在canvas上面才能滾動
         self.frame = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 1200)
-        self.frame.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
-        self.F2_canvas.create_window((200,200), window = self.frame, anchor = NW) 
+        self.frame.pack(side = "bottom", fill = "both" ,expand="TRUE")
+        self.F2_canvas.create_window((200,200), window = self.frame, anchor = "nw") 
         # 滾動條
         gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
         gameBar.pack(side = "right", fill = "y")
@@ -621,7 +623,7 @@ class TeamPage(tk.Frame):
 
         # 放賽事
         f0=tkFont.Font(family="標楷體", size=20)
-        self.TitleLbl=tk.Label(self.frame, text="球隊介紹", font=f0 ,bg="lemon chiffon").pack(side = TOP)
+        self.TitleLbl=tk.Label(self.frame, text="球隊介紹", font=f0 ,bg="lemon chiffon").pack(side = "top")
         
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
@@ -665,10 +667,10 @@ class TeamPage(tk.Frame):
             if i % 5 == 0:
                 self.team_frame = tk.Frame(self.frame, bg = "wheat2",width = 1000, height = 120)
                 Frame_List.append(self.team_frame)
-                self.team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = N, fill = "x")  
+                self.team_frame.pack(side = "top", pady = 10, padx = 20, anchor = "n", fill = "x")  
             # 
             self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM, command = self.click_team_button)
-            self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
+            self.button_logo.pack(side = "left", pady = 10, padx = 20, anchor = "nw", expand = True)
         def click_team_button(self):
             # window=Toplevel()
             team_name=self.cget("text")
@@ -680,7 +682,7 @@ class TeamPage(tk.Frame):
         window.title("")
         window.geometry("300x500")
         F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
-        F10.pack(side = TOP, fill = BOTH) 
+        F10.pack(side = "top", fill = "both") 
 
 
 class GamePage(tk.Frame):
@@ -692,13 +694,13 @@ class GamePage(tk.Frame):
         以下是宗勳做成def create_common_frames的部分，但用mac有些問題，暫且先不寫成def看看
         """
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-        self.F1.pack(side=TOP, fill=BOTH,anchor=N)
+        self.F1.pack(side="top", fill="both",anchor="n")
         self.F2=tk.Frame(self,bg="lemon chiffon",width=500, height=700)
-        self.F2.pack(side=TOP, fill=BOTH, expand=TRUE)
+        self.F2.pack(side="top", fill="both", expand=True)
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn.pack(side="right", pady=30, anchor="n")
             btn_txt=btn.cget("text")
             if btn_txt == "球隊介紹":
                 btn.configure(command=lambda: controller.show_frame("TeamPage"))
@@ -723,11 +725,11 @@ class GamePage(tk.Frame):
                 team2=final_g[i][2]
                 arena=final_g[i][3]
                 self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
-                self.btn.pack(anchor=N, side=TOP, pady=10, padx=5)     
+                self.btn.pack(anchor="n", side="top", pady=10, padx=5)     
         else:
 
             self.Label=tk.Label(text="今日無賽事", font=f1)
-            self.Label.pack(anchor=N, side=TOP, pady=20)
+            self.Label.pack(anchor="n", side="top", pady=20)
         
 
             
@@ -738,11 +740,11 @@ class HistoryPage(tk.Frame):
         self.controller = controller
         self.configure(width=500, height=700, bg = "lemon chiffon")
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-        self.F1.pack(side=TOP, fill=BOTH,anchor=N)
+        self.F1.pack(side="top", fill="both",anchor="n")
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn.pack(side="right", pady=30, anchor="n")
             btn_txt=btn.cget("text")
             if btn_txt == "球隊介紹":
                 btn.configure(command=lambda: controller.show_frame("TeamPage"))
@@ -757,12 +759,12 @@ class HistoryPage(tk.Frame):
         
         # scrollbar
         self.F2_canvas = tk.Canvas(self, width = 500, height = 800, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
-        self.F2_canvas.pack(side = TOP,fill = BOTH, expand = TRUE)
+        self.F2_canvas.pack(side = "top",fill = "both", expand = True)
         
         # 要建立frame，透過create_widget放在canvas上面才能滾動
         self.F2 = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 800, height = 1200)
-        self.F2.pack(side = BOTTOM, fill = BOTH ,expand=TRUE)
-        self.F2_canvas.create_window((200,200), window = self.F2, anchor = NW) 
+        self.F2.pack(side = "bottom", fill = "both" ,expand = True)
+        self.F2_canvas.create_window((200,200), window = self.F2, anchor = "nw") 
 
         # 滾動條
         self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
@@ -780,12 +782,12 @@ class HistoryPage(tk.Frame):
         f1=tkFont.Font(size=20, family="標楷體")
         f2=tkFont.Font(size=15, family="Didot")
         self.Title=tk.Label(self.F2, text="昨日賽事"+"("+dstr+")", font=f1, bg="lemon chiffon")
-        self.Title.pack(side=LEFT, anchor="nw")
+        self.Title.pack(side="left", anchor="nw")
         
         for i in range(len(final_h)):
             self.lbl=tk.Label(self.F2, width=40, text=str(i+1)+"\n"+"時間："+final_h[i][1]+"\n"+"客隊："+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊："+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場："+final_h[i][6])
             self.lbl.configure(font=f2, bg="lemon chiffon", justify=CENTER)
-            self.lbl.pack(side=TOP, pady=5, anchor=CENTER)
+            self.lbl.pack(side="top", pady=5, anchor="center")
         
     # def click_game_button(self):
 class PersonalPage(tk.Frame):
@@ -794,12 +796,12 @@ class PersonalPage(tk.Frame):
         self.controller = controller
         self.configure(width=500, height=700, bg="lemon chiffon")
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-        self.F1.pack(side=TOP, fill=BOTH)
+        self.F1.pack(side="top", fill="both")
         
         functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
         for function in reversed(functions):
             btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side=RIGHT, pady=30, anchor=N)
+            btn.pack(side="right", pady=30, anchor="n")
             btn_txt=btn.cget("text")
             if btn_txt == "球隊介紹":
                 btn.configure(command=lambda: controller.show_frame("TeamPage"))
@@ -819,7 +821,7 @@ class PersonalPage(tk.Frame):
         f1=tkFont.Font(family="Didot", size=30)
 
         self.BalanceLbl=tk.Label(self,text="帳戶餘額："+str(Balance), font=f1,bg="lemon chiffon")
-        self.BalanceLbl.pack(side=TOP, anchor=CENTER,pady=20)
+        self.BalanceLbl.pack(side="top", anchor="center",pady=20)
 
 app=LoginPage()
 app.mainloop()
