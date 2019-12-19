@@ -139,40 +139,29 @@ class Team:
             self.game[num][0] = i
             num += 1
         
-        # 下一場對手logo
-        attr = {'class': 'results'}
-        vs = self.soup.find_all('td', attrs = attr)
+        # 對手logo
+        attr = {'data-ng-controller': 'TeamScheduleSnapshotController'}
+        vs = self.soup.find_all('div', attrs = attr)
         attr = {'class': 'team-img'}
-        vslogo = vs[0].find('img', attrs = attr)
-        self.game[0][1] = "https://tw.global.nba.com" + str(vslogo.get('src'))
-
-        # 過去對手logo
-        attr = {'data-ng-repeat': 'game in previousGames | orderBy : \'-profile.utcMillis\''}
-        vs = self.soup.find_all('tr', attrs = attr)
+        vslogo = vs[0].find_all('img', attrs = attr)
         photo = []
-        image = []
-        for i in vs:
-            imgs = i.find_all('img')
-            for img in imgs:
-                photo.append("https://tw.global.nba.com" + str(img.get('src')))
-
+        for i in vslogo:
+            photo.append("https://tw.global.nba.com" + str(i.get('src')))
+        
         index = []
-        count = 0
-        for i in range(len(photo)-1):
-            count = 0
-            for j in range(i+1,len(photo)):
+        for i in range(11):
+            count = 1
+            for j in range(i+1, 12):
                 if photo[i] == photo[j]:
+                    count += 1
                     index.append(i)
                     index.append(j)
-                    count += 1
-            if count == 4:
+            if count == 6:
                 break
-        
-        num = 1
-        for i in range(10):
-            if i in index:
-                continue
-            else:
+        index = set(index)
+        num = 0
+        for i in range(11):
+            if i not in index:
                 self.game[num][1] = photo[i]
                 num += 1
 
@@ -209,13 +198,12 @@ class Team:
                     num += 1
 
 
-team = Team(input())
+team = Team(input())  # 輸入單一隊伍全名（中間不加空格）
 
 team.get_info()
-print(team.info)
-
 team.get_player()
-print(team.player)
-
 team.get_game()
+
+print(team.info)
+print(team.player)
 print(team.game)
