@@ -169,7 +169,7 @@ class GamePage(tk.Frame):
             """
             
             gametime = gamebet()
-            betlist = gametime.get_betting(final_g)
+            betlist = gametime.get_bettingA(final_g)
             
             
             
