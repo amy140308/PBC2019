@@ -347,7 +347,7 @@ class SportsLottery():
         self.LoginPage.configure(bg="misty rose", height=300, width=300)
         # container中，堆疊frames，跳轉頁面用
         container = tk.Frame(self.Main, width=500, height=700)
-        container.pack(side="top", fill="both", expand="true")
+        container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(1, weight=1)
         container.grid_columnconfigure(0, weight=1)
 

@@ -291,11 +291,12 @@ class Team:
 
 class Temp(tk.Tk):
     
-    def __init__(self):
+    def __init__(self, team_name):
         tk.Tk.__init__(self)
         self.geometry("500x500")
         self.title("運彩模擬器")
         self.configure(bg="wheat2")
+        self.team_name=team_name
        
         # window = tk.Tk(self)
         # window.geometry("500x500")
@@ -318,7 +319,7 @@ class Temp(tk.Tk):
         """
         疑問：點按鈕才爬蟲這按鈕會啟動很久...
         """
-        team = Team("華盛頓巫師")
+        team=Team(team_name)
         team.get_info()
         team.get_player() 
         team.get_game()
@@ -327,7 +328,7 @@ class Temp(tk.Tk):
         self.Label.configure(text="隊伍名稱："+team.info[0]+"\n"+"教練："+team.info[1]+"\n"+ "分區聯盟："+team.info[2]+"\n"+"分區排名："+team.info[3]+"\n"+"勝率："+team.info[4]+"\n"+"\n")
        
         # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
-        self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("標楷體", 15), bg="wheat2")
+        self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("標楷體", 15), bg="peach puff")
         self.PlayerLabel.pack(side= "top", pady=10)
         for player in team.player:
             image_url=player[3]
@@ -351,17 +352,21 @@ class Temp(tk.Tk):
             # 頭像連結（player[3]）
             
 
-        self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="wheat2")
+        self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
         self.FGLabel.pack(side="top", pady=5)
         self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
         self.FG.pack(side="top", pady=5)
-        self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="wheat2")
+        self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="peach puff")
         self.GameLabel.pack(side="top", pady=5)
         for game in team.game[1:-2]:
-            print(game)
+            # print(game)
             self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
-            self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+game[1]+game[3])
+            if int(game[2])>int(game[3]):
+                result="勝"
+            else:
+                result="敗"
+            self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+result+"\n"+game[1]+" "+game[3])
             self.GInfoLabel.pack(side= "top", pady=5)
         
-Temp=Temp()
+Temp=Temp("丹佛金塊")
 Temp.mainloop()
