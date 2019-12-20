@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
-
+import tkinter as tk
 
 class Team:
     def __init__(self, city_name):  # 用字典連動網址，用Chrome打開網站取得原始碼
@@ -257,13 +257,65 @@ class Team:
         avg = sum / 5
         self.game.append(avg)
 
-team = Team(input())  # 輸入單一隊伍全名（中間不加空格）
 
-team.get_info()
-team.get_player() 
-team.get_game()
+class Temp(tk.Tk):
+    
+    def __init__(self):
+        tk.Tk.__init__(self)
+        self.geometry("300x300")
+        self.title("運彩模擬器")
+       
+        # window = tk.Tk(self)
+        # window.geometry("500x500")
+        # 以下是有container的scrollbar寫法
+        self.container = tk.Frame(self)
+        self.teamCanv = tk.Canvas(self.container, width=500, height = 500, scrollregion=(0,0,500,1000))
+        self.teamCanv.pack(side = "left", fill = "both", expand=True)
+        teamBar = tk.Scrollbar(self, orient = "vertical", command = self.teamCanv.yview)
+        teamBar.pack(side = "right", fill = "y")
+       
+        self.scrollableF=tk.Frame(self.teamCanv, bg = "wheat2")
+        self.scrollableF.pack()
+        self.teamCanv.configure(yscrollcommand = teamBar.set)
+        self.scrollableF.bind("<Configure>",lambda e: self.teamCanv.configure(scrollregion=self.teamCanv.bbox("all")))
+        self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="nw")
+        self.container.pack()
+        
+        # 隊伍資訊
+        """
+        疑問：點按鈕才爬蟲這按鈕會啟動很久...
+        """
+        team = Team("華盛頓巫師")
+        team.get_info()
+        team.get_player() 
+        team.get_game()
+        self.text1= tk.Text(self.scrollableF, height=40)
+        self.text1.pack(side= "top")
+        self.text1.insert(1.0, "隊伍名稱："+team.info[0]+"\n")
+        self.text1.insert(tk.END, "教練："+team.info[1]+"\n")
+        self.text1.insert(tk.END, "分區聯盟："+team.info[2]+"\n")
+        self.text1.insert(tk.END, "分區排名："+team.info[3]+"\n")
+        self.text1.insert(tk.END, "勝率："+team.info[4]+"\n"+"\n")
+        # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
+        self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("Verdana", 15), bg="wheat2")
+        self.PlayerLabel.pack(side= "top")
+        for player in team.player:
+            self.PInfoLabel= tk.Label(self.scrollableF, height=40, bg="wheat2")
+            self.PInfoLabel.pack(side= "top")
+            self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
+            # 頭像連結（player[3]）
+            # 比賽日期、對手logo連結、自己的分數、對手的分數、近五場平均得分
 
-print(team.info)  # 隊伍名稱、教練名字、分區聯盟、分區排名、勝率
-print(team.player)  # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
-print(team.game)  # 比賽日期、對手logo連結、自己的分數、對手的分數（第一筆資料是下一場要比的，比分的位置是比賽時間）、近五場平均得分
+        self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("Verdana", 15), bg="wheat2")
+        self.FGLabel.pack(side="top")
+        self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs. 對手（待補）")
 
+        self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("Verdana", 15), bg="wheat2")
+        self.GameLabel.pack(side="top")
+        for game in team.game[1:-2]:
+            print(game)
+            self.GInfoLabel= tk.Label(self.scrollableF, height=40, bg="wheat2")
+            self.GInfoLabel.configure(text=str(game[0])+" "+str(game[2])+"\n"+"對手（待補）"+str(game[3]))
+            self.GInfoLabel.pack(side= "top")
+Temp=Temp()
+Temp.mainloop()

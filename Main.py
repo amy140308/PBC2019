@@ -319,12 +319,6 @@ class history():
 # history = history()
 # history.update()
 
-
-
-
-
-
-
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
     
@@ -362,7 +356,7 @@ class SportsLottery(tk.Tk):
         '''Show a frame for the given page name（跳轉頁面）'''
         frame = self.frames[page_name]
         frame.tkraise()
-
+#  不能把login page寫成tk
 class LoginPage(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
@@ -421,7 +415,7 @@ class LoginPage(tk.Tk):
         if check > 0:
             # 檢查密碼是否正確
             if password == user_password:
-                # 想問這裏
+                # 想問這裏(不能這樣跑)
                 app2=SportsLottery()
                 app2.mainloop()
                 #　self.destroy()
@@ -579,8 +573,6 @@ class NewsPage(tk.Frame):
             self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
             self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
 
-
-
 class TeamPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -608,8 +600,6 @@ class TeamPage(tk.Frame):
             elif btn_txt == "歷史資料":
                 self.btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
      
-
-
         self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
         self.F2_canvas.pack(side ="top",fill = "both", expand = "TRUE")
         # 要建立frame，透過create_widget放在canvas上面才能滾動
@@ -657,15 +647,69 @@ class TeamPage(tk.Frame):
         
         # 每五個button排在一個列裡面
         Frame_List = []
-        
-        
         # 點按鈕為各隊伍資訊
         def click_team_button(team_name):
             window = Toplevel(self)
             window.title(team_name)
-            window.geometry("500x300")
-            F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
-            F10.pack(side = TOP, fill = BOTH) 
+            window.geometry("500x500")
+            # 以下是有container的scrollbar寫法
+            container = tk.Frame(window)
+            teamCanv = tk.Canvas(container, width=500, height = 500, scrollregion=(0,0,500,1000)
+            teamBar = tk.Scrollbar(window, orient = "vertical", command = teamCanv.yview)
+            scrollableF=tk.Frame(teamCanv, bg = "wheat2")
+            teamCanv.configure(yscrollcommand = teamBar.set)
+            scrollableF.bind("<Configure>",lambda e: teamCanv.configure(scrollregion=teamCanv.bbox("all")))
+            teamCanv.create_window((0, 0), window=scrollableF, anchor="nw")
+            container.pack()
+            teamCanv.pack(side = "left", fill = "both", expand=True)
+            teamBar.pack(side = "right", fill = "y")
+            # 隊伍資訊
+            """
+            疑問：點按鈕才爬蟲這按鈕會啟動很久...
+            """
+            team = Team(team_name)
+            
+            team.get_info()
+            team.get_player() 
+            team.get_game()
+            self.text1= tk.Text(self.scrollableF, height=40)
+            self.text1.pack(side= "top")
+            self.text1.insert(1.0, "隊伍名稱："+team.info[0]+"\n")
+            self.text1.insert(tk.END, "教練："+team.info[1]+"\n")
+            self.text1.insert(tk.END, "分區聯盟："team.info[2]+"\n")
+            self.text1.insert(tk.END, "分區排名："team.info[3]+"\n")
+            self.text1.insert(tk.END, "勝率："team.info[4]+"\n"+"\n")
+            # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
+            self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("Verdana", 15), bg="wheat2")
+            self.PlayerLabel.pack(side= "top")
+            for player in team.player:
+                self.PInfoLabel= tk.Label(self.scrollableF, height=40, bg="wheat2")
+                self.PInfoLabel.pack(side= "top")
+                self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置"+player[2])
+            # 頭像連結（player[3]）
+            # 比賽日期、對手logo連結、自己的分數、對手的分數、近五場平均得分
+
+            self.FGLabel(self.scrollableF, text="下場比賽", font=("Verdana", 15), bg="wheat2")
+            self.FGLabel.pack(side="top")
+            self.FG=(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs. 對手（待補）")
+
+            self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("Verdana", 15), bg="wheat2")
+            self.GameLabel.pack(side="top")
+            for game in team.game[1:]:
+                self.GInfoLabel= tk.Label(self.scrollableF, height=40, bg="wheat2")
+                self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+"對手（待補）"+game[3])
+                self.GInfoLabel.pack(side= "top")
+
+
+
+
+
+
+        
+        def Disabled(self, button):
+            button.configure(state="disabled")
+        def Normalized(self, button):
+            self.button.configure(state="normal")
         
         # for loop建立button
         for i in range(30):
@@ -677,7 +721,6 @@ class TeamPage(tk.Frame):
             self.logo_image = ImageTk.PhotoImage(image = self.logo_image)
             self.Logo_image_list.append(self.logo_image)
         
-        
             # 每五個建立新的Frame
             if i % 5 == 0:
                 self.team_frame = tk.Frame(self.frame, bg = "wheat2",width = 1000, height = 120)
@@ -688,9 +731,13 @@ class TeamPage(tk.Frame):
             self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i], image = self.Logo_image_list[i], compound=BOTTOM)
             
             # click_team_button 這個是打開指令的函數
-            # command就是要執行的動作，lambda代表這個動作會在被按下的時候才執行（一定要加上i=i）
+            # command接執行的動作，lambda代表這個動作會在被按下的時候才執行（一定要加上i=i）
             self.button_logo.configure(command = lambda i=i:click_team_button(self.Team_name_List[i]))
             self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
+            # instance method Disabled前加self?不加？
+            self.button.bind('<Button-1>', lambda:Disabled(self.button))
+            
+
 
 
 class GamePage(tk.Frame):
