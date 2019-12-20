@@ -645,7 +645,7 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
         """
         
-        Frame_List = []
+        
         # 打開隊伍資訊
         self.Team_name_List = ["亞特蘭大老鷹", "布魯克林籃網", "波士頓塞爾蒂克", "夏洛特黄蜂", "芝加哥公牛",
                          "克里夫蘭騎士", "達拉斯獨行俠", "丹佛金塊","底特律活塞", "金州勇士", 
@@ -654,6 +654,20 @@ class TeamPage(tk.Frame):
                          "奧克拉荷馬城雷霆", "奧蘭多魔術", "費城76人","鳳凰城太陽", "波特蘭拓荒者", 
                          "沙加緬度國王","聖安東尼奧馬刺", "多倫多暴龍", "猶他爵士", "華盛頓巫師"] 
         self.Logo_image_list=[]
+        
+        # 每五個button排在一個列裡面
+        Frame_List = []
+        
+        
+        # 點按鈕為各隊伍資訊
+        def click_team_button(team_name):
+            window = Toplevel(self)
+            window.title(team_name)
+            window.geometry("500x300")
+            F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
+            F10.pack(side = TOP, fill = BOTH) 
+        
+        # for loop建立button
         for i in range(30):
             
             # 用image抓取png檔並resize
@@ -663,26 +677,20 @@ class TeamPage(tk.Frame):
             self.logo_image = ImageTk.PhotoImage(image = self.logo_image)
             self.Logo_image_list.append(self.logo_image)
         
+        
             # 每五個建立新的Frame
             if i % 5 == 0:
                 self.team_frame = tk.Frame(self.frame, bg = "wheat2",width = 1000, height = 120)
                 Frame_List.append(self.team_frame)
-                self.team_frame.pack(side = "top", pady = 10, padx = 20, anchor = "n", fill = "x")  
-            # 
-            self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i] , image = self.Logo_image_list[i], compound=BOTTOM, command = self.click_team_button)
-            self.button_logo.pack(side = "left", pady = 10, padx = 20, anchor = "nw", expand = True)
-        def click_team_button(self):
-            # window=Toplevel()
-            team_name=self.cget("text")
-            window.title(team_name)
-        
-    # 點按鈕為各隊伍資訊
-    def click_team_button(self):
-        window = Toplevel(self)
-        window.title("")
-        window.geometry("300x500")
-        F10 = tk.Frame(window, bg = "wheat2", width = 500, height = 300)
-        F10.pack(side = "top", fill = "both") 
+                self.team_frame.pack(side = TOP, pady = 10, padx = 20, anchor = N, fill = "x")  
+            
+            # 建立隊伍button
+            self.button_logo = tk.Button(self.team_frame, text=self.Team_name_List[i], image = self.Logo_image_list[i], compound=BOTTOM)
+            
+            # click_team_button 這個是打開指令的函數
+            # command就是要執行的動作，lambda代表這個動作會在被按下的時候才執行（一定要加上i=i）
+            self.button_logo.configure(command = lambda i=i:click_team_button(self.Team_name_List[i]))
+            self.button_logo.pack(side = LEFT, pady = 10, padx = 20, anchor = NW, expand = True)
 
 
 class GamePage(tk.Frame):
