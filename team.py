@@ -250,13 +250,20 @@ class Team:
                     self.game[num][3] = list[3]
                     num += 1
 
+        # 近五場平均比分
+        sum = 0
+        for i in range(1,6):
+            sum += int(self.game[i][2])
+        avg = sum / 5
+        self.game.append(avg)
+
 team = Team(input())  # 輸入單一隊伍全名（中間不加空格）
 
 team.get_info()
 team.get_player()
 team.get_game()
 
-print(team.info)
-print(team.player)
-print(team.game)
+print(team.info)  # 隊伍名稱、教練名字、分區聯盟、分區排名、勝率
+print(team.player)  # 名、姓氏、位置、頭像連結
+print(team.game)  # 比賽日期、對手logo連結、自己的分數、對手的分數（第一筆資料是下一場要比的，比分的位置是比賽時間）、近五場平均得分
 
