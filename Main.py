@@ -600,7 +600,7 @@ class TeamPage(tk.Frame):
             elif btn_txt == "歷史資料":
                 self.btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
      
-        self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon")  #height調整canvas的長度，要手動調（或寫def）
+        self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon", highlightthickness=0,)  #height調整canvas的長度，要手動調（或寫def）
         self.F2_canvas.pack(side ="top",fill = "both", expand = "TRUE")
         # 要建立frame，透過create_widget放在canvas上面才能滾動
         self.frame = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 1200)

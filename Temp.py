@@ -1,7 +1,19 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
 import tkinter as tk
+import webbrowser
+import tkinter.font as tkFont
+import requests
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
+from PIL import Image, ImageTk
+import io 
+from io import BytesIO
+import ssl
+from selenium import webdriver
+import datetime
+from selenium.webdriver.chrome.options import Options
+import time as t
+import csv
+import tkinter.messagebox 
 
 class Team:
     def __init__(self, city_name):  # 用字典連動網址，用Chrome打開網站取得原始碼
@@ -76,14 +88,14 @@ class Team:
         chrome_options.add_argument('--disable-gpu')  # 規避bug
         
         # 台灣網站
-        driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver", options=chrome_options)
         driver.get(url)
         html = driver.page_source
         driver.close()
         self.soup = BeautifulSoup(html, 'html.parser')
 
         # 美國官網
-        driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver", options=chrome_options)
         driver.get(url_us)
         html_us = driver.page_source
         driver.close()
@@ -109,7 +121,7 @@ class Team:
                 start = end
                 num += 1
         return(keep)
-    
+
     def get_info(self):  # 基本資料
         information = []
         # 教練
@@ -144,7 +156,7 @@ class Team:
         wp = self.clear("> ", " <", str(wp))
         self.info.append(wp[0])
 
-   
+
     def get_player(self): # 球員資料
         keep = [0] * 5
         members = []
@@ -181,7 +193,7 @@ class Team:
                     self.player[i][j] = members[j][i]
                 except:  # 避免網頁缺少部分資料造成錯誤
                     self.player[i][j] = "No Exist"
-    
+
     def get_game(self): # 賽程資訊
         
         # 賽程日期
@@ -193,30 +205,43 @@ class Team:
             self.game[num][0] = i
             num += 1
         
-        # 對手logo
-        attr = {'data-ng-controller': 'TeamScheduleSnapshotController'}
+        # 對手名稱
+        chinesename = {"BOS": "波士頓塞爾蒂克", "CHI": "芝加哥公牛", "ATL": "雅特蘭大老鷹",
+                        "BKN": "布魯克林籃網", "CLE": "克里夫蘭騎士", "CHA": "夏洛特黃蜂",
+                        "NYK": "紐約尼克", "DET": "底特律活塞", "MIA": "邁阿密熱火",
+                        "PHI": "費城76人", "IND": "印第安納溜馬", "ORL": "奧蘭多魔術",
+                        "TOR": "多倫多暴龍", "MIL": "密爾瓦基公鹿", "WAS": "華盛頓巫師",
+                        "DEN": "丹佛金塊", "MIN": "明尼蘇達灰狼", "OKC": "奧克拉荷馬城雷霆",
+                        "POR": "波特蘭拓荒者", "UTA": "猶他爵士", "GSW": "金州勇士",
+                        "LAC": "洛杉磯快艇", "LAL": "洛杉磯湖人", "PHX": "鳳凰城太陽",
+                        "SAC": "沙加緬度國王", "DAL": "達拉斯獨行俠", "HOU": "休士頓火箭",
+                        "MEM":"曼菲斯灰熊", "NOP": "紐奧良鵜鶘", "SAS": "聖安東尼奧馬刺"}
+
+        attr = {'data-ng-controller': 'TeamScheduleSnapshotController'}  # 找出名稱簡寫
         vs = self.soup.find_all('div', attrs = attr)
         attr = {'class': 'team-img'}
-        vslogo = vs[0].find_all('img', attrs = attr)
-        photo = []
-        for i in vslogo:
-            photo.append("https://tw.global.nba.com" + str(i.get('src')))
-        
-        index = []
+        vs = vs[0].find_all('img', attrs = attr)
+        shortname = []
+        for i in vs:
+            shortname.append(self.clear("s/", "_l", str(i)))
+
+        index = []  # 判斷是自己的名字
         for i in range(11):
             count = 1
             for j in range(i+1, 12):
-                if photo[i] == photo[j]:
+                if shortname[i] == shortname[j]:
                     count += 1
                     index.append(i)
                     index.append(j)
             if count == 6:
                 break
         index = set(index)
-        num = 0
-        for i in range(11):
+
+
+        num = 0  # 不是自己的名字就轉成中文存進去
+        for i in range(12):
             if i not in index:
-                self.game[num][1] = photo[i]
+                self.game[num][1] = chinesename[shortname[i][0]]
                 num += 1
 
         # 比賽時間
@@ -258,28 +283,36 @@ class Team:
         self.game.append(avg)
 
 
+
+# 隊伍名稱、教練名字、分區聯盟、分區排名、勝率
+# 名、姓氏、位置、頭像連結（五名先發，一名一個list，包成一個2-d list回傳）
+# 比賽日期、對手名、自己的分數、對手的分數（第一筆資料是下一場要比的，比分的位置是比賽時間）、近五場平均得分
+
+
 class Temp(tk.Tk):
     
     def __init__(self):
         tk.Tk.__init__(self)
-        self.geometry("300x300")
+        self.geometry("500x500")
         self.title("運彩模擬器")
+        self.configure(bg="wheat2")
        
         # window = tk.Tk(self)
         # window.geometry("500x500")
         # 以下是有container的scrollbar寫法
-        self.container = tk.Frame(self)
-        self.teamCanv = tk.Canvas(self.container, width=500, height = 500, scrollregion=(0,0,500,1000))
-        self.teamCanv.pack(side = "left", fill = "both", expand=True)
-        teamBar = tk.Scrollbar(self, orient = "vertical", command = self.teamCanv.yview)
+        self.container = tk.Frame(self, height=500, width=1000)
+        self.container.pack(side="top",fill="both", expand=True)
+        self.teamCanv = tk.Canvas(self.container, width=500, height = 1000, highlightthickness=0, scrollregion=(0,0,500,500), bg="wheat2")
+        self.teamCanv.pack(side = "top", fill = "both", expand=True)
+        teamBar = tk.Scrollbar(self.teamCanv, orient = "vertical", command = self.teamCanv.yview)
         teamBar.pack(side = "right", fill = "y")
        
-        self.scrollableF=tk.Frame(self.teamCanv, bg = "wheat2")
-        self.scrollableF.pack()
+        self.scrollableF=tk.Frame(self.teamCanv, bg = "wheat2", width=1000, height = 500)
+        self.scrollableF.pack(side = "bottom", fill = "both", anchor="center")
         self.teamCanv.configure(yscrollcommand = teamBar.set)
         self.scrollableF.bind("<Configure>",lambda e: self.teamCanv.configure(scrollregion=self.teamCanv.bbox("all")))
-        self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="nw")
-        self.container.pack()
+        self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="n")
+        
         
         # 隊伍資訊
         """
@@ -289,33 +322,46 @@ class Temp(tk.Tk):
         team.get_info()
         team.get_player() 
         team.get_game()
-        self.text1= tk.Text(self.scrollableF, height=40)
-        self.text1.pack(side= "top")
-        self.text1.insert(1.0, "隊伍名稱："+team.info[0]+"\n")
-        self.text1.insert(tk.END, "教練："+team.info[1]+"\n")
-        self.text1.insert(tk.END, "分區聯盟："+team.info[2]+"\n")
-        self.text1.insert(tk.END, "分區排名："+team.info[3]+"\n")
-        self.text1.insert(tk.END, "勝率："+team.info[4]+"\n"+"\n")
+        self.Label= tk.Label(self.scrollableF, bg="wheat2")
+        self.Label.pack(side= "top", anchor="n")
+        self.Label.configure(text="隊伍名稱："+team.info[0]+"\n"+"教練："+team.info[1]+"\n"+ "分區聯盟："+team.info[2]+"\n"+"分區排名："+team.info[3]+"\n"+"勝率："+team.info[4]+"\n"+"\n")
+       
         # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
-        self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("Verdana", 15), bg="wheat2")
-        self.PlayerLabel.pack(side= "top")
+        self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("標楷體", 15), bg="wheat2")
+        self.PlayerLabel.pack(side= "top", pady=10)
         for player in team.player:
-            self.PInfoLabel= tk.Label(self.scrollableF, height=40, bg="wheat2")
-            self.PInfoLabel.pack(side= "top")
+            image_url=player[3]
+            ssl._create_default_https_context = ssl._create_unverified_context
+            try:
+                u = urlopen(image_url)
+                raw_data = u.read()
+                u.close()
+                self.img = Image.open(BytesIO(raw_data))
+                self.img=self.img.resize((130, 95), Image.ANTIALIAS) 
+                self.img=ImageTk.PhotoImage(self.img)
+                self.picLabel = tk.Label(self.scrollableF, image=self.img)
+                self.picLabel.image = self.img
+                self.picLabel.pack(side="top", pady=2, anchor="e") 
+            except:
+                self.picLabel = tk.Label(self.scrollableF, text="No image")
+                self.picLabel.pack(side="top", pady=2, anchor="e") 
+            self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
+            self.PInfoLabel.pack(side= "top", pady=5)
             self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
             # 頭像連結（player[3]）
-            # 比賽日期、對手logo連結、自己的分數、對手的分數、近五場平均得分
+            
 
-        self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("Verdana", 15), bg="wheat2")
-        self.FGLabel.pack(side="top")
-        self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs. 對手（待補）")
-
-        self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("Verdana", 15), bg="wheat2")
-        self.GameLabel.pack(side="top")
+        self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="wheat2")
+        self.FGLabel.pack(side="top", pady=5)
+        self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
+        self.FG.pack(side="top", pady=5)
+        self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="wheat2")
+        self.GameLabel.pack(side="top", pady=5)
         for game in team.game[1:-2]:
             print(game)
-            self.GInfoLabel= tk.Label(self.scrollableF, height=40, bg="wheat2")
-            self.GInfoLabel.configure(text=str(game[0])+" "+str(game[2])+"\n"+"對手（待補）"+str(game[3]))
-            self.GInfoLabel.pack(side= "top")
+            self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
+            self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+game[1]+game[3])
+            self.GInfoLabel.pack(side= "top", pady=5)
+        
 Temp=Temp()
 Temp.mainloop()
