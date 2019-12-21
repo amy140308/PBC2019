@@ -37,21 +37,51 @@ class GamePage(tk.Frame):
                 arena=final_g[i][3]
                 self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
                 self.btn.cget("text")
-                self.btn.configure(command=lambda click.button 
+                self.btn.configure(command=lambda: click_game_button(team1, team2)) 
                 self.btn.pack(anchor="n", side="top", pady=10, padx=5)     
         else:
 
             self.Label=tk.Label(text="今日無賽事", font=f1)
             self.Label.pack(anchor="n", side="top", pady=20)
-        
+       
         def click_game_button(teamA, teamB):
+            # 可能跟隊伍team.py之後會修出來的東西要調整
+            gamebet=gamebet()
+            Odds=gamebet.odds(teamA, teamB)
+
             window=tk.Toplevel()
             window.geometry("500x500")
             window.configure(bg="azure")
             self.teamCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
-            self.teamCanv.pack(side = "top", fill = "both", expand=True)
+            self.teamCanv.apck(side = "top", fill = "both", expand=True)
             self.F = tk.Frame(self.teamCanv, bg = "wheat2", width=500, height = 500)
             self.F.pack(side = "bottom", fill = "both", anchor="center")
+            self.showL = tk.Label(self.F, bg="white", width=50, height=30)
+            self.showL.grid(row=0, column=0, columnspan=4, rowspan=3, padx=5, pady=5)
+            self.GL1=tk.Label(self.F, bg="linen", text="單雙（總分）")
+            self.GL1.grid(row=4, column=0, pady=5)
+            
+            self.GB1 = tk.Button(self.F, bg="lavender blush", text="單 1.75")
+            self.GB1.grid(row=5, column=0, pady=5, columnspan=2)
+            self.GB2 = tk.Button(self.F, bg="lavender blush", text="雙 1.75")
+            self.GB2.grid(row=5, column=3, columnspan=2)
+            
+            self.GL2=tk.Label(self.F, bg="linen", text="大小（總分）")
+            self.GL2.grid(row=6, column=0)
+            
+            self.GB3 = tk.Button(self.F, bg="lavender blush", text=Odds[1][1]+"1.75")
+            self.GB3.grid(row=5, column=0, columnspan=2, pady=5)
+            self.GB4 = tk.Button(self.F, bg="lavender blush", text=Odds[1][3]+"1.75")
+            
+            self.GL3= tk.Label(self.F, bg="linen", text="不讓分")
+            self.GL3.grid(row=5, column=3, columnspan=2, pady=5)
+
+            self.GB5=tk.Button(self.F, bg="lavender blush", text=Odds[2][1]+"  "+Odds[2][2])
+            self.GB5.grid(row=6, column=0, columnspan=2, pady=5)
+
+            self.GB6=tk.Button(self.F, bg="lavender blush", text=Odds[2][3]+"  "+Odds[2][4])
+            self.GB6.grid(row=6, column=3, columnspan=2, pady=5)
+
             
 
             

@@ -588,6 +588,91 @@ class Team:
         avg = sum / 5
         self.game.append(avg)
 
+class gamebet():
+    """
+    def odds 需要輸入雙方隊伍名字
+    return 賠率清單，單元數固定
+    [['單雙', '單', 1.75, '雙', 1.75],
+     ['大小(總分)', '大於X分', 1.75, '小於X分', 1.75],
+     ['不讓分', 'A隊名', A賠率, 'B隊名', B賠率]]
+    """
+    def odds(self, team_name_A, team_name_B):
+        # print("***calculating odds...")
+        data_list = []
+        
+        #獲得雙方隊伍勝率與平均得分
+        # print("getting team", team_name_A, "stats...")
+        teamA = Team(team_name_A)
+        teamA.get_info() #勝率是int(teamA.info[4])
+        self.win_oddsA = (float(teamA.info[4][:(len(teamA.info[4])-1)]) / 100)
+        teamA.get_game() #平均得分是teamA.game[(len(teamA.game) - 1)]
+        self.score_A = teamA.game[(len(teamA.game) - 1)]
+        
+        # print("getting team", team_name_B, "stats...")        
+        teamB = Team(team_name_B)
+        teamB.get_info() #勝率B是int(teamB.info[4])
+        self.win_oddsB = (float(teamB.info[4][:(len(teamB.info[4])-1)]) / 100)
+        teamB.get_game() #平均得分是teamB.game[(len(teamB.game) - 1)]
+        self.score_B = teamB.game[(len(teamB.game) - 1)]
+        
+        """
+        賠率公式：
+        1. 單雙：雙方賠率都是1.75
+        2. 大小(總分)：
+        3. 不讓分：需判斷勝率/平均總分，決定賠率
+        簡易版本：勝率對應好壞狀態，若A好B壞，則A贏；反之則B贏。若A好B好，A壞B壞，則判斷平均得分。
+        若平均得分相差小於9分，則判定勝率各半。
+        勝率倒數為賠率，Cap最高是3.75倍，最低是1.15倍
+        """
+        
+        #單雙
+        data_list.append(['單雙', '單', 1.75, '雙', 1.75])
+        
+        #大小
+        scoresum = teamA.game[(len(teamA.game) - 1)] + teamB.game[(len(teamB.game) - 1)]
+        scoresum = int(scoresum) + 0.5 #確保大小是以.5結尾
+        data_list.append(['大小(總分)', ('大於' + str(scoresum) + '分'), 1.75,
+                          ('小於' + str(scoresum) + '分'), 1.75])
+        
+        #不讓分
+        teamA_odds = self.win_oddsA * (1 - self.win_oddsB)
+        teamB_odds = self.win_oddsB * (1 - self.win_oddsA)
+        
+        if abs(self.score_A - self.score_B) <= 9:
+            teamA_odds += ((1 - teamA_odds) - teamB_odds) / 2
+            teamB_odds += ((1 - teamA_odds) - teamB_odds) / 2 
+
+        elif self.score_A > self.score_B:
+            teamA_odds += (1 - teamA_odds - teamB_odds)
+
+        elif self.score_A < self.score_B:
+            teamB_odds += (1 - teamA_odds - teamB_odds)
+        
+        print('win odds:', teamA_odds, teamB_odds)
+
+        if teamA_odds != 0 and teamB_odds != 0: #判斷Cap
+            teamA_odds = round((1 / teamA_odds), 2)
+            teamB_odds = round((1 / teamB_odds), 2)
+            
+            teamA_odds = 3.75 if (teamA_odds > 3.75) else teamA_odds
+            teamA_odds = 1.15 if (teamA_odds < 1.15) else teamA_odds
+            teamB_odds = 3.75 if (teamB_odds > 3.75) else teamB_odds
+            teamB_odds = 1.15 if (teamB_odds < 1.15) else teamB_odds
+    
+        else: #如果有一方勝率為0時，則直接給上下Cap最大賠率
+            if teamA_odds == 0:
+                teamA_odds = 3.75
+                teamB_odds = 1.15
+                
+            elif teamB_odds == 0:
+                teamA_odds = 1.15
+                teamB_odds = 3.75
+        
+        print('bet odds for 不讓分:', teamA_odds, teamB_odds)
+        
+        data_list.append(['不讓分', team_name_A, teamA_odds, team_name_B, teamB_odds])
+        
+        return data_list
 
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
@@ -1057,17 +1142,60 @@ class GamePage(tk.Frame):
         if len(final_g)>0:
             for i in range(len(final_g)):
                 self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
-                time=final_g[i][0]
-                team1=final_g[i][1]
+                time=final_g[i][0]  # 
+                team1=final_g[i][1]  
                 team2=final_g[i][2]
                 arena=final_g[i][3]
                 self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
+                self.btn.cget("text")
+                self.btn.configure(command=lambda: click_game_button(team1, team2)) 
                 self.btn.pack(anchor="n", side="top", pady=10, padx=5)     
         else:
 
             self.Label=tk.Label(text="今日無賽事", font=f1)
             self.Label.pack(anchor="n", side="top", pady=20)
-        
+       
+        def click_game_button(teamA, teamB):
+            # 可能跟隊伍team.py之後會修出來的東西要調整
+            gamebet=gamebet()
+            Odds=gamebet.odds(teamA, teamB)
+
+            window=tk.Toplevel(self)
+            window.geometry("500x500")
+            window.configure(bg="azure")
+            self.teamCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
+            self.teamCanv.apck(side = "top", fill = "both", expand=True)
+            self.F = tk.Frame(self.teamCanv, bg = "wheat2", width=500, height = 500)
+            self.F.pack(side = "bottom", fill = "both", anchor="center")
+            self.showL = tk.Label(self.F, bg="white", width=50, height=30)
+            self.showL.grid(row=0, column=0, columnspan=4, rowspan=3, padx=5, pady=5)
+            self.GL1=tk.Label(self.F, bg="linen", text="單雙（總分）")
+            self.GL1.grid(row=4, column=0, pady=5)
+            
+            self.GB1 = tk.Button(self.F, bg="lavender blush", text="單 1.75")
+            self.GB1.grid(row=5, column=0, pady=5, columnspan=2)
+            self.GB2 = tk.Button(self.F, bg="lavender blush", text="雙 1.75")
+            self.GB2.grid(row=5, column=3, columnspan=2)
+            
+            self.GL2=tk.Label(self.F, bg="linen", text="大小（總分）")
+            self.GL2.grid(row=6, column=0)
+            
+            self.GB3 = tk.Button(self.F, bg="lavender blush", text=Odds[1][1]+"1.75")
+            self.GB3.grid(row=5, column=0, columnspan=2, pady=5)
+            self.GB4 = tk.Button(self.F, bg="lavender blush", text=Odds[1][3]+"1.75")
+            
+            self.GL3= tk.Label(self.F, bg="linen", text="不讓分")
+            self.GL3.grid(row=5, column=3, columnspan=2, pady=5)
+
+            self.GB5=tk.Button(self.F, bg="lavender blush", text=Odds[2][1]+"  "+Odds[2][2])
+            self.GB5.grid(row=6, column=0, columnspan=2, pady=5)
+
+            self.GB6=tk.Button(self.F, bg="lavender blush", text=Odds[2][3]+"  "+Odds[2][4])
+            self.GB6.grid(row=6, column=3, columnspan=2, pady=5)
+
+            
+
+            
 
             
 # HistoryPage歷史紀錄頁面

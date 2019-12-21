@@ -8,18 +8,18 @@ class gamebet():
      ['不讓分', 'A隊名', A賠率, 'B隊名', B賠率]]
     """
     def odds(self, team_name_A, team_name_B):
-        print("***calculating odds...")
+        # print("***calculating odds...")
         data_list = []
         
         #獲得雙方隊伍勝率與平均得分
-        print("getting team", team_name_A, "stats...")
+        # print("getting team", team_name_A, "stats...")
         teamA = Team(team_name_A)
         teamA.get_info() #勝率是int(teamA.info[4])
         self.win_oddsA = (float(teamA.info[4][:(len(teamA.info[4])-1)]) / 100)
         teamA.get_game() #平均得分是teamA.game[(len(teamA.game) - 1)]
         self.score_A = teamA.game[(len(teamA.game) - 1)]
         
-        print("getting team", team_name_B, "stats...")        
+        # print("getting team", team_name_B, "stats...")        
         teamB = Team(team_name_B)
         teamB.get_info() #勝率B是int(teamB.info[4])
         self.win_oddsB = (float(teamB.info[4][:(len(teamB.info[4])-1)]) / 100)
