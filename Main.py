@@ -607,18 +607,32 @@ class gamebet():
      ['不讓分', 'A隊名', A賠率, 'B隊名', B賠率]]
     """
     def odds(self, team_name_A, team_name_B):
-        # print("***calculating odds...")
+        print("***calculating odds...")
         data_list = []
         
+        teamnamedict = {"塞爾蒂克": "波士頓塞爾蒂克", "公牛": "芝加哥公牛", 
+                    "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
+                    "騎士": "克里夫蘭騎士", "黃蜂": "夏洛特黃蜂", "尼克": "紐約尼克",
+                    "活塞": "底特律活塞", "熱火": "邁阿密熱火", "76人": "費城76人",
+                    "溜馬": "印第安納溜馬", "魔術": "奧蘭多魔術", "暴龍": "多倫多暴龍", 
+                    "公鹿": "密爾瓦基公鹿", "巫師": "華盛頓巫師", "金塊": "丹佛金塊", "勇士": "金州勇士", 
+                    "獨行俠": "達拉斯獨行俠", "灰狼": "明尼蘇達灰狼", "快艇": "洛杉磯快艇",
+                    "火箭": "休士頓火箭", "雷霆": "奧克拉荷馬城雷霆", "湖人": "洛杉磯湖人", 
+                    "灰熊": "曼菲斯灰熊", "拓荒者": "波特蘭拓荒者", "太陽": "鳳凰城太陽", 
+                    "鵜鶘": "紐奧良鵜鶘", "爵士": "猶他爵士", "國王": "沙加緬度國王", "馬刺": "聖安東尼奧馬刺"}
+        
+        team_name_A = teamnamedict[team_name_A]
+        team_name_B = teamnamedict[team_name_B]
+        
         #獲得雙方隊伍勝率與平均得分
-        # print("getting team", team_name_A, "stats...")
+        print("getting team", team_name_A, "stats...")
         teamA = Team(team_name_A)
         teamA.get_info() #勝率是int(teamA.info[4])
         self.win_oddsA = (float(teamA.info[4][:(len(teamA.info[4])-1)]) / 100)
         teamA.get_game() #平均得分是teamA.game[(len(teamA.game) - 1)]
         self.score_A = teamA.game[(len(teamA.game) - 1)]
         
-        # print("getting team", team_name_B, "stats...")        
+        print("getting team", team_name_B, "stats...")        
         teamB = Team(team_name_B)
         teamB.get_info() #勝率B是int(teamB.info[4])
         self.win_oddsB = (float(teamB.info[4][:(len(teamB.info[4])-1)]) / 100)
@@ -641,8 +655,8 @@ class gamebet():
         #大小
         scoresum = teamA.game[(len(teamA.game) - 1)] + teamB.game[(len(teamB.game) - 1)]
         scoresum = int(scoresum) + 0.5 #確保大小是以.5結尾
-        data_list.append(['大小(總分)', ('大於' + str(scoresum) + '分'), 1.75,
-                          ('小於' + str(scoresum) + '分'), 1.75])
+        data_list.append(['大小(總分)', ('大於' + str(scoresum)), 1.75,
+                          ('小於' + str(scoresum)), 1.75])
         
         #不讓分
         teamA_odds = self.win_oddsA * (1 - self.win_oddsB)
@@ -683,6 +697,96 @@ class gamebet():
         data_list.append(['不讓分', team_name_A, teamA_odds, team_name_B, teamB_odds])
         
         return data_list
+    
+    """
+    def get_bettingA(final_g) ，需要輸入當日賽程清單
+    return list：一場賽事回傳一個完整賠率清單
+    舉例：[['時間', 'A隊', 'B隊', '地點', [[單雙], [大小], [不讓分]]],
+           ['時間', 'C隊', 'D隊', '地點', [[單雙], [大小], [不讓分]]]...]
+    
+    A版本使用For迴圈一個一個計算，算出全部的賠率，非常耗時間。
+    """
+    def get_bettingA(self, final_g):
+        #先得到當日賽事資訊
+        data_list = []
+        
+        #Team與bet對照隊名用
+        teamnamedict = {"塞爾蒂克": "波士頓塞爾蒂克", "公牛": "芝加哥公牛", 
+                    "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
+                    "騎士": "克里夫蘭騎士", "黃蜂": "夏洛特黃蜂", "尼克": "紐約尼克",
+                    "活塞": "底特律活塞", "熱火": "邁阿密熱火", "76人": "費城76人",
+                    "溜馬": "印第安納溜馬", "魔術": "奧蘭多魔術", "暴龍": "多倫多暴龍", 
+                    "公鹿": "密爾瓦基公鹿", "巫師": "華盛頓巫師", "金塊": "丹佛金塊", "勇士": "金州勇士", 
+                    "獨行俠": "達拉斯獨行俠", "灰狼": "明尼蘇達灰狼", "快艇": "洛杉磯快艇",
+                    "火箭": "休士頓火箭", "雷霆": "奧克拉荷馬城雷霆", "湖人": "洛杉磯湖人", 
+                    "灰熊": "曼菲斯灰熊", "拓荒者": "波特蘭拓荒者", "太陽": "鳳凰城太陽", 
+                    "鵜鶘": "紐奧良鵜鶘", "爵士": "猶他爵士", "國王": "沙加緬度國王", "馬刺": "聖安東尼奧馬刺"}
+        
+        #for迴圈判定賠率
+        for i in range(len(final_g)):
+            data_list.append(final_g[i])
+            print('***Getting game of', teamnamedict[final_g[i][1]],"vs.", teamnamedict[final_g[i][2]])
+            odds_list = self.odds(teamnamedict[final_g[i][1]], teamnamedict[final_g[i][2]])
+            data_list[i].append(odds_list)
+            print('***Check list', data_list[i])
+            print()
+            print()
+        
+        return data_list
+
+    #判斷下幾注，賠率
+    """
+    三種寫法分別對應不同的結果?
+    """
+    #def go_bet(self):
+        
+    
+    #下注
+    """
+    def gobet 需要輸入一個清單：['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱']
+    - 從帳戶扣除應繳金額
+    - 新增一筆交易資料，此交易資料會是一個清單：
+      ['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱', '輸/贏/未交割', 盈虧]
+    - 回傳
+    """
+    #def confirm_bet(self, bet):
+        #需要一個Check Balance的函數
+        
+        
+        #從帳戶扣取應繳金額
+        #新增一筆交易資料
+        
+        
+    #結算
+    """
+    def clearance 不須輸入
+    每次開檔時需跑這個函數
+    - 從帳戶資料中讀取是否有未交割的賭注
+    - 從歷史資料中獲得結果
+    - 更新帳戶餘額與交易紀錄
+    """   
+    #def clearance(self): 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
@@ -1150,7 +1254,7 @@ class GamePage(tk.Frame):
             elif btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                btn.configure(command=lambda: controller.show_frame("PersonalPage"))
             elif btn_txt == "賽事下注":
                 btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
@@ -1161,61 +1265,53 @@ class GamePage(tk.Frame):
         if len(final_g)>0:
             for i in range(len(final_g)):
                 self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
-                time=final_g[i][0]  # 
+                time=final_g[i][0]
                 team1=final_g[i][1]  
                 team2=final_g[i][2]
                 arena=final_g[i][3]
                 self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
-                self.btn.cget("text")
                 self.btn.configure(command=lambda: click_game_button(team1, team2)) 
                 self.btn.pack(anchor="n", side="top", pady=10, padx=5)     
         else:
-
-            self.Label=tk.Label(text="今日無賽事", font=f1)
-            self.Label.pack(anchor="n", side="top", pady=20)
+            self.NoGameLabel=tk.Label(text="今日無賽事", font=f1)
+            self.NoGameLabel.pack(anchor="n", side="top", pady=20)
        
         def click_game_button(teamA, teamB):
             # 可能跟隊伍team.py之後會修出來的東西要調整
-            gamebet=gamebet()
-            Odds=gamebet.odds(teamA, teamB)
+            game_bet=gamebet()
+            Odds=game_bet.odds(teamA, teamB)
 
             window=tk.Toplevel(self)
             window.geometry("500x500")
             window.configure(bg="azure")
-            self.teamCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
-            self.teamCanv.apck(side = "top", fill = "both", expand=True)
-            self.F = tk.Frame(self.teamCanv, bg = "wheat2", width=500, height = 500)
-            self.F.pack(side = "bottom", fill = "both", anchor="center")
-            self.showL = tk.Label(self.F, bg="white", width=50, height=30)
+            
+            self.GameCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
+            self.GameCanv.apck(side = "top", fill = "both", expand=True)
+            self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
+            self.GameFrame.pack(side = "bottom", fill = "both", anchor="center")
+            self.showL = tk.Label(self.GameFrame, bg="white", width=50, height=30, text="顯示幕")
             self.showL.grid(row=0, column=0, columnspan=4, rowspan=3, padx=5, pady=5)
-            self.GL1=tk.Label(self.F, bg="linen", text="單雙（總分）")
+            # 單雙
+            self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
             self.GL1.grid(row=4, column=0, pady=5)
-            
-            self.GB1 = tk.Button(self.F, bg="lavender blush", text="單 1.75")
+            self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單 1.75")
             self.GB1.grid(row=5, column=0, pady=5, columnspan=2)
-            self.GB2 = tk.Button(self.F, bg="lavender blush", text="雙 1.75")
+            self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙 1.75")
             self.GB2.grid(row=5, column=3, columnspan=2)
-            
-            self.GL2=tk.Label(self.F, bg="linen", text="大小（總分）")
+            # 大小
+            self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
             self.GL2.grid(row=6, column=0)
-            
-            self.GB3 = tk.Button(self.F, bg="lavender blush", text=Odds[1][1]+"1.75")
-            self.GB3.grid(row=5, column=0, columnspan=2, pady=5)
-            self.GB4 = tk.Button(self.F, bg="lavender blush", text=Odds[1][3]+"1.75")
-            
-            self.GL3= tk.Label(self.F, bg="linen", text="不讓分")
-            self.GL3.grid(row=5, column=3, columnspan=2, pady=5)
-
-            self.GB5=tk.Button(self.F, bg="lavender blush", text=Odds[2][1]+"  "+Odds[2][2])
-            self.GB5.grid(row=6, column=0, columnspan=2, pady=5)
-
-            self.GB6=tk.Button(self.F, bg="lavender blush", text=Odds[2][3]+"  "+Odds[2][4])
-            self.GB6.grid(row=6, column=3, columnspan=2, pady=5)
-
-            
-
-            
-
+            self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][1]+"1.75")
+            self.GB3.grid(row=7, column=0, columnspan=2, pady=5)
+            self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][3]+"1.75")
+            self.GB4.grid(row=7, column=3, columnspan=2, pady=5)
+            # 不讓分
+            self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
+            self.GL3.grid(row=8, column=0, columnspan=2, pady=5)
+            self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=Odds[2][1]+"  "+Odds[2][2])
+            self.GB5.grid(row=9, column=0, columnspan=2, pady=5)
+            self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=Odds[2][3]+"  "+Odds[2][4])
+            self.GB6.grid(row=9, column=3, columnspan=2, pady=5)
             
 # HistoryPage歷史紀錄頁面
 
