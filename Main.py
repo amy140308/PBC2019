@@ -149,7 +149,7 @@ class bet():
         chrome_options.add_argument('--disable-gpu')  # 規避bug
         driver = webdriver.Chrome(executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe', options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
-        # 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
+        # executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
         html = driver.page_source
         driver.close()
@@ -228,9 +228,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome(executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe', options=chrome_options)
-        # /usr/local/bin/chromedriver
-        # C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe
+        self.driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
 
     def update(self):
@@ -260,13 +258,14 @@ class history():
                 d = datetime.datetime(year, month, day)
                 
                 filepath = 'C:\\Users\\user\\Downloads\\data.csv'
-                # /Users/yangqingwen/Downloads/data.csv
-                # C:\\Users\\user\\Downloads\\data.csv
-                wf = open(file=filepath, mode="a+", encoding="utf-8")
+                # 
+                # 'C:\\Users\\user\\Downloads\\data.csv'
+                wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
                 rf = open(file=filepath, mode="r", encoding="utf-8")
                 reader = csv.reader(rf)
                 
+                #print(reader)
                 exist = False  # 看這個日期的比賽資訊是不是已經抓過了
                 for row in reader:
                     if row[0] == d.strftime('%Y-%m-%d'):
@@ -312,8 +311,8 @@ class history():
 
     def get_data(self, date):
         filepath = 'C:\\Users\\user\\Downloads\\data.csv'
-        # /Users/yangqingwen/Downloads/data.csv
-        # C:\\Users\\user\\Downloads\\data.csv
+        # 
+        # 'C:\\Users\\user\\Downloads\\data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
         
@@ -922,7 +921,7 @@ class TeamPage(tk.Frame):
         
         
         # 打開隊伍資訊
-        self.Team_name_List = ["亞特蘭大老鷹", "布魯克林籃網", "波士頓塞爾蒂克", "夏洛特黄蜂", "芝加哥公牛",
+        self.Team_name_List = ["亞特蘭大老鷹", "布魯克林籃網", "波士頓塞爾蒂克", "夏洛特黃蜂", "芝加哥公牛",
                          "克里夫蘭騎士", "達拉斯獨行俠", "丹佛金塊","底特律活塞", "金州勇士", 
                          "休士頓火箭","印第安納溜馬", "洛杉磯快艇", "洛杉磯湖人", "曼菲斯灰熊", 
                          "邁阿密熱火", "密爾瓦基公鹿", "明尼蘇達灰狼", "紐奧良鵜鶘", "紐約尼克",
@@ -934,11 +933,11 @@ class TeamPage(tk.Frame):
         Frame_List = []
         # 點按鈕為各隊伍資訊
         def click_team_button(team_name):
-            window = Toplevel(self)
+            window = tk.Toplevel(self)
             window.title(team_name)
             window.geometry("500x500")
             # 以下是有container的scrollbar寫法
-            self.container = tk.Frame(self, height=500, width=1000)
+            self.container = tk.Frame(window, height=500, width=1000)
             self.container.pack(side="top",fill="both", expand=True)
             self.teamCanv = tk.Canvas(self.container, width=500, height = 1000, highlightthickness=0, scrollregion=(0,0,500,500), bg="wheat2")
             self.teamCanv.pack(side = "top", fill = "both", expand=True)
@@ -983,25 +982,26 @@ class TeamPage(tk.Frame):
                 except:
                     self.picLabel = tk.Label(self.scrollableF, text="No image")
                     self.picLabel.pack(side="top", pady=2, anchor="e") 
-                    self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
-                    self.PInfoLabel.pack(side= "top", pady=5)
-                    self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
                 
-                    self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
-                    self.FGLabel.pack(side="top", pady=5)
-                    self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
-                    self.FG.pack(side="top", pady=5)
-                    self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="peach puff")
-                    self.GameLabel.pack(side="top", pady=5)
-                    for game in team.game[1:-2]:
-                        # print(game)
-                        self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
-                        if int(game[2])>int(game[3]):
-                            result="勝"
-                        else:
-                            result="敗"
-                        self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+result+"\n"+game[1]+" "+game[3])
-                        self.GInfoLabel.pack(side= "top", pady=5)
+                self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
+                self.PInfoLabel.pack(side= "top", pady=5)
+                self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
+                
+            self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
+            self.FGLabel.pack(side="top", pady=5)
+            self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
+            self.FG.pack(side="top", pady=5)
+            self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="peach puff")
+            self.GameLabel.pack(side="top", pady=5)
+            for game in team.game[1:-2]:
+                # print(game)
+                self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
+                if int(game[2])>int(game[3]):
+                    result="勝"
+                else:
+                    result="敗"
+                self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+result+"\n"+game[1]+" "+game[3])
+                self.GInfoLabel.pack(side= "top", pady=5)
 
 
             # 要避免使用者手殘按到很多下爬蟲程式被啟動太多次然後電腦當機嗎
