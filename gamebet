@@ -120,60 +120,35 @@ class gamebet():
         
         return data_list
 
-
-class GamePage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        self.configure(width=500, height=700, bg = "lemon chiffon")
-        """
-        以下是宗勳做成def create_common_frames的部分，但用mac有些問題，暫且先不寫成def看看
-        """
-        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
-        self.F1.pack(side="top", fill="both",anchor="n")
-        self.F2=tk.Frame(self,bg="lemon chiffon",width=500, height=700)
-        self.F2.pack(side="top", fill="both", expand=True)
-        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
-        for function in reversed(functions):
-            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
-            btn.pack(side="right", pady=30, anchor="n")
-            btn_txt=btn.cget("text")
-            if btn_txt == "球隊介紹":
-                btn.configure(command=lambda: controller.show_frame("TeamPage"))
-            elif btn_txt == "新聞介紹":
-                btn.configure(command=lambda: controller.show_frame("NewsPage"))
-            elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
-            elif btn_txt == "賽事下注":
-                btn.configure(command=lambda: self.controller.show_frame("GamePage"))
-            elif btn_txt == "歷史資料":
-                btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
-        # 頁面功能 (之後可能要融合到Main_onWindows.py)
-        # 現在的點就是登入之前會先跳chrome的東西...真的是滿尷尬
-        f1=tkFont.Font(size=20, family="標楷體")
-        bet = bet()
-        final_g = bet.get_data()
-        if len(final_g)>0:
-            for i in range(len(final_g)):
-                self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
-                time=final_g[i][0]
-                team1=final_g[i][1]
-                team2=final_g[i][2]
-                arena=final_g[i][3]
-                self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
-                self.btn.pack(anchor="n", side="top", pady=10, padx=5)    
-            
-            """
-            新增賠率的內容
-            這裡一個疑問：能否根據介面選擇的賽事來跑賠率，主要我不確定點下去會長怎麼樣。不然一次全部跑完當日賽事會很久
-            """
-            
-            gametime = gamebet()
-            betlist = gametime.get_bettingA(final_g)
-            
-            
-            
-        else:
-
-            self.Label=tk.Label(text="今日無賽事", font=f1)
-            self.Label.pack(anchor="n", side="top", pady=20)
+    #判斷下幾注，賠率
+    """
+    三種寫法分別對應不同的結果?
+    """
+    #def go_bet(self):
+        
+    
+    #下注
+    """
+    def gobet 需要輸入一個清單：['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱']
+    - 從帳戶扣除應繳金額
+    - 新增一筆交易資料，此交易資料會是一個清單：
+      ['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱', '輸/贏/未交割', 盈虧]
+    - 回傳
+    """
+    #def confirm_bet(self, bet):
+        #需要一個Check Balance的函數
+        
+        
+        #從帳戶扣取應繳金額
+        #新增一筆交易資料
+        
+        
+    #結算
+    """
+    def clearance 不須輸入
+    每次開檔時需跑這個函數
+    - 從帳戶資料中讀取是否有未交割的賭注
+    - 從歷史資料中獲得結果
+    - 更新帳戶餘額與交易紀錄
+    """   
+    #def clearance(self):    
