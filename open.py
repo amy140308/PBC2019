@@ -5,10 +5,9 @@ import csv
 """
 記得改filepath 
 """
-filepath = ''
+filepath = "/Users/yangqingwen/Desktop/PBC2019/team.csv"
 wf = open(file=filepath, mode="r", encoding="utf-8")
 rows = csv.reader(wf)
-
 name = input()  # 記得這邊是讓你們輸隊名
 info = []
 player = []
