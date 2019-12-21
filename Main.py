@@ -839,21 +839,21 @@ class TeamPage(tk.Frame):
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)
             info = []
-            player = []
-            game = []
+            players = []
+            games = []
             count = 0
             for i in rows:
                 if i[0] == team_name:
                     count = 1
                     info = i 
                 elif 1 <= count and count <= 5:
-                    player.append(i)
+                    players.append(i)
                     count += 1
                 elif 6 <= count and count <= 11:
-                    game.append(i)
+                    games.append(i)
                     count += 1
                 elif count == 12:
-                    game.append(i[0])
+                    games.append(i[0])
                     count += 1
                 elif count > 13:
                     break
@@ -861,19 +861,19 @@ class TeamPage(tk.Frame):
 
             self.Label= tk.Label(self.scrollableF, bg="wheat2")
             self.Label.pack(side= "top", anchor="n")
-            self.Label.configure(text="隊伍名稱："+team.info[0]+
-                                     "\n"+"教練："+team.info[1]+
-                                     "\n"+"分區聯盟："+team.info[2]+
-                                     "\n"+"分區排名："+team.info[3]+
-                                     "\n"+"勝率："+team.info[4]+"\n"+"\n")
+            self.Label.configure(text="隊伍名稱："+info[0]+
+                                     "\n"+"教練："+info[1]+
+                                     "\n"+"分區聯盟："+info[2]+
+                                     "\n"+"分區排名："+info[3]+
+                                     "\n"+"勝率："+info[4]+"\n"+"\n")
         
             # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
             self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("標楷體", 15), bg="peach puff")
             self.PlayerLabel.pack(side= "top", pady=10)
-            for player in team.player:
+            for player in players:
                 image_url=player[3]
                 ssl._create_default_https_context = ssl._create_unverified_context
-                # 頭像連結（player[3]）
+                
                 try:
                     u = urlopen(image_url)
                     raw_data = u.read()
@@ -893,19 +893,19 @@ class TeamPage(tk.Frame):
                 
             self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
             self.FGLabel.pack(side="top", pady=5)
-            self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
+            self.FG=tk.Label(self.scrollableF, text=games[0][0]+"\n"+games[0][2]+"\nvs."+games[0][1], bg="wheat2")
             self.FG.pack(side="top", pady=5)
             self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="peach puff")
             self.GameLabel.pack(side="top", pady=5)
             
-            for game in team.game[1:-2]:
+            for game in games[1:-2]:
                 # print(game)
                 self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
                 if int(game[2])>int(game[3]):
                     result="勝"
                 else:
                     result="敗"
-                self.GInfoLabel.configure(text=game[0]+result+"\n"+game[2]+" vs. "+game[3]+" "+game[1])
+                self.GInfoLabel.configure(text=game[0]+"\n"+result+"\n"+game[2]+" vs. "+game[3]+" "+game[1])
                 self.GInfoLabel.pack(side= "top", pady=5)
 
 
@@ -986,7 +986,7 @@ class GamePage(tk.Frame):
         
         
         # 頁面功能 (之後可能要融合到Main_onWindows.py)
-        # 現在的點就是登入之前會先跳chrome的東西...真的是滿尷尬
+        
         f1=tkFont.Font(size=20, family="標楷體")
         if len(final_g)>0:
             for i in range(len(final_g)):

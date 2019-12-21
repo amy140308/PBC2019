@@ -10,8 +10,8 @@ wf = open(file=filepath, mode="r", encoding="utf-8")
 rows = csv.reader(wf)
 name = input()  # 記得這邊是讓你們輸隊名
 info = []
-player = []
-game = []
+players = []
+games = []
 
 count = 0
 for i in rows:
@@ -20,13 +20,13 @@ for i in rows:
         info = i
     
     elif 1 <= count and count <= 5:
-        player.append(i)
+        players.append(i)
         count += 1
     elif 6 <= count and count <= 11:
-        game.append(i)
+        games.append(i)
         count += 1
     elif count == 12:
-        game.append(i[0])
+        games.append(i[0])
         count += 1
     elif count > 13:
         break
@@ -34,5 +34,5 @@ wf.close
 
 # 這下面也不用
 print(info)
-print(player)
-print(game)
+print(players)
+print(games)

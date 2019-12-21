@@ -1,22 +1,12 @@
-import tkinter as tk
-import webbrowser
-import tkinter.font as tkFont
-import requests
-from bs4 import BeautifulSoup
-from urllib.request import urlopen
-from PIL import Image, ImageTk
-import io 
-from io import BytesIO
-import ssl
 from selenium import webdriver
-import datetime
 from selenium.webdriver.chrome.options import Options
+from bs4 import BeautifulSoup
 import time as t
 import csv
-import tkinter.messagebox 
+
 
 class Team:
-    def __init__(self, city_name):  # 用字典連動網址，用Chrome打開網站取得原始碼
+    def __init__(self, driver, city_name):  # 用字典連動網址，用Chrome打開網站取得原始碼
         # 台灣版網站
         team_url = {"波士頓塞爾蒂克": "https://tw.global.nba.com/teams/#!/celtics", 
                 "芝加哥公牛": "https://tw.global.nba.com/teams/#!/bulls", 
@@ -82,23 +72,17 @@ class Team:
                 "沙加緬度國王": "https://www.nba.com/teams/kings",
                 "聖安東尼奧馬刺": "https://www.nba.com/teams/spurs"}
         url_us = team_us_url[city_name]
-
-        chrome_options = Options()
-        chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
-        chrome_options.add_argument('--disable-gpu')  # 規避bug
         
         # 台灣網站
-        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver", options=chrome_options)
         driver.get(url)
+        t.sleep(2)
         html = driver.page_source
-        driver.close()
         self.soup = BeautifulSoup(html, 'html.parser')
 
         # 美國官網
-        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver", options=chrome_options)
         driver.get(url_us)
+        t.sleep(2)
         html_us = driver.page_source
-        driver.close()
         self.soup_us = BeautifulSoup(html_us, 'html.parser')
 
         # 每個隊伍包含基本資料、球員資料、賽程
@@ -156,6 +140,7 @@ class Team:
         wp = self.clear("> ", " <", str(wp))
         self.info.append(wp[0])
 
+        writer.writerow(self.info)
 
     def get_player(self): # 球員資料
         keep = [0] * 5
@@ -193,6 +178,9 @@ class Team:
                     self.player[i][j] = members[j][i]
                 except:  # 避免網頁缺少部分資料造成錯誤
                     self.player[i][j] = "No Exist"
+                    
+        for i in range(5):
+            writer.writerow(self.player[i][j] for j in range(4))
 
     def get_game(self): # 賽程資訊
         
@@ -224,7 +212,9 @@ class Team:
         shortname = []
         for i in vs:
             shortname.append(self.clear("s/", "_l", str(i)))
-
+        while len(shortname) < 12:
+            shortname.append("BOS")
+        
         index = []  # 判斷是自己的名字
         for i in range(11):
             count = 1
@@ -253,7 +243,10 @@ class Team:
             time = i.find_all('span', attrs = attr)
             break
 
-        self.game[0][2] = self.clear("\">", " <", str(time[2]))[0]
+        try:
+            self.game[0][2] = self.clear("\">", " <", str(time[2]))[0]
+        except:
+            self.game[0][2] = "9:00"
 
         # 比分
         a = self.soup.find_all('tbody')
@@ -275,98 +268,39 @@ class Team:
                     self.game[num][3] = list[3]
                     num += 1
 
+        for i in range(6):
+            writer.writerow(self.game[i][j] for j in range(4))
+                
         # 近五場平均比分
         sum = 0
         for i in range(1,6):
             sum += int(self.game[i][2])
         avg = sum / 5
-        self.game.append(avg)
+        writer.writerow([avg])
 
 
 
-# 隊伍名稱、教練名字、分區聯盟、分區排名、勝率
-# 名、姓氏、位置、頭像連結（五名先發，一名一個list，包成一個2-d list回傳）
-# 比賽日期、對手名、自己的分數、對手的分數（第一筆資料是下一場要比的，比分的位置是比賽時間）、近五場平均得分
+team_name = ["波士頓塞爾蒂克", "芝加哥公牛", "亞特蘭大老鷹", "布魯克林籃網", "克里夫蘭騎士",
+             "夏洛特黃蜂", "紐約尼克", "底特律活塞", "邁阿密熱火", "費城76人", "印第安納溜馬",
+             "奧蘭多魔術", "多倫多暴龍", "密爾瓦基公鹿", "華盛頓巫師", "丹佛金塊", "明尼蘇達灰狼",
+             "奧克拉荷馬城雷霆", "波特蘭拓荒者", "猶他爵士", "金州勇士", "洛杉磯快艇",
+             "洛杉磯湖人", "鳳凰城太陽", "沙加緬度國王", "達拉斯獨行俠", "休士頓火箭",
+             "曼菲斯灰熊", "紐奧良鵜鶘", "聖安東尼奧馬刺"]
 
+chrome_options = Options()
+chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
+chrome_options.add_argument('--disable-gpu')  # 規避bug
+driver = webdriver.Chrome(executable_path = '/Users/amy1226/Downloads/chromedriver', options=chrome_options)
 
-class Temp(tk.Tk):
-    
-    def __init__(self, team_name):
-        tk.Tk.__init__(self)
-        self.geometry("500x500")
-        self.title("運彩模擬器")
-        self.configure(bg="wheat2")
-        self.team_name=team_name
-       
-        # window = tk.Tk(self)
-        # window.geometry("500x500")
-        # 以下是有container的scrollbar寫法
-        self.container = tk.Frame(self, height=500, width=1000)
-        self.container.pack(side="top",fill="both", expand=True)
-        self.teamCanv = tk.Canvas(self.container, width=500, height = 1000, highlightthickness=0, scrollregion=(0,0,500,500), bg="wheat2")
-        self.teamCanv.pack(side = "top", fill = "both", expand=True)
-        teamBar = tk.Scrollbar(self.teamCanv, orient = "vertical", command = self.teamCanv.yview)
-        teamBar.pack(side = "right", fill = "y")
-       
-        self.scrollableF=tk.Frame(self.teamCanv, bg = "wheat2", width=1000, height = 500)
-        self.scrollableF.pack(side = "bottom", fill = "both", anchor="center")
-        self.teamCanv.configure(yscrollcommand = teamBar.set)
-        self.scrollableF.bind("<Configure>",lambda e: self.teamCanv.configure(scrollregion=self.teamCanv.bbox("all")))
-        self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="n")
-        
-        
-        # 隊伍資訊
-        """
-        疑問：點按鈕才爬蟲這按鈕會啟動很久...
-        """
-        team=Team(team_name)
-        team.get_info()
-        team.get_player() 
-        team.get_game()
-        self.Label= tk.Label(self.scrollableF, bg="wheat2")
-        self.Label.pack(side= "top", anchor="n")
-        self.Label.configure(text="隊伍名稱："+team.info[0]+"\n"+"教練："+team.info[1]+"\n"+ "分區聯盟："+team.info[2]+"\n"+"分區排名："+team.info[3]+"\n"+"勝率："+team.info[4]+"\n"+"\n")
-       
-        # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
-        self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("標楷體", 15), bg="peach puff")
-        self.PlayerLabel.pack(side= "top", pady=10)
-        for player in team.player:
-            image_url=player[3]
-            ssl._create_default_https_context = ssl._create_unverified_context
-            try:
-                u = urlopen(image_url)
-                raw_data = u.read()
-                u.close()
-                self.img = Image.open(BytesIO(raw_data))
-                self.img=self.img.resize((130, 95), Image.ANTIALIAS) 
-                self.img=ImageTk.PhotoImage(self.img)
-                self.picLabel = tk.Label(self.scrollableF, image=self.img)
-                self.picLabel.image = self.img
-                self.picLabel.pack(side="top", pady=2, anchor="e") 
-            except:
-                self.picLabel = tk.Label(self.scrollableF, text="No image")
-                self.picLabel.pack(side="top", pady=2, anchor="e") 
-            self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
-            self.PInfoLabel.pack(side= "top", pady=5)
-            self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
-            # 頭像連結（player[3]）
-            
+filepath = '/Users/amy1226/Downloads/team.csv'
+wf = open(file=filepath, mode="w", newline = '', encoding="utf-8")
+writer = csv.writer(wf)
 
-        self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
-        self.FGLabel.pack(side="top", pady=5)
-        self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
-        self.FG.pack(side="top", pady=5)
-        self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="peach puff")
-        self.GameLabel.pack(side="top", pady=5)
-        for game in team.game[1:-2]:
-            # print(game)
-            self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
-            if int(game[2])>int(game[3]):
-                result="勝"
-            else:
-                result="敗"
-            self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+result+"\n"+game[1]+" "+game[3])
-            self.GInfoLabel.pack(side= "top", pady=5)
-        
-Temp=Temp("丹佛金塊")
-Temp.mainloop()
+for i in range(30):
+    team = Team(driver, team_name[i])
+    team.get_info()  # 隊伍名稱、教練名字、分區聯盟、分區排名、勝率
+    team.get_player()  # 名、姓氏、位置、頭像連結
+    team.get_game()  # 比賽日期、對手logo連結、自己的分數、對手的分數（第一筆資料是下一場要比的，比分的位置是比賽時間）、近五場平均得分
+
+driver.close()
+wf.close
