@@ -40,7 +40,7 @@ def login_duty():
                 if game_result[j][0]==user_info[i][0] and game_result[j][2]==user_info[i][1] and game_result[j][3]==user_info[i][2]:
                     total_point=int(game_result[j][4])+int(game_result[j][5])
                     if user_info[i][4]=='不讓分':
-                        if game_result[j][4]>game_result[j][5]:
+                        if int(game_result[j][4])>int(game_result[j][5]):
                             if user_info[i][5]==user_info[i][1]:
                                 earn=10*user_info[i][7]*user_info[i][6]
                                 user_info[2]+=earn
@@ -77,7 +77,7 @@ def login_duty():
                         direction=user_info[i][5].split('/')
                         bs=direction[0]
                         point=float(direction[1])
-                        if total_point>bs:
+                        if total_point>point:
                             if bs=='大':
                                 earn=10*user_info[i][7]*user_info[i][6]
                                 user_info[2]+=earn
