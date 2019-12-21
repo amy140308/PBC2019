@@ -147,7 +147,9 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe', options=chrome_options)
+        # executable_path = '/usr/local/bin/chromedriver'
+        # executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
         html = driver.page_source
         driver.close()
@@ -226,7 +228,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
 
     def update(self):
@@ -255,12 +257,15 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath = '/Users/yangqingwen/Downloads/data.csv'
-                wf = open(file=filepath, mode="a+", encoding="utf-8")
+                filepath = 'C:\\Users\\user\\Downloads\\data.csv'
+                # 
+                # 'C:\\Users\\user\\Downloads\\data.csv'
+                wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
                 rf = open(file=filepath, mode="r", encoding="utf-8")
                 reader = csv.reader(rf)
                 
+                #print(reader)
                 exist = False  # 看這個日期的比賽資訊是不是已經抓過了
                 for row in reader:
                     if row[0] == d.strftime('%Y-%m-%d'):
@@ -305,7 +310,9 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = '/Users/yangqingwen/Downloads/data.csv'
+        filepath = 'C:\\Users\\user\\Downloads\\data.csv'
+        # 
+        # 'C:\\Users\\user\\Downloads\\data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
         
@@ -393,15 +400,18 @@ class Team:
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
         
+        # /usr/local/bin/chromedriver
+        # C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe
+        
         # 台灣網站
-        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver", options=chrome_options)
+        driver = webdriver.Chrome(executable_path = "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe", options=chrome_options)
         driver.get(url)
         html = driver.page_source
         driver.close()
         self.soup = BeautifulSoup(html, 'html.parser')
 
         # 美國官網
-        driver = webdriver.Chrome(executable_path = "/usr/local/bin/chromedriver", options=chrome_options)
+        driver = webdriver.Chrome(executable_path = "C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe", options=chrome_options)
         driver.get(url_us)
         html_us = driver.page_source
         driver.close()
@@ -712,6 +722,7 @@ class SportsLottery(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 #  不能把login page寫成tk
+"""
 class LoginPage(tk.Frame):
     def __init__(self):
         self.configure("300x300")
@@ -820,6 +831,7 @@ class LoginPage(tk.Frame):
             self.entry_usr_name.delete(0, "end")
             self.entry_usr_pwd.delete(0,"end")
             tk.messagebox.showinfo("Info", "User successfully registered.\nPlease log in.")
+"""
 
 # NewsPage新聞頁
 class NewsPage(tk.Frame):
@@ -848,11 +860,11 @@ class NewsPage(tk.Frame):
             elif btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                btn.configure(command=lambda: controller.show_frame("PersonalPage"))
             elif btn_txt == "歷史資料":
                 btn.configure(command=lambda: controller.show_frame("HistoryPage"))
             elif btn_txt == "賽事下注":
-                btn.configure(command = lambda: controller.show_frame("GamePage"))
+                btn.configure(command=lambda: controller.show_frame("GamePage"))
 
 
         f0=tkFont.Font(family="標楷體", size=20)
@@ -883,6 +895,7 @@ class NewsPage(tk.Frame):
             f2=tkFont.Font(size=10, family="微軟正黑體")
             self.btn=tk.Label(self.FN, text=title, font=f1,bg="lemon chiffon", cursor="hand2")
             self.btnsmall=tk.Label(self.FN, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify="left") # 傷兵/justify=RIGHT
+            
             def callback(event):
                 webbrowser.open_new(one_news[-2])
             self.btn.bind("<Button-1>", callback)
@@ -890,6 +903,7 @@ class NewsPage(tk.Frame):
             self.picLabel.bind("<Button-1>", callback)
             self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
             self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
+        
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.FW, text="傷兵資訊", font=f0, bg="floral white")
         self.TitleLbl.pack(side="top")
@@ -919,6 +933,7 @@ class NewsPage(tk.Frame):
             f2=tkFont.Font(size=10, family="微軟正黑體")
             self.btn=tk.Label(self.FW, text=title, font=f1,bg="floral white",cursor="hand2")
             self.btnsmall=tk.Label(self.FW, text=time+"\n"+intro,font=f2, bg="floral white", justify="left") 
+            
             def callback(event):
                 webbrowser.open_new(one_wounded[-2])
             self.btn.bind("<Button-1>", callback)
@@ -948,7 +963,7 @@ class TeamPage(tk.Frame):
             elif btn_txt == "新聞介紹":
                 self.btn.configure(command=lambda: self.controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                self.btn.configure(command = lambda: self.controller.show_frame("PersonalPage"))
+                self.btn.configure(command=lambda: self.controller.show_frame("PersonalPage"))
             elif btn_txt == "賽事下注":
                 self.btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
@@ -968,7 +983,7 @@ class TeamPage(tk.Frame):
         # 放賽事
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.frame, text="球隊介紹", font=f0 ,bg="lemon chiffon").pack(side = "top")
-        
+        """ for windows
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -977,8 +992,8 @@ class TeamPage(tk.Frame):
                     "/Users/yangqingwen/Desktop/team_logo/OKC_logo.png","/Users/yangqingwen/Desktop/team_logo/ORL_logo.png","/Users/yangqingwen/Desktop/team_logo/PHI_logo.png","/Users/yangqingwen/Desktop/team_logo/PHX_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/POR_logo.png","/Users/yangqingwen/Desktop/team_logo/SAC_logo.png","/Users/yangqingwen/Desktop/team_logo/SAS_logo.png","/Users/yangqingwen/Desktop/team_logo/TOR_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/UTA_logo.png","/Users/yangqingwen/Desktop/team_logo/WAS_logo.png"]
+        """
         
-        """ for windows
         Logo_road_list = ["C:\\logo\\ATL_logo.png","C:\\logo\\BKN_logo.png","C:\\logo\\BOS_logo.png","C:\\logo\\CHA_logo.png",
                          "C:\\logo\\CHI_logo.png","C:\\logo\\CLE_logo.png","C:\\logo\\DAL_logo.png","C:\\logo\\DEN_logo.png",
                          "C:\\logo\\DET_logo.png","C:\\logo\\GSW_logo.png","C:\\logo\\HOU_logo.png","C:\\logo\\IND_logo.png",
@@ -987,11 +1002,11 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
-        """
+        
         
         
         # 打開隊伍資訊
-        self.Team_name_List = ["亞特蘭大老鷹", "布魯克林籃網", "波士頓塞爾蒂克", "夏洛特黄蜂", "芝加哥公牛",
+        self.Team_name_List = ["亞特蘭大老鷹", "布魯克林籃網", "波士頓塞爾蒂克", "夏洛特黃蜂", "芝加哥公牛",
                          "克里夫蘭騎士", "達拉斯獨行俠", "丹佛金塊","底特律活塞", "金州勇士", 
                          "休士頓火箭","印第安納溜馬", "洛杉磯快艇", "洛杉磯湖人", "曼菲斯灰熊", 
                          "邁阿密熱火", "密爾瓦基公鹿", "明尼蘇達灰狼", "紐奧良鵜鶘", "紐約尼克",
@@ -1052,10 +1067,12 @@ class TeamPage(tk.Frame):
                 except:
                     self.picLabel = tk.Label(self.scrollableF, text="No image")
                     self.picLabel.pack(side="top", pady=2, anchor="e") 
+                
+                
                 self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
                 self.PInfoLabel.pack(side= "top", pady=5)
                 self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
-            
+                
             self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
             self.FGLabel.pack(side="top", pady=5)
             self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
@@ -1109,6 +1126,8 @@ class TeamPage(tk.Frame):
 
 bet = bet()
 final_g = bet.get_data()
+
+
 class GamePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -1217,7 +1236,7 @@ class HistoryPage(tk.Frame):
             elif btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                btn.configure(command=lambda: controller.show_frame("PersonalPage"))
             elif btn_txt == "賽事下注":
                 btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
@@ -1272,7 +1291,7 @@ class PersonalPage(tk.Frame):
             elif btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                btn.configure(command=lambda: controller.show_frame("PersonalPage"))
             elif btn_txt == "賽事下注":
                 btn.configure(command=lambda: self.controller.show_frame("GamePage"))
             elif btn_txt == "歷史資料":
