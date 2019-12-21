@@ -918,17 +918,17 @@ class TeamPage(tk.Frame):
         Frame_List = []
         # 點按鈕為各隊伍資訊
         def click_team_button(team_name):
-            window = Toplevel(self)
+            window = tk.Toplevel(self)
             window.title(team_name)
             window.geometry("500x500")
             # 以下是有container的scrollbar寫法
-            self.container = tk.Frame(self, height=500, width=1000)
+            self.container = tk.Frame(window, height=500, width=1000)
             self.container.pack(side="top",fill="both", expand=True)
-            self.teamCanv = tk.Canvas(self.container, width=500, height = 1000, highlightthickness=0, scrollregion=(0,0,500,500), bg="wheat2")
+            self.teamCanv = tk.Canvas(self.container, width=500, height = 2000, highlightthickness=0, scrollregion=(0,0,500,500), bg="wheat2")
             self.teamCanv.pack(side = "top", fill = "both", expand=True)
             teamBar = tk.Scrollbar(self.teamCanv, orient = "vertical", command = self.teamCanv.yview)
             teamBar.pack(side = "right", fill = "y")
-        
+
             self.scrollableF=tk.Frame(self.teamCanv, bg = "wheat2", width=1000, height = 500)
             self.scrollableF.pack(side = "bottom", fill = "both", anchor="center")
             self.teamCanv.configure(yscrollcommand = teamBar.set)
@@ -963,29 +963,29 @@ class TeamPage(tk.Frame):
                     self.img=ImageTk.PhotoImage(self.img)
                     self.picLabel = tk.Label(self.scrollableF, image=self.img)
                     self.picLabel.image = self.img
-                    self.picLabel.pack(side="top", pady=2, anchor="e") 
+                    self.picLabel.pack(side="top", pady=2, anchor="e")   
                 except:
                     self.picLabel = tk.Label(self.scrollableF, text="No image")
                     self.picLabel.pack(side="top", pady=2, anchor="e") 
-                    self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
-                    self.PInfoLabel.pack(side= "top", pady=5)
-                    self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
-                
-                    self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
-                    self.FGLabel.pack(side="top", pady=5)
-                    self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
-                    self.FG.pack(side="top", pady=5)
-                    self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="peach puff")
-                    self.GameLabel.pack(side="top", pady=5)
-                    for game in team.game[1:-2]:
-                        # print(game)
-                        self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
-                        if int(game[2])>int(game[3]):
-                            result="勝"
-                        else:
-                            result="敗"
-                        self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+result+"\n"+game[1]+" "+game[3])
-                        self.GInfoLabel.pack(side= "top", pady=5)
+                self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
+                self.PInfoLabel.pack(side= "top", pady=5)
+                self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
+            
+            self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
+            self.FGLabel.pack(side="top", pady=5)
+            self.FG=tk.Label(self.scrollableF, text=team.game[0][0]+"\n"+team.game[0][2]+"\nvs."+team.game[0][1], bg="wheat2")
+            self.FG.pack(side="top", pady=5)
+            self.GameLabel=tk.Label(self.scrollableF, text="近期賽事", font=("標楷體", 15), bg="peach puff")
+            self.GameLabel.pack(side="top", pady=5)
+            for game in team.game[1:-2]:
+                # print(game)
+                self.GInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
+                if int(game[2])>int(game[3]):
+                    result="勝"
+                else:
+                    result="敗"
+                self.GInfoLabel.configure(text=game[0]+" "+game[2]+"\n"+result+"\n"+game[1]+" "+game[3])
+                self.GInfoLabel.pack(side= "top", pady=5)
 
 
             # 要避免使用者手殘按到很多下爬蟲程式被啟動太多次然後電腦當機嗎
