@@ -30,7 +30,8 @@ def login_duty():
     # 判斷最近下注有沒有算清
     # 算清楚比賽結果
     game_result=[]
-    with open("data.csv", 'r', encoding='utf-8') as rf:
+    # "data.csv" 
+    with open( "/Users/yangqingwen/Downloads/data.csv", 'r', encoding='utf-8') as rf:
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
