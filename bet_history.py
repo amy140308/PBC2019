@@ -4,15 +4,12 @@ import csv
 # 抓使用者的資訊
 ID_num=0
 user_information = []
-"""
-放進個人資料頁：user_info
-"""
 user_info=[]
 with open("userInformation.csv", "r", newline = '') as f:
     rows = csv.reader(f)
-    i = 0
+    i=0
     for row in rows:
-        if i == ID_num:
+        if i==ID_num:
             for j in range(len(row)):
                 user_info.append(row[j])
             break
@@ -101,11 +98,11 @@ def login_duty():
 #下注格式
 # ['時間', 'A隊', 'B隊', '地點', '賭法', '方向', '賠率', '下幾注(一注十元)', '狀態', '盈虧', '下注時間']
 # 不讓分
-#[2019-12-06, 太陽, 鵜鶘, 地點, 不讓分, 隊名,... ]
+#[2019-12-06, 太陽,鵜鶘, 地點, 不讓分, 隊名,... ]
 # 單雙
-#[2019-12-06, 太陽, 鵜鶘, 地點, 單雙(總分), 單,... ]
+#[2019-12-06, 太陽,鵜鶘, 地點, 單雙(總分), 單,... ]
 # 大小
-#[2019-12-06, 太陽, 鵜鶘, 地點, 大小(總分), 大/x,...]
+#[2019-12-06, 太陽,鵜鶘, 地點, 大小(總分), 大/x,...]
 
 '''
 # 歷史交易結果
