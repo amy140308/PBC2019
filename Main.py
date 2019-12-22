@@ -515,7 +515,7 @@ class SportsLottery(tk.Tk):
     
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.geometry("1000x1000")
+        self.geometry("300x300")
         self.title("運彩模擬器")
         
         # self.canvas=tk.Canvas(self, width=500, height=1000)
@@ -534,9 +534,9 @@ class SportsLottery(tk.Tk):
         self.frames = {}
         
         """要做的事情"""
-        # loginPage show frame 
-        
-        for page in (NewsPage, TeamPage, PersonalPage, GamePage, HistoryPage): 
+       
+
+        for page in (NewsPage, TeamPage, PersonalPage, GamePage, HistoryPage, LoginPage): 
             page_name = page.__name__
             frame = page(parent=container, controller=self)
             self.frames[page_name] = frame # 存進dictionary
@@ -545,8 +545,8 @@ class SportsLottery(tk.Tk):
             # will be the one that is visible.
             frame.grid(row=1, column=0, sticky="nsew")
         
-        # 預設開啟頁面為新聞頁
-        self.show_frame("NewsPage")
+        # 預設開啟頁面為登入頁
+        self.show_frame("LoginPage")
     
     # 用tkraise決定哪個頁面要顯示在最上面
     def show_frame(self, page_name):
@@ -554,11 +554,13 @@ class SportsLottery(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-#  不能把login page寫成tk
+
+
 
 class LoginPage(tk.Frame):
-    def __init__(self):
-        self.configure("300x300")
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
         # self.title("運彩模擬器：登入")
         self.configure(bg="misty rose")
        
@@ -568,15 +570,15 @@ class LoginPage(tk.Frame):
         # self.canvas.create_image(0, 0, anchor="nw", image=self.img)
     
         f1=tkFont.Font(size=15, family="Didot")
-        self.l1=tk.Label(self, text="使用者名稱：", font=f1)
-        self.l2=tk.Label(self, text="密碼：", font=f1)
-        self.l1.pack(side="top", fill="x", padx=10, pady=10)
+        self.l1=tk.Label(self, text="使用者名稱：", font=f1, bg="snow")
+        self.l2=tk.Label(self, text="密碼：", font=f1, bg="snow")
+        self.l1.pack(side="top", padx=10, pady=10)
         self.var_usr_name=tk.StringVar(self)
         self.entry_usr_name=tk.Entry(self, textvariable=self.var_usr_name)
         self.entry_usr_name.pack()
         # 默認值
         # var_usr_name.set("")
-        self.l2.pack(side="top",padx=20, pady=10) #fill=X
+        self.l2.pack(side="top",padx=10, pady=10) 
 
         self.var_usr_pwd=tk.StringVar()
         self.entry_usr_pwd=tk.Entry(self, textvariable=self.var_usr_pwd) #show="*" 
@@ -602,6 +604,8 @@ class LoginPage(tk.Frame):
         except:
            pass
         # 檢查是否有此帳號
+        global username
+        global password 
         username=self.entry_usr_name.get()
         password=self.entry_usr_pwd.get()
         for i in range(len(userinformation)):
@@ -613,14 +617,13 @@ class LoginPage(tk.Frame):
         if check > 0:
             # 檢查密碼是否正確
             if password == user_password:
-                # 想問這裏(不能這樣跑)
-                app2=SportsLottery()
-                app2.mainloop()
+                
                 """
                 至關重要
                 # PersonalPage.modify(username)
                 """
-                #　self.destroy()
+                self.controller.show_frame("NewsPage")
+                PersonalPage.modify(username)   
             else:
                 tk.messagebox.showwarning("Warning", "密碼錯誤")
                 self.entry_usr_name.delete(0, "end")
@@ -712,18 +715,33 @@ class NewsPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent) 
         self.controller=controller
-        self.configure(bg="lemon chiffon",width=250, height=700)
-        
-        # 登入後五個頁面共同的板塊建立方式
-        create_common_frames(self, controller)
+        self.configure(bg="lemon chiffon",width=500, height=700)
         
         # self.pack(side=BOTTOM, expand=TRUE)
         # welcome page
-        
+        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
+        self.F1.pack(side="top", fill="both",anchor="n")
+        self.F2=tk.Frame(self,bg="sienna4",width=500, height=700)
+        self.F2.pack(side="top", fill="both", expand="TRUE")
         self.FN=tk.Frame(self.F2,bg="lemon chiffon",width=250, height=700)
         self.FN.pack(side="left", anchor="w",fill="both", expand="TRUE")
         self.FW=tk.Frame(self.F2, bg="floral white", width=300, height=700)
         self.FW.pack(side="left",fill="both", expand="TRUE")
+        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
+        for function in reversed(functions):
+            btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            btn.pack(side="right", pady=30, anchor="n")
+            btn_txt=btn.cget("text")
+            if btn_txt == "球隊介紹":
+                btn.configure(command=lambda: controller.show_frame("TeamPage"))
+            elif btn_txt == "新聞介紹":
+                btn.configure(command=lambda: controller.show_frame("NewsPage"))
+            elif btn_txt == "個人帳戶":
+                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+            elif btn_txt == "歷史資料":
+                btn.configure(command=lambda: controller.show_frame("HistoryPage"))
+            elif btn_txt == "賽事下注":
+                btn.configure(command = lambda: controller.show_frame("GamePage"))
 
 
         f0=tkFont.Font(family="標楷體", size=20)
@@ -840,17 +858,20 @@ class TeamPage(tk.Frame):
             """
             記得改filepath
             """
-            filepath = "/Users/yangqingwen/Desktop/PBC2019/team.csv"
+            filepath = "C:\\co-work\\team.csv"
             wf = open(file=filepath, mode="r", encoding="utf-8")
-            rows = csv.reader(wf)
-            info = []
+            rows = csv.reader(wf)  
+            team_info = []
             players = []
             games = []
+            self.Photo_list = []
+
             count = 0
             for i in rows:
                 if i[0] == team_name:
                     count = 1
-                    info = i 
+                    team_info = i
+                
                 elif 1 <= count and count <= 5:
                     players.append(i)
                     count += 1
@@ -863,21 +884,22 @@ class TeamPage(tk.Frame):
                 elif count > 13:
                     break
             wf.close
-
+            
             self.Label= tk.Label(self.scrollableF, bg="wheat2")
             self.Label.pack(side= "top", anchor="n")
-            self.Label.configure(text="隊伍名稱："+info[0]+
-                                     "\n"+"教練："+info[1]+
-                                     "\n"+"分區聯盟："+info[2]+
-                                     "\n"+"分區排名："+info[3]+
-                                     "\n"+"勝率："+info[4]+"\n"+"\n")
+            self.Label.configure(text="隊伍名稱："+team_info[0]+
+                                        "\n"+"教練："+team_info[1]+
+                                        "\n"+"分區聯盟："+team_info[2]+
+                                        "\n"+"分區排名："+team_info[3]+
+                                        "\n"+"勝率："+team_info[4]+"\n"+"\n")
         
             # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
             self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("標楷體", 15), bg="peach puff")
             self.PlayerLabel.pack(side= "top", pady=10)
-            for player in players:
-                image_url=player[3]
+            for i in range(len(players)):
+                image_url=players[i][3]
                 ssl._create_default_https_context = ssl._create_unverified_context
+                
                 try:
                     u = urlopen(image_url)
                     raw_data = u.read()
@@ -885,7 +907,8 @@ class TeamPage(tk.Frame):
                     self.playerPhoto = Image.open(BytesIO(raw_data))
                     self.playerPhoto = self.playerPhoto.resize((130, 95), Image.ANTIALIAS) 
                     self.playerPhoto = ImageTk.PhotoImage(self.playerPhoto)
-                    self.photoLabel = tk.Label(self.scrollableF, image=self.playerPhoto)
+                    self.Photo_list.append(self.playerPhoto)
+                    self.photoLabel = tk.Label(self.scrollableF, image=self.Photo_list[i])
                     self.photoLabel.pack(side="top", pady=2, anchor="e")   
                 except:
                     self.photoLabel = tk.Label(self.scrollableF, text="No image")
@@ -893,7 +916,7 @@ class TeamPage(tk.Frame):
                                 
                 self.PInfoLabel= tk.Label(self.scrollableF, bg="wheat2")
                 self.PInfoLabel.pack(side= "top", pady=5)
-                self.PInfoLabel.configure(text="球員姓名："+player[0]+" "+player[1]+"\n"+ "隊中位置："+player[2])
+                self.PInfoLabel.configure(text="球員姓名："+players[i][0]+" "+players[i][1]+"\n"+ "隊中位置："+players[i][2])
                 
             self.FGLabel=tk.Label(self.scrollableF, text="下場比賽", font=("標楷體", 15), bg="peach puff")
             self.FGLabel.pack(side="top", pady=5)
@@ -918,7 +941,6 @@ class TeamPage(tk.Frame):
                 button.configure(state="disabled")
             def Normalized(self, button):
                 self.button.configure(state="normal")
-
         
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
@@ -1081,15 +1103,47 @@ class PersonalPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.configure(width=500, height=700, bg="lemon chiffon")
-        # 登入後五個頁面共同的板塊建立方式
-        create_common_frames(self, controller)
+        self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
+        self.F1.pack(side="top", fill="both")
+        
+        functions=["新聞介紹","球隊介紹","賽事下注","歷史資料","個人帳戶"]
+        for function in reversed(functions):
+            self.btn=tk.Button(self.F1, height=2, width=10, relief=tk.FLAT, bg="lemon chiffon", fg="sienna4", font="Didot", text=function)
+            self.btn.pack(side="right", pady=30, anchor="n")
+            btn_txt=self.btn.cget("text")
+            if btn_txt == "新聞介紹":
+                self.btn.configure(command=lambda: self.controller.show_frame("NewsPage"))
+            elif btn_txt == "球隊介紹":
+                self.btn.configure(command=lambda: self.controller.show_frame("TeamPage"))
+            elif btn_txt == "賽事下注":
+                self.btn.configure(command=lambda: self.controller.show_frame("GamePage"))
+            elif btn_txt == "歷史資料":
+                self.btn.configure(command=lambda: self.controller.show_frame("HistoryPage"))
+            elif btn_txt == "個人帳戶":
+                self.btn.configure(command=lambda: self.controller.show_frame("PersonalPage"))
+
+        self.F2_canvas = tk.Canvas(self, width = 500, height = 600, bg = "lemon chiffon", highlightthickness = 0)  #height調整canvas的長度，要手動調（或寫def）
+        self.F2_canvas.pack(side = "top",fill = "both", expand = True)
+        
+        # 要建立frame，透過create_widget放在canvas上面才能滾動
+        self.F2 = tk.Frame(self.F2_canvas, bg = "lemon chiffon", width = 500, height = 1200)
+        self.F2.pack(side = "top", fill = "both" ,expand = True)
+        self.F2_canvas.create_window((200,200), window = self.F2, anchor = "nw") 
+
+        # 滾動條
+        self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
+        self.gameBar.pack(side = "right", fill = "y")
+        self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
+    def modify(username):
+        f1=tkFont.Font(family="Didot", size=30)
+        UsernameLbl = tk.Label(self.F2, text="Welcome,"+username, font=f1, bg="lemon chiffon")
+        UsernameLbl.pack(side="top", anchor= "center", pady= 20)
 
         # 帳戶組要給的餘額數字：
         Balance=5
-        f1=tkFont.Font(family="Didot", size=30)
-        
+        # read csv讀入歷史資訊和帳戶餘額
         # 所有東西要擺在F2的Frame裡面
-        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額："+str(Balance), font=f1,bg="lemon chiffon")
+        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額："+str(Balance), font=f1, bg="lemon chiffon")
         self.BalanceLbl.pack(side="top", anchor="center",pady=20)
 
 app=SportsLottery()
