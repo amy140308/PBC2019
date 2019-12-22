@@ -557,38 +557,63 @@ class SportsLottery(tk.Tk):
         PersonalPage.modify(username)
 
 
+class GradientCanv(tk.Canvas):
+    '''A gradient frame which uses a canvas to draw the background'''
+    def __init__(self, parent, color1="lemon chiffon", color2="misty rose", **kwargs):
+        tk.Canvas.__init__(self, parent, **kwargs)
+        self._color1 = color1
+        self._color2 = color2
+        self.bind("<Configure>", self._draw_gradient)
 
+    def _draw_gradient(self, event=None):
+        '''Draw the gradient'''
+        self.delete("gradient")
+        width = self.winfo_width()
+        height = self.winfo_height()
+        limit = width
+        (r1,g1,b1) = self.winfo_rgb(self._color1)
+        (r2,g2,b2) = self.winfo_rgb(self._color2)
+        r_ratio = float(r2-r1) / limit
+        g_ratio = float(g2-g1) / limit
+        b_ratio = float(b2-b1) / limit
+
+        for i in range(limit):
+            nr = int(r1 + (r_ratio * i))
+            ng = int(g1 + (g_ratio * i))
+            nb = int(b1 + (b_ratio * i))
+            color = "#%4.4x%4.4x%4.4x" % (nr,ng,nb)
+            self.create_line(i,0,i,height, tags=("gradient",), fill=color)
+        self.lower("gradient")
 
 class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         # self.title("運彩模擬器：登入")
-        self.configure(bg="misty rose")
-       
+        self.canvas = GradientCanv(self,width=300, height=300, color1="lemon chiffon", color2="misty rose", highlightthickness = 0, relief="sunken")
+        self.canvas.pack(side="top", fill="both", expand=True)
         # self.img=Image.open("NBALogo.gif")
         # self.img=self.img.resize((200, 200), Image.ANTIALIAS) 
         # self.img=ImageTk.PhotoImage(self.img)
         # self.canvas.create_image(0, 0, anchor="nw", image=self.img)
     
         f1=tkFont.Font(size=15, family="Didot")
-        self.l1=tk.Label(self, text="使用者名稱：", font=f1, bg="snow")
-        self.l2=tk.Label(self, text="密碼：", font=f1, bg="snow")
-        self.l1.pack(side="top", padx=10, pady=10)
+        self.l1=tk.Label(self.canvas, text="使用者名稱：", font=f1, bg="lemon chiffon")
+        self.l2=tk.Label(self.canvas, text="密碼：", font=f1, bg="lemon chiffon")
+        self.l1.pack(side="top", padx=10, pady=20)
         self.var_usr_name=tk.StringVar(self)
-        self.entry_usr_name=tk.Entry(self, textvariable=self.var_usr_name)
+        self.entry_usr_name=tk.Entry(self.canvas, textvariable=self.var_usr_name)
         self.entry_usr_name.pack()
         # 默認值
         # var_usr_name.set("")
         self.l2.pack(side="top",padx=10, pady=10) 
-
         self.var_usr_pwd=tk.StringVar()
-        self.entry_usr_pwd=tk.Entry(self, textvariable=self.var_usr_pwd) #show="*" 
+        self.entry_usr_pwd=tk.Entry(self.canvas, textvariable=self.var_usr_pwd) #show="*" 
         self.entry_usr_pwd.pack(side="top", padx=10, pady=10)
         # 以下login command之後要寫成判斷式並用configure結合
-        self.btn_login=tk.Button(self, text="登入", font=f1, command=self.usr_login)
+        self.btn_login=tk.Button(self.canvas, text="登入", font=f1, command=self.usr_login)
         self.btn_login.pack(side="right", padx=10, pady=10)
-        self.btn_signup=tk.Button(self, text="註冊", font=f1, command=self.usr_signup)
+        self.btn_signup=tk.Button(self.canvas, text="註冊", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side="right", padx=10, pady=10)
 
     
