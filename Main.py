@@ -517,7 +517,7 @@ class SportsLottery(tk.Tk):
         tk.Tk.__init__(self, *args, **kwargs)
         self.geometry("300x300")
         self.title("運彩模擬器")
-        
+        self.frames = {}
         # self.canvas=tk.Canvas(self, width=500, height=1000)
         # self.canvas.pack(fill=BOTH,expand=Y)
         # canvas.configure(bg="misty rose")
@@ -530,9 +530,6 @@ class SportsLottery(tk.Tk):
 
         # LoginPage(parent=container, controller=self).grid(row=1, column=0, sticky="nsew")
         
-        
-        self.frames = {}
-        
         """要做的事情"""
        
 
@@ -543,6 +540,8 @@ class SportsLottery(tk.Tk):
             # put all of the pages in the same location;
             # the one on the top of the stacking order
             # will be the one that is visible.
+            if page_name == "PersonalPage":
+                PP=frame
             frame.grid(row=1, column=0, sticky="nsew")
         
         # 預設開啟頁面為登入頁
@@ -553,6 +552,9 @@ class SportsLottery(tk.Tk):
         '''Show a frame for the given page name（跳轉頁面）'''
         frame = self.frames[page_name]
         frame.tkraise()
+    def user_info_modify(self, username):
+        PersonalPage=self.frames["PersonalPage"]
+        PersonalPage.modify(username)
 
 
 
@@ -617,13 +619,8 @@ class LoginPage(tk.Frame):
         if check > 0:
             # 檢查密碼是否正確
             if password == user_password:
-                
-                """
-                至關重要
-                # PersonalPage.modify(username)
-                """
                 self.controller.show_frame("NewsPage")
-                PersonalPage.modify(username)   
+                self.controller.user_info_modify(username)
             else:
                 tk.messagebox.showwarning("Warning", "密碼錯誤")
                 self.entry_usr_name.delete(0, "end")
@@ -1134,13 +1131,12 @@ class PersonalPage(tk.Frame):
         self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
         self.gameBar.pack(side = "right", fill = "y")
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
-    def modify(username):
+    def modify(self, username):
         f1=tkFont.Font(family="Didot", size=30)
-        UsernameLbl = tk.Label(self.F2, text="Welcome,"+username, font=f1, bg="lemon chiffon")
+        UsernameLbl = tk.Label(self.F2, text="Welcome, "+username, font=f1, bg="lemon chiffon")
         UsernameLbl.pack(side="top", anchor= "center", pady= 20)
 
         # 帳戶組要給的餘額數字：
-        Balance=5
         # read csv讀入歷史資訊和帳戶餘額
         # 所有東西要擺在F2的Frame裡面
         self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額："+str(Balance), font=f1, bg="lemon chiffon")

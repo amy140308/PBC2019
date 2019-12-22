@@ -89,7 +89,7 @@ class Team:
         self.info = [city_name]
         self.player = [[0 for i in range(4)] for j in range(5)]
         self.game = [[0 for i in range(4)] for j in range(6)]
-
+    @classmethod
     def clear(cls, before, after, words):  # 從原始碼中去掉不需要的，取得資訊
         start = 0
         end = 0
