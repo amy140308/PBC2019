@@ -146,7 +146,7 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
@@ -226,7 +226,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome( executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome( executable_path = 'chromedriver.exe', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
@@ -310,7 +310,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = "/Users/yangqingwen/Downloads/data.csv" 
+        filepath = "C:\\Users\\user\\Downloads\\data.csv" 
         # "/Users/yangqingwen/Downloads/data.csv" 
         # 'C:\\Users\\user\\Downloads\\data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
@@ -557,63 +557,38 @@ class SportsLottery(tk.Tk):
         PersonalPage.modify(username)
 
 
-class GradientCanv(tk.Canvas):
-    '''A gradient frame which uses a canvas to draw the background'''
-    def __init__(self, parent, color1="lemon chiffon", color2="misty rose", **kwargs):
-        tk.Canvas.__init__(self, parent, **kwargs)
-        self._color1 = color1
-        self._color2 = color2
-        self.bind("<Configure>", self._draw_gradient)
 
-    def _draw_gradient(self, event=None):
-        '''Draw the gradient'''
-        self.delete("gradient")
-        width = self.winfo_width()
-        height = self.winfo_height()
-        limit = width
-        (r1,g1,b1) = self.winfo_rgb(self._color1)
-        (r2,g2,b2) = self.winfo_rgb(self._color2)
-        r_ratio = float(r2-r1) / limit
-        g_ratio = float(g2-g1) / limit
-        b_ratio = float(b2-b1) / limit
-
-        for i in range(limit):
-            nr = int(r1 + (r_ratio * i))
-            ng = int(g1 + (g_ratio * i))
-            nb = int(b1 + (b_ratio * i))
-            color = "#%4.4x%4.4x%4.4x" % (nr,ng,nb)
-            self.create_line(i,0,i,height, tags=("gradient",), fill=color)
-        self.lower("gradient")
 
 class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         # self.title("運彩模擬器：登入")
-        self.canvas = GradientCanv(self,width=300, height=300, color1="lemon chiffon", color2="misty rose", highlightthickness = 0, relief="sunken")
-        self.canvas.pack(side="top", fill="both", expand=True)
+        self.configure(bg="misty rose")
+       
         # self.img=Image.open("NBALogo.gif")
         # self.img=self.img.resize((200, 200), Image.ANTIALIAS) 
         # self.img=ImageTk.PhotoImage(self.img)
         # self.canvas.create_image(0, 0, anchor="nw", image=self.img)
     
         f1=tkFont.Font(size=15, family="Didot")
-        self.l1=tk.Label(self.canvas, text="使用者名稱：", font=f1, bg="lemon chiffon")
-        self.l2=tk.Label(self.canvas, text="密碼：", font=f1, bg="lemon chiffon")
-        self.l1.pack(side="top", padx=10, pady=20)
+        self.l1=tk.Label(self, text="使用者名稱：", font=f1, bg="snow")
+        self.l2=tk.Label(self, text="密碼：", font=f1, bg="snow")
+        self.l1.pack(side="top", padx=10, pady=10)
         self.var_usr_name=tk.StringVar(self)
-        self.entry_usr_name=tk.Entry(self.canvas, textvariable=self.var_usr_name)
+        self.entry_usr_name=tk.Entry(self, textvariable=self.var_usr_name)
         self.entry_usr_name.pack()
         # 默認值
         # var_usr_name.set("")
         self.l2.pack(side="top",padx=10, pady=10) 
+
         self.var_usr_pwd=tk.StringVar()
-        self.entry_usr_pwd=tk.Entry(self.canvas, textvariable=self.var_usr_pwd) #show="*" 
+        self.entry_usr_pwd=tk.Entry(self, textvariable=self.var_usr_pwd) #show="*" 
         self.entry_usr_pwd.pack(side="top", padx=10, pady=10)
         # 以下login command之後要寫成判斷式並用configure結合
-        self.btn_login=tk.Button(self.canvas, text="登入", font=f1, command=self.usr_login)
+        self.btn_login=tk.Button(self, text="登入", font=f1, command=self.usr_login)
         self.btn_login.pack(side="right", padx=10, pady=10)
-        self.btn_signup=tk.Button(self.canvas, text="註冊", font=f1, command=self.usr_signup)
+        self.btn_signup=tk.Button(self, text="註冊", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side="right", padx=10, pady=10)
 
     
@@ -622,9 +597,10 @@ class LoginPage(tk.Frame):
         user_password = 0
         # 讀取csv檔中的使用者資料至list
         # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+        # C:\\co-work\\userInformation.csv
         userinformation = []
         try:
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
+            with open('C:\\co-work\\userInformation.csv', "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -658,9 +634,10 @@ class LoginPage(tk.Frame):
         # 讀取csv檔中的使用者資料至list
         try:
             # r必須打開已有的文件
-            # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+            # '/Users/yangqingwen/Downloads/userInformation.csv'
+            # 'C:\\co-work\\userInformation.csv'
             userinformation = []
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
+            with open('C:\\co-work\\userInformation.csv', "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -686,7 +663,7 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "a+", newline='') as f:
+            with open('C:\\co-work\\userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
@@ -964,7 +941,7 @@ class TeamPage(tk.Frame):
                 button.configure(state="disabled")
             def Normalized(self, button):
                 self.button.configure(state="normal")
-        
+        """
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -982,7 +959,7 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
-        """
+        
         
         
         # 打開隊伍資訊
