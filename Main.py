@@ -17,7 +17,7 @@ import tkinter.messagebox
 
  
 
-"""這五個爬蟲跟四個頁面有關係"""
+"""五個爬蟲跟四個頁面有關係"""
 
 # 抓news
 class news():
@@ -146,7 +146,7 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
@@ -226,8 +226,10 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
+        self.driver = webdriver.Chrome( executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
+        # executable_path = '/usr/local/bin/chromedriver'
+        # executable_path = 'chromedriver.exe'
 
     def update(self):
         stop = False  # 控制什麼時候就不用再按日期回鍵抓資訊
@@ -308,8 +310,8 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = 'C:\\Users\\user\\Downloads\\data.csv'
-        # 
+        filepath = "/Users/yangqingwen/Downloads/data.csv" 
+        # "/Users/yangqingwen/Downloads/data.csv" 
         # 'C:\\Users\\user\\Downloads\\data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
@@ -331,6 +333,9 @@ class history():
 class Team:
 """
 
+"""
+待修
+"""
 
 class gamebet():
     """
@@ -590,7 +595,7 @@ class LoginPage(tk.Frame):
         # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
         userinformation = []
         try:
-            with open("C:\\co-work\\userInformation.csv", "r", newline = '') as f:
+            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -630,7 +635,7 @@ class LoginPage(tk.Frame):
             # r必須打開已有的文件
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             userinformation = []
-            with open("userInformation.csv", "r", newline = '') as f:
+            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -656,7 +661,7 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
-            with open("C:\\co-work\\userInformation.csv", "a+", newline='') as f:
+            with open('/Users/yangqingwen/Downloads/userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
@@ -873,7 +878,6 @@ class TeamPage(tk.Frame):
             for player in players:
                 image_url=player[3]
                 ssl._create_default_https_context = ssl._create_unverified_context
-                
                 try:
                     u = urlopen(image_url)
                     raw_data = u.read()
@@ -915,7 +919,7 @@ class TeamPage(tk.Frame):
             def Normalized(self, button):
                 self.button.configure(state="normal")
 
-        """ for windows
+        
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -933,6 +937,7 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
+        """
         
         
         # 打開隊伍資訊
@@ -1061,11 +1066,14 @@ class HistoryPage(tk.Frame):
         f2=tkFont.Font(size=15, family="Didot")
         self.Title=tk.Label(self.F2, text="昨日賽事"+"("+dstr+")", font=f1, bg="lemon chiffon")
         self.Title.pack(side="left", anchor="nw")
-        
-        for i in range(len(final_h)):
-            self.lbl=tk.Label(self.F2, width=40, text=str(i+1)+"\n"+"時間："+final_h[i][1]+"\n"+"客隊："+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊："+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場："+final_h[i][6])
-            self.lbl.configure(font=f2, bg="lemon chiffon", justify="center")
-            self.lbl.pack(side="top", pady=5, anchor="center")
+        if len(final_h) == 0:
+            self.lbl=tk.Label(self.F2, text="昨日無賽事", font=("標楷體", 18), bg="lemon chiffon")
+            self.lbl.pack(side="top", anchor="center", padx=10)
+        else:
+            for i in range(len(final_h)):
+                self.lbl=tk.Label(self.F2, width=40, text=str(i+1)+"\n"+"時間："+final_h[i][1]+"\n"+"客隊："+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊："+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場："+final_h[i][6])
+                self.lbl.configure(font=f2, bg="lemon chiffon", justify="center")
+                self.lbl.pack(side="top", pady=5, anchor="center")
         
     # def click_game_button(self):
 class PersonalPage(tk.Frame):

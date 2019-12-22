@@ -87,8 +87,11 @@ class Temp(tk.Tk):
         # 名、姓氏、位置、頭像連結 (五個先發各在一個list，包成2-d list回傳)
         self.PlayerLabel=tk.Label(self.scrollableF, text="先發名單", font=("標楷體", 15), bg="peach puff")
         self.PlayerLabel.pack(side= "top", pady=10)
+        # 修改使用team.csv後造成的bug
+        playerPhotos=[]
         for player in players:
             image_url=player[3]
+
             ssl._create_default_https_context = ssl._create_unverified_context
             
             try:
