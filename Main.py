@@ -1158,6 +1158,62 @@ class PersonalPage(tk.Frame):
         self.gameBar.pack(side = "right", fill = "y")
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
     def modify(self, username):
+
+
+        f1=tkFont.Font(family="魏碑", size=30)
+        self.UsernameLbl = tk.Label(self.F2, text = "你好, "+username, font = f1, bg = "lemon chiffon")
+        self.UsernameLbl.pack(side="top", anchor= "n", pady= 20)
+        """
+        下注資訊紀錄：等改
+        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額： "+str(user_info[i][2]), font=f1, bg="lemon chiffon")
+        self.BalanceLbl.pack(side="top", anchor="center")
+
+        
+        # 我就先推測i是下注的次數？
+        # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
+        # 只顯示近十筆？下注如果超過一百筆可能會超過scrollbar可以滑的範圍
+        
+        
+        if len(user_info) == 0:
+            self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
+            self.ShowLbl.pack(side="top", pady=15)
+        else:
+            for i in range(len(user_info)):
+                # 下注第幾筆
+                self.BetIndexLbl=tk.Label(self.F2, text=str(i+1)+".", font = f1, bg = "lemon chiffon")
+                self.BetIndexLbl.pack(sied="top")
+
+                # 下注時間
+                time = user_info[i][10]
+                tstr=time.strftime("%Y-%m-%d %H:%M")
+                self.BetTimeLbl=tk.Label(self.F2, text = "下注時間： "+tstr, font = f1, bg="lemon chiffon")
+                self.BetTimeLbl.pack(side="top")
+                # 下注狀態
+
+                self.StatusLbl=tk.Label(self.F2, text="狀態： "+user_info[i][8], font=f1, bg="lemon chiffon") 
+                self.StatusLbl.pack(side="top")
+                # 下注賽事資訊
+
+                self.GameLbl=tk.Label(self.F2, text="賽事： "+user_info[i][0]+" "+user_info[i][1]+" vs."+user_info[i][2]+" "+user_info[i][3], , font=f1, bg="lemon chiffon")
+                self.GameLbl.pack(side="top")
+
+                # 賭法
+                self.WayLbl=tk.Label(self.F2, text="賭法： "+user_info[i][4], bg="lemon chiffon", font=f1)
+                self.WayLbl.pack(side="top")
+
+                # 方向 什麼方向？我直接寫diection...
+                self.DirectLbl=tk.Label(self.F2, text="方向： "+user_info[i][5], bg="lemon chiffon", font=f1)
+                self.DirectLbl.pack(side="top")
+
+                # 賠率
+                self.OddsLbl=tk.Label(self.F2, text="賠率： "+user_info[i][6], bg="lemon chiffon", font=f1)
+                self.OddsLbl.pack(side="top")
+
+                # 下注數
+                self.BetNumLbl=tk.Label(self.F2, text="下注數： "+user_info[i][7], bg="lemon chiffon", font=f1)
+                self.BetNumLbl.pack(side="top")
+        """
+
         f1=tkFont.Font(family="Didot", size=30)
         UsernameLbl = tk.Label(self.F2, text="Welcome, "+username, font=f1, bg="lemon chiffon")
         UsernameLbl.pack(side="top", anchor= "center", pady= 20)
