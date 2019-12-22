@@ -146,7 +146,7 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
@@ -226,7 +226,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome( executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome( executable_path = 'chromedriver.exe', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
@@ -310,7 +310,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = "/Users/yangqingwen/Downloads/data.csv" 
+        filepath = "C:\\Users\\user\\Downloads\\data.csv" 
         # "/Users/yangqingwen/Downloads/data.csv" 
         # 'C:\\Users\\user\\Downloads\\data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
@@ -597,9 +597,10 @@ class LoginPage(tk.Frame):
         user_password = 0
         # 讀取csv檔中的使用者資料至list
         # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+        # C:\\co-work\\userInformation.csv
         userinformation = []
         try:
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
+            with open('C:\\co-work\\userInformation.csv', "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -633,9 +634,10 @@ class LoginPage(tk.Frame):
         # 讀取csv檔中的使用者資料至list
         try:
             # r必須打開已有的文件
-            # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+            # '/Users/yangqingwen/Downloads/userInformation.csv'
+            # 'C:\\co-work\\userInformation.csv'
             userinformation = []
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
+            with open('C:\\co-work\\userInformation.csv', "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -661,7 +663,7 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "a+", newline='') as f:
+            with open('C:\\co-work\\userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
@@ -836,11 +838,12 @@ class TeamPage(tk.Frame):
             window = tk.Toplevel(self)
             window.title(team_name)
             window.geometry("500x500")
+            window.resizable(False, False)
             
             # 以下是有container的scrollbar寫法
             self.container = tk.Frame(window, height=500, width=1000)
             self.container.pack(side="top",fill="both", expand=True)
-            self.teamCanv = tk.Canvas(self.container, width=500, height = 2000, highlightthickness=0, scrollregion=(0,0,500,500), bg="wheat2")
+            self.teamCanv = tk.Canvas(self.container, width=500, height = 2000, highlightthickness=0, bg="wheat2")
             self.teamCanv.pack(side = "top", fill = "both", expand=True)
             teamBar = tk.Scrollbar(self.teamCanv, orient = "vertical", command = self.teamCanv.yview)
             teamBar.pack(side = "right", fill = "y")
@@ -848,8 +851,8 @@ class TeamPage(tk.Frame):
             self.scrollableF=tk.Frame(self.teamCanv, bg = "wheat2", width=1000, height = 500)
             self.scrollableF.pack(side = "bottom", fill = "both", anchor="center")
             self.teamCanv.configure(yscrollcommand = teamBar.set)
-            self.scrollableF.bind("<Configure>",lambda: self.teamCanv.configure(scrollregion=self.teamCanv.bbox("all")))
-            self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="n")
+            self.scrollableF.bind("<Configure>",lambda x: self.teamCanv.configure(scrollregion=self.teamCanv.bbox("all")))
+            self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="nw")
             
             # 視窗的隊伍資訊
             """
@@ -938,7 +941,7 @@ class TeamPage(tk.Frame):
                 button.configure(state="disabled")
             def Normalized(self, button):
                 self.button.configure(state="normal")
-        
+        """
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -956,7 +959,7 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
-        """
+        
         
         
         # 打開隊伍資訊

@@ -836,11 +836,12 @@ class TeamPage(tk.Frame):
             window = tk.Toplevel(self)
             window.title(team_name)
             window.geometry("500x500")
+            window.resizable(False, False)
             
             # 以下是有container的scrollbar寫法
             self.container = tk.Frame(window, height=500, width=1000)
             self.container.pack(side="top",fill="both", expand=True)
-            self.teamCanv = tk.Canvas(self.container, width=500, height = 2000, highlightthickness=0, scrollregion=(0,0,500,500), bg="wheat2")
+            self.teamCanv = tk.Canvas(self.container, width=500, height = 2000, highlightthickness=0, bg="wheat2")
             self.teamCanv.pack(side = "top", fill = "both", expand=True)
             teamBar = tk.Scrollbar(self.teamCanv, orient = "vertical", command = self.teamCanv.yview)
             teamBar.pack(side = "right", fill = "y")
@@ -848,8 +849,8 @@ class TeamPage(tk.Frame):
             self.scrollableF=tk.Frame(self.teamCanv, bg = "wheat2", width=1000, height = 500)
             self.scrollableF.pack(side = "bottom", fill = "both", anchor="center")
             self.teamCanv.configure(yscrollcommand = teamBar.set)
-            self.scrollableF.bind("<Configure>",lambda: self.teamCanv.configure(scrollregion=self.teamCanv.bbox("all")))
-            self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="n")
+            self.scrollableF.bind("<Configure>",lambda x: self.teamCanv.configure(scrollregion=self.teamCanv.bbox("all")))
+            self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="nw")
             
             # 視窗的隊伍資訊
             """
