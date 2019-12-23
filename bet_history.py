@@ -15,6 +15,9 @@ with open("userInformation.csv", "r", newline = '') as f:
             break
         else:
             i+=1
+with open("userInformation.csv", "r", newline = '') as f:
+    rows=csv.reader(f)
+    
 
 # 登入當下要做的事
 def login_duty():
