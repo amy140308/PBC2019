@@ -465,7 +465,11 @@ def login_duty(user_info):  # user_info是list
     login_time=datetime.datetime.today()
     # 判斷今日登入時間是否與最後登入時間相符
     # 每日登入自動新增1,000元(與上次登入的日期不一樣)
+    """
+    個人資料去世ㄌ（12/23）
+    """
     usr_login_time=datetime.datetime.strptime(usr_login_timeStr, "%Y-%m-%d %H:%M:%S%f")
+
     diff=login_time-usr_login_time.date
     if diff.days>0:
         user_info[2]+=1000
@@ -1099,29 +1103,92 @@ class GamePage(tk.Frame):
             self.GameCanv.pack(side = "top", fill = "both", expand=True)
             self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
             self.GameFrame.pack(side = "top", fill = "both", anchor="center", expand=True)
-            self.showL = tk.Label(self.GameFrame, bg="white", width=10, height = 10, text="顯示幕")
+            self.showL = tk.Label(self.GameFrame, bg="white", width=10, height = 10)
             self.showL.grid(row=0, column=0, columnspan=8, rowspan=4, padx=5, pady=5, sticky = "nsew")
             # 單雙
             self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
             self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75")
+            self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=self.clcikBtnGB1)
             self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75")
+            self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=self.clcikBtnGB2)
             self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
             # 大小
             self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
             self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][1]+"  1.75")
+            self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][1]+"  1.75", command=self.clcikBtnGB3)
             self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][3]+"  1.75")
+            self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][3]+"  1.75", command=self.clcikBtnGB4)
             self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
             # 不讓分
             self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
             self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]))
+            self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]),command=self.clcikBtnGB5)
             self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]))
+            self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]), command=self.clcikBtnGB6)
             self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
+
+            self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除下注", command=self.clickcancelBtn)
+            self.cancelBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
+            self.okBtn(self.GameFrame, bg="AntiqueWhite1", text="確定",command=self.clickokBtn)
+            self.okBtn(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
+            
+            # 確認（關視窗）儲存所有下注內容
+            # 每點一次按鈕都要確認一次顯示幕上的東西，不能把content寫外面？
+            def clickBtnGB1(self):
+                content = self.showL.cget("text")
+                self.showL.configure(text=content+"\n"+"單雙（總分）     單  1.75", justify="left")
+                self.GB1.configure(state="disabled")
+                self.GB2.configure(state="disabled")
+            def clickBtnGB2(self):
+                content = self.showL.cget("text")
+                self.showL.configure(text=content+"\n"+"單雙（總分）     雙  1.75", justify="left")
+                self.GB1.configure(state="disabled")
+                self.GB2.configure(state="disabled")
+            def clickBtnGB3(self):
+                content = self.showL.cget("text")
+                self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][1]+"     1.75", justify="left")
+                self.GB3.configure(state="disabled")
+                self.GB4.configure(state="disabled")
+            def clickBtnGB4(self):
+                content = self.showL.cget("text")
+                self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][3]+"     1.75", justify="left")
+                self.GB3.configure(state="disabled")
+                self.GB4.configure(state="disabled")
+            def clickBtnGB5(self):
+                content = self.showL.cget("text")
+                self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][1]+"  "+Odds[2][2], justify="left")
+                self.GB5.configure(state="disabled")
+                self.GB6.configure(state="disabled")
+            def clickBtnGB6(self):
+                content = self.showL.cget("text")
+                self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][3]+"  "+Odds[2][4], justify="left")
+                self.GB5.configure(state="disabled")
+                self.GB6.configure(state="disabled")
+
+            # 取消用的函數（一次全部取消）
+            def clickcancelBtn(self):
+                self.GB1.configure(state="normal")
+                self.GB2.configure(state="normal")
+                self.GB3.configure(state="normal")
+                self.GB4.configure(state="normal")
+                self.GB5.configure(state="normal")
+                self.GB6.configure(state="normal")
+                self.showL.configure(text="") 
+            def.clickokBtn(self):
+                """
+                下注組希望回傳的資訊形式
+                """
+                pass
+
+
+
+
+
+
+
+            
+            
+
             
 # HistoryPage歷史紀錄頁面
 
@@ -1227,7 +1294,7 @@ class PersonalPage(tk.Frame):
 
                 # 下注時間
                 time = user_info[4][i][10]
-                tstr=time.strftime("%Y-%m-%d %H:%M")
+                tstr=time.strftime("%Y-%m-%d %H:%M")  
                 self.BetTimeLbl=tk.Label(self.F2, text = "下注時間： "+tstr, font = f1, bg="lemon chiffon")
                 self.BetTimeLbl.pack(side="top")
                 # 下注狀態
