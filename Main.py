@@ -346,8 +346,6 @@ class gamebet():
      ['不讓分', 'A隊名', A賠率, 'B隊名', B賠率]]
     """
     def odds(self, team_name_A, team_name_B):
-        print("***calculating odds...")
-        data_list = []
         
         teamnamedict = {"塞爾蒂克": "波士頓塞爾蒂克", "公牛": "芝加哥公牛", 
                     "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
@@ -363,20 +361,39 @@ class gamebet():
         team_name_A = teamnamedict[team_name_A]
         team_name_B = teamnamedict[team_name_B]
         
-        #獲得雙方隊伍勝率與平均得分
-        print("getting team", team_name_A, "stats...")
-        teamA = Team(team_name_A)
-        teamA.get_info() #勝率是int(teamA.info[4])
-        self.win_oddsA = (float(teamA.info[4][:(len(teamA.info[4])-1)]) / 100)
-        teamA.get_game() #平均得分是teamA.game[(len(teamA.game) - 1)]
-        self.score_A = teamA.game[(len(teamA.game) - 1)]
+        print("***calculating odds...")
+        data_list = []
         
-        print("getting team", team_name_B, "stats...")        
-        teamB = Team(team_name_B)
-        teamB.get_info() #勝率B是int(teamB.info[4])
-        self.win_oddsB = (float(teamB.info[4][:(len(teamB.info[4])-1)]) / 100)
-        teamB.get_game() #平均得分是teamB.game[(len(teamB.game) - 1)]
-        self.score_B = teamB.game[(len(teamB.game) - 1)]
+        team_file = "C://Users//kevin//OneDrive//Documents//GitHub//PBC2019//team.csv" #要改
+        with open(team_file, 'r', encoding='UTF-8') as csvfile:
+            rows = csv.reader(csvfile)
+            line = 1
+            line_team_A = 0
+            line_team_B = 0
+            
+            for row in rows:
+                if row[0] == team_name_A:
+                    self.win_oddsA = (float(row[4][:(len(row[4])-1)]) / 100)
+                    line_team_A = line
+                                
+                elif row[0] == team_name_B:
+                    self.win_oddsB = (float(row[4][:(len(row[4])-1)]) / 100)
+                    line_team_B = line
+
+                if line_team_A != 0:
+                    if line == (line_team_A + 12):
+                        self.score_A = float(row[0])    
+                        
+                if line_team_B != 0: 
+                    if line == (line_team_B + 12):
+                        print(row)
+                        self.score_B = float(row[0])
+                    
+                line += 1
+                
+        print(team_name_A, self.win_oddsA, self.score_A)
+        print(team_name_B, self.win_oddsB)
+        
         
         """
         賠率公式：
@@ -389,13 +406,13 @@ class gamebet():
         """
         
         #單雙
-        data_list.append(['單雙', '單', 1.75, '雙', 1.75])
+        data_list.append(['單雙(總分)', '單', 1.75, '雙', 1.75])
         
         #大小
-        scoresum = teamA.game[(len(teamA.game) - 1)] + teamB.game[(len(teamB.game) - 1)]
+        scoresum = self.score_A + self.score_B
         scoresum = int(scoresum) + 0.5 #確保大小是以.5結尾
-        data_list.append(['大小(總分)', ('大於' + str(scoresum)), 1.75,
-                          ('小於' + str(scoresum)), 1.75])
+        data_list.append(['大小(總分)', ('大/' + str(scoresum)), 1.75,
+                          ('小/' + str(scoresum)), 1.75])
         
         #不讓分
         teamA_odds = self.win_oddsA * (1 - self.win_oddsB)
@@ -436,77 +453,6 @@ class gamebet():
         data_list.append(['不讓分', team_name_A, teamA_odds, team_name_B, teamB_odds])
         
         return data_list
-    
-    """
-    def get_bettingA(final_g) ，需要輸入當日賽程清單
-    return list：一場賽事回傳一個完整賠率清單
-    舉例：[['時間', 'A隊', 'B隊', '地點', [[單雙], [大小], [不讓分]]],
-           ['時間', 'C隊', 'D隊', '地點', [[單雙], [大小], [不讓分]]]...]
-    
-    A版本使用For迴圈一個一個計算，算出全部的賠率，非常耗時間。
-    """
-    def get_bettingA(self, final_g):
-        #先得到當日賽事資訊
-        data_list = []
-        
-        #Team與bet對照隊名用
-        teamnamedict = {"塞爾蒂克": "波士頓塞爾蒂克", "公牛": "芝加哥公牛", 
-                    "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
-                    "騎士": "克里夫蘭騎士", "黃蜂": "夏洛特黃蜂", "尼克": "紐約尼克",
-                    "活塞": "底特律活塞", "熱火": "邁阿密熱火", "76人": "費城76人",
-                    "溜馬": "印第安納溜馬", "魔術": "奧蘭多魔術", "暴龍": "多倫多暴龍", 
-                    "公鹿": "密爾瓦基公鹿", "巫師": "華盛頓巫師", "金塊": "丹佛金塊", "勇士": "金州勇士", 
-                    "獨行俠": "達拉斯獨行俠", "灰狼": "明尼蘇達灰狼", "快艇": "洛杉磯快艇",
-                    "火箭": "休士頓火箭", "雷霆": "奧克拉荷馬城雷霆", "湖人": "洛杉磯湖人", 
-                    "灰熊": "曼菲斯灰熊", "拓荒者": "波特蘭拓荒者", "太陽": "鳳凰城太陽", 
-                    "鵜鶘": "紐奧良鵜鶘", "爵士": "猶他爵士", "國王": "沙加緬度國王", "馬刺": "聖安東尼奧馬刺"}
-        
-        #for迴圈判定賠率
-        for i in range(len(final_g)):
-            data_list.append(final_g[i])
-            print('***Getting game of', teamnamedict[final_g[i][1]],"vs.", teamnamedict[final_g[i][2]])
-            odds_list = self.odds(teamnamedict[final_g[i][1]], teamnamedict[final_g[i][2]])
-            data_list[i].append(odds_list)
-            print('***Check list', data_list[i])
-            print()
-            print()
-        
-        return data_list
-
-    #判斷下幾注，賠率
-    """
-    三種寫法分別對應不同的結果?
-    """
-    #def go_bet(self):
-        
-    
-    #下注
-    """
-    def gobet 需要輸入一個清單：['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱']
-    - 從帳戶扣除應繳金額
-    - 新增一筆交易資料，此交易資料會是一個清單：
-      ['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱', '輸/贏/未交割', 盈虧]
-    - 回傳
-    """
-    #def confirm_bet(self, bet):
-        #需要一個Check Balance的函數
-        
-        
-        #從帳戶扣取應繳金額
-        #新增一筆交易資料
-        
-        
-    #結算
-    """
-    def clearance 不須輸入
-    每次開檔時需跑這個函數
-    - 從帳戶資料中讀取是否有未交割的賭注
-    - 從歷史資料中獲得結果
-    - 更新帳戶餘額與交易紀錄
-    """   
-    #def clearance(self): 
-
-
 
 """前台主程式開始"""
 
@@ -1055,7 +1001,7 @@ class GamePage(tk.Frame):
         
         # 點擊打開賽事下注
         def click_game_button(teamA, teamB):
-            # 可能跟隊伍team.py之後會修出來的東西要調整
+            
             game_bet=gamebet()
             Odds=game_bet.odds(teamA, teamB)
 
@@ -1160,11 +1106,11 @@ class PersonalPage(tk.Frame):
     def modify(self, username):
 
 
-        f1=tkFont.Font(family="魏碑", size=30)
+        f1=tkFont.Font(family="標楷體", size=30)
         self.UsernameLbl = tk.Label(self.F2, text = "你好, "+username, font = f1, bg = "lemon chiffon")
         self.UsernameLbl.pack(side="top", anchor= "n", pady= 20)
-        """
-        下注資訊紀錄：等改
+        
+        # 下注資訊紀錄：等改
         self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額： "+str(user_info[i][2]), font=f1, bg="lemon chiffon")
         self.BalanceLbl.pack(side="top", anchor="center")
 
@@ -1173,7 +1119,7 @@ class PersonalPage(tk.Frame):
         # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
         # 只顯示近十筆？下注如果超過一百筆可能會超過scrollbar可以滑的範圍
         
-        
+        """
         if len(user_info) == 0:
             self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
             self.ShowLbl.pack(side="top", pady=15)
@@ -1212,7 +1158,7 @@ class PersonalPage(tk.Frame):
                 # 下注數
                 self.BetNumLbl=tk.Label(self.F2, text="下注數： "+user_info[i][7], bg="lemon chiffon", font=f1)
                 self.BetNumLbl.pack(side="top")
-        """
+                """      
 
         f1=tkFont.Font(family="Didot", size=30)
         UsernameLbl = tk.Label(self.F2, text="Welcome, "+username, font=f1, bg="lemon chiffon")

@@ -5,7 +5,6 @@ Created on Mon Dec 23 10:29:33 2019
 @author: kevin
 """
 
-#這個需要在class team與class bet之下
 class gamebet():
     """
     def odds 需要輸入雙方隊伍名字
