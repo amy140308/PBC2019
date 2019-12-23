@@ -2,22 +2,18 @@ import datetime
 import csv
 
 # 抓使用者的資訊
-ID_num=0
+# 全部的使用者資訊
 user_information = []
+# 抓到同帳號名使用者的資訊
 user_info=[]
 with open("userInformation.csv", "r", newline = '') as f:
     rows = csv.reader(f)
-    i=0
     for row in rows:
-        if i==ID_num:
+        if row[0] == username:
             for j in range(len(row)):
                 user_info.append(row[j])
             break
-        else:
-            i+=1
-with open("userInformation.csv", "r", newline = '') as f:
-    rows=csv.reader(f)
-    
+
 
 # 登入當下要做的事
 def login_duty():

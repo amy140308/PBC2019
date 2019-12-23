@@ -15,7 +15,11 @@ import time as t
 import csv
 import tkinter.messagebox 
 
- 
+"""
+12/23版本（用 Main_onWindows1222改的）
+漸層 LoginPage
+修好team的scrollbar
+"""
 
 """五個爬蟲跟四個頁面有關係"""
 
@@ -257,8 +261,8 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath = 'C:\\Users\\user\\Downloads\\data.csv'
-                # 
+                filepath =  "/Users/yangqingwen/Downloads/data.csv" 
+                #  /Users/yangqingwen/Downloads/data.csv 
                 # 'C:\\Users\\user\\Downloads\\data.csv'
                 wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
@@ -310,7 +314,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = "/Users/yangqingwen/Downloads/data.csv" 
+        filepath =  "/Users/yangqingwen/Downloads/data.csv"  
         # "/Users/yangqingwen/Downloads/data.csv" 
         # 'C:\\Users\\user\\Downloads\\data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
@@ -328,13 +332,9 @@ class history():
 
 """這邊開始是隊伍資訊的30個各隊資料"""
 
-# 抓各個隊伍資訊
-"""
-class Team:
-"""
 
 """
-待修
+12/23抓team.csv的更新版gamebet()
 """
 
 class gamebet():
@@ -457,14 +457,16 @@ class gamebet():
 
 
 # 登入當下要做的事
+# global function 
 def login_duty(user_info):  # user_info是list
     # 上次登入時間
-    usr_login_time=user_info[3]
+    usr_login_timeStr=user_info[3]
     # 最後登入時間
     login_time=datetime.datetime.today()
     # 判斷今日登入時間是否與最後登入時間相符
     # 每日登入自動新增1,000元(與上次登入的日期不一樣)
-    diff=login_time-usr_login_time
+    usr_login_time=datetime.datetime.strptime(usr_login_timeStr, "%Y-%m-%d %H:%M:%S%f")
+    diff=login_time-usr_login_time.date
     if diff.days>0:
         user_info[2]+=1000
     # 判斷最近下注有沒有算清
@@ -476,66 +478,67 @@ def login_duty(user_info):  # user_info是list
         for row in rows:
             game_result.append(row)
     for i in range(4, len(user_info)):
-        if user_info[i][8]=='未結算':
+        if user_info[4][i][8]=='未結算':
             for j in range(len(game_result)):
-                if game_result[j][0]==user_info[i][0] and game_result[j][2]==user_info[i][1] and game_result[j][3]==user_info[i][2]:
+                if game_result[j][0]==user_info[4][i][0] and game_result[j][2]==user_info[4][i][1] and game_result[j][3]==user_info[4][i][2]:
                     total_point=int(game_result[j][4])+int(game_result[j][5])
-                    if user_info[i][4]=='不讓分':
+                    if user_info[4][i][4]=='不讓分':
                         if int(game_result[j][4])>int(game_result[j][5]):
-                            if user_info[i][5]==user_info[i][1]:
-                                earn=10*user_info[i][7]*user_info[i][6]
+                            if user_info[4][i][5]==user_info[4][i][1]:
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
-                                user_info[i][9]+=earn
-                                user_info[i][8]=='賺'
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
                             else:
-                                user_info[i][8]=='賠'
+                                user_info[4][i][8]=='賠'
                         else:
-                            if user_info[i][5]==user_info[i][2]:
-                                earn=10*user_info[i][7]*user_info[i][6]
+                            if user_info[4][i][5]==user_info[4][i][2]:
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
-                                user_info[i][9]+=earn
-                                user_info[i][8]=='賺'
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
                             else:
-                                user_info[i][8]=='賠'
-                    elif user_info[i][4]=='單雙(總分)':
+                                user_info[4][i][8]=='賠'
+                    elif user_info[4][i][4]=='單雙(總分)':
                         if total_point%2==1:
-                            if user_info[i][5]=='單':
-                                earn=10*user_info[i][7]*user_info[i][6]
+                            if user_info[4][i][5]=='單':
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
-                                user_info[i][9]+=earn
-                                user_info[i][8]=='賺'
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
                             else:
-                                user_info[i][8]=='賠'
+                                user_info[4][i][8]=='賠'
                         else:
-                            if user_info[i][5]=='雙':
-                                earn=10*user_info[i][7]*user_info[i][6]
+                            if user_info[4][i][5]=='雙':
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
-                                user_info[i][9]+=earn
-                                user_info[i][8]=='賺'
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
                             else:
-                                user_info[i][8]=='賠'
-                    elif user_info[i][4]=='大小(總分)':
-                        direction=user_info[i][5].split('/')
+                                user_info[4][i][8]=='賠'
+                    elif user_info[4][i][4]=='大小(總分)':
+                        direction=user_info[4][i][5].split('/')
                         bs=direction[0]
                         point=float(direction[1])
                         if total_point>point:
                             if bs=='大':
-                                earn=10*user_info[i][7]*user_info[i][6]
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
-                                user_info[i][9]+=earn
-                                user_info[i][8]=='賺'
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
                             else:
-                                user_info[i][8]=='賠'
+                                user_info[4][i][8]=='賠'
                         else:
                             if bs=='小':
-                                earn=10*user_info[i][7]*user_info[i][6]
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
-                                user_info[i][9]+=earn
-                                user_info[i][8]=='賺'
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
                             else:
-                                user_info[i][8]=='賠'
+                                user_info[4][i][8]=='賠'
 
 """前台主程式開始"""
+
 
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
@@ -642,16 +645,16 @@ class LoginPage(tk.Frame):
         self.btn_login.pack(side="right", padx=10, pady=10)
         self.btn_signup=tk.Button(self.canvas, text="註冊", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side="right", padx=10, pady=10)
-
     
     def usr_login(self):
         check = 0
         user_password = 0
         # 讀取csv檔中的使用者資料至list
         # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+        # C:\\co-work\\userInformation.csv
         userinformation = []
         try:
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
+            with open ("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -685,9 +688,10 @@ class LoginPage(tk.Frame):
         # 讀取csv檔中的使用者資料至list
         try:
             # r必須打開已有的文件
-            # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
+            # '/Users/yangqingwen/Downloads/userInformation.csv'
+            # 'C:\\co-work\\userInformation.csv'
             userinformation = []
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "r", newline = '') as f:
+            with open("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -713,7 +717,7 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "a+", newline='') as f:
+            with open('C:\\co-work\\userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
@@ -908,7 +912,8 @@ class TeamPage(tk.Frame):
             """
             記得改filepath
             """
-            filepath = "C:\\co-work\\team.csv"
+            # "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
+            filepath = "/Users/yangqingwen/Desktop/PBC2019/team.csv"
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)  
             team_info = []
@@ -1082,7 +1087,7 @@ class GamePage(tk.Frame):
         
         # 點擊打開賽事下注
         def click_game_button(teamA, teamB):
-            
+            # 可能跟隊伍team.py之後會修出來的東西要調整
             game_bet=gamebet()
             Odds=game_bet.odds(teamA, teamB)
 
@@ -1189,13 +1194,14 @@ class PersonalPage(tk.Frame):
         user_information = []
         # 抓到同帳號名使用者的資訊
         user_info=[]
-        with open("userInformation.csv", "r", newline = '') as f:
+        with open("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
             rows = csv.reader(f)
             for row in rows:
                 if row[0] == username:
                     for j in range(len(row)):
                         user_info.append(row[j])
                     break
+        print(user_info)
         user_info=login_duty(user_info)
 
         f1=tkFont.Font(family="標楷體", size=30)
@@ -1203,65 +1209,53 @@ class PersonalPage(tk.Frame):
         self.UsernameLbl.pack(side="top", anchor= "n", pady= 20)
         
         # 下注資訊紀錄：等改
-        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額： "+str(user_info[i][2]), font=f1, bg="lemon chiffon")
+        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額： "+str(user_info[4][i][2]), font=f1, bg="lemon chiffon")
         self.BalanceLbl.pack(side="top", anchor="center")
 
-
-        
         # 我就先推測i是下注的次數？
         # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
         # 只顯示近十筆？下注如果超過一百筆可能會超過scrollbar可以滑的範圍
         
-        
-        if len(user_info) == 0:
+        if len(user_info[4]) == 0:
             self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
             self.ShowLbl.pack(side="top", pady=15)
         else:
-            for i in range(len(user_info)):
+            for i in range(len(user_info[4])):
                 # 下注第幾筆
                 self.BetIndexLbl=tk.Label(self.F2, text=str(i+1)+".", font = f1, bg = "lemon chiffon")
                 self.BetIndexLbl.pack(sied="top")
 
                 # 下注時間
-                time = user_info[i][10]
+                time = user_info[4][i][10]
                 tstr=time.strftime("%Y-%m-%d %H:%M")
                 self.BetTimeLbl=tk.Label(self.F2, text = "下注時間： "+tstr, font = f1, bg="lemon chiffon")
                 self.BetTimeLbl.pack(side="top")
                 # 下注狀態
 
-                self.StatusLbl=tk.Label(self.F2, text="狀態： "+user_info[i][8], font=f1, bg="lemon chiffon") 
+                self.StatusLbl=tk.Label(self.F2, text="狀態： "+user_info[4][i][8], font=f1, bg="lemon chiffon") 
                 self.StatusLbl.pack(side="top")
                 # 下注賽事資訊
 
-                self.GameLbl=tk.Label(self.F2, text="賽事： "+user_info[i][0]+" "+user_info[i][1]+" vs."+user_info[i][2]+" "+user_info[i][3], , font=f1, bg="lemon chiffon")
+                self.GameLbl=tk.Label(self.F2, text="賽事： "+user_info[4][i][0]+" "+user_info[4][i][1]+" vs."+user_info[4][i][2]+" "+user_info[4][i][3], font=f1, bg="lemon chiffon")
                 self.GameLbl.pack(side="top")
 
                 # 賭法
-                self.WayLbl=tk.Label(self.F2, text="賭法： "+user_info[i][4], bg="lemon chiffon", font=f1)
+                self.WayLbl=tk.Label(self.F2, text="賭法： "+user_info[4][i][4], bg="lemon chiffon", font=f1)
                 self.WayLbl.pack(side="top")
 
-                # 方向 什麼方向？我直接寫diection...
-                self.DirectLbl=tk.Label(self.F2, text="方向： "+user_info[i][5], bg="lemon chiffon", font=f1)
+                # 方向 什麼方向？我直接寫direction...
+                self.DirectLbl=tk.Label(self.F2, text="方向： "+user_info[4][i][5], bg="lemon chiffon", font=f1)
                 self.DirectLbl.pack(side="top")
 
                 # 賠率
-                self.OddsLbl=tk.Label(self.F2, text="賠率： "+user_info[i][6], bg="lemon chiffon", font=f1)
+                self.OddsLbl=tk.Label(self.F2, text="賠率： "+user_info[4][i][6], bg="lemon chiffon", font=f1)
                 self.OddsLbl.pack(side="top")
 
                 # 下注數
-                self.BetNumLbl=tk.Label(self.F2, text="下注數： "+user_info[i][7], bg="lemon chiffon", font=f1)
+                self.BetNumLbl=tk.Label(self.F2, text="下注數： "+user_info[4][i][7], bg="lemon chiffon", font=f1)
                 self.BetNumLbl.pack(side="top")
-                """      
 
-        f1=tkFont.Font(family="Didot", size=30)
-        UsernameLbl = tk.Label(self.F2, text="Welcome, "+username, font=f1, bg="lemon chiffon")
-        UsernameLbl.pack(side="top", anchor= "center", pady= 20)
 
-        # 帳戶組要給的餘額數字：
-        # read csv讀入歷史資訊和帳戶餘額
-        # 所有東西要擺在F2的Frame裡面
-        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額："+str(Balance), font=f1, bg="lemon chiffon")
-        self.BalanceLbl.pack(side="top", anchor="center",pady=20)
 
 app=SportsLottery()
 app.mainloop()
