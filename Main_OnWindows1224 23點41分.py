@@ -615,6 +615,7 @@ class SportsLottery(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
     def user_info_modify(self, username):
+        self.geometry("1000x800")
         PersonalPage=self.frames["PersonalPage"]
         PersonalPage.modify(username)
 
@@ -1103,28 +1104,34 @@ class GamePage(tk.Frame):
             for i in range(len(final_g)):
                 self.btn=tk.Button(self.F2, height=5, width=50, relief =tk.RAISED, bg="ivory3")
                 time=final_g[i][0]
-                team1=final_g[i][1]  
-                team2=final_g[i][2]
+                teamA=final_g[i][1]  
+                teamB=final_g[i][2]
                 arena=final_g[i][3]
-                self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
-                self.btn.configure(command=lambda i=i: self.click_game_button(final_g[i][1], final_g[i][2])) 
+                self.btn.configure(text=time+"\n"+teamA+"vs."+teamB+"\n"+arena, font="標楷體")
+                self.btn.configure(command=lambda i=i: self.click_game_button(final_g[i])) 
                 self.btn.pack(side="top", pady=10, padx=5)     
         else:
             self.NoGameLabel=tk.Label(self.F2, text="今日無賽事", font=f1, bg="lemon chiffon")
             self.NoGameLabel.pack(anchor="ne", side="top", pady=20)
 
     # 點擊打開賽事下注
-    def click_game_button(self, teamA, teamB):
+    def click_game_button(self, game_info):
+        
+        time  = game_info[0]
+        teamA = game_info[1]  
+        teamB = game_info[2]
+        arena = game_info[3]
         
         # 可能跟隊伍team.py之後會修出來的東西要調整
         game_bet=gamebet()
-        Odds=game_bet.odds(teamA, teamB)
+        self.Odds=game_bet.odds(teamA, teamB)
         
         # 彈出視窗的基本介面
         window=tk.Toplevel(self)
-        window.geometry("500x500")
+        window.geometry("550x500")
         window.configure(bg="azure")
-        self.GameCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
+        self.window = window
+        self.GameCanv = tk.Canvas(self.window, width=500, height = 500, highlightthickness=0, bg="azure")
         self.GameCanv.pack(side = "top", fill = "both", expand=True)
         self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
         self.GameFrame.pack(side = "left", fill = "both", anchor="nw", expand=True)
@@ -1135,68 +1142,119 @@ class GamePage(tk.Frame):
         # 單雙
         self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
         self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
-        self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=lambda:self.clickBtnGB1(Odds))
+        self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=self.clickBtnGB1)
         self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
-        self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=lambda:self.clickBtnGB2(Odds))
+        self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=self.clickBtnGB2)
         self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
         # 大小
         self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
         self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
-        self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[1][1])+"  1.75", command=lambda:self.clickBtnGB3(Odds))
+        self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[1][1])+"  1.75", command=self.clickBtnGB3)
         self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
-        self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[1][3])+"  1.75", command=lambda:self.clickBtnGB4(Odds))
+        self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[1][3])+"  1.75", command=self.clickBtnGB4)
         self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
         # 不讓分
         self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
         self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
-        self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]),command=lambda:self.clickBtnGB5(Odds))
+        self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[2][1])+"  "+str(self.Odds[2][2]),command=self.clickBtnGB5)
         self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
-        self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]),command=lambda:self.clickBtnGB6(Odds))
+        self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[2][3])+"  "+str(self.Odds[2][4]),command=self.clickBtnGB6)
         self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
-
-        self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除下注", command=self.clickcancelBtn)
-        self.cancelBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
+        # 取消跟確認下注
+        self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除", command=self.clickcancelBtn)
+        self.cancelBtn.grid(row=10, column=2, columnspan=2, padx=5, pady=20, sticky="nsew")
         self.okBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確定",command=self.clickokBtn)
-        self.okBtn.grid(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
+        self.okBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
+        self.betBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確認下注",command=lambda:[self.clickbetBtn(), self.close_window()], state = "disabled")
+        self.betBtn.grid(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
         
+        # 輸入下注數的地方
+        self.betnumLbl=tk.Label(self.GameFrame, text="下注數量：", justify="left", bg = "wheat2")
+        self.betnumLbl.grid(row=3, column=9, columnspan=1, pady=5, padx=5, sticky = "nsew")
+        self.var_betnum=tk.StringVar()
+        self.betnumEnt=tk.Entry(self.GameFrame, textvariable=self.var_betnum)
+        self.betnumEnt.grid(row=3, column=10, columnspan=2, pady=5, padx=5, sticky = "nsew")
         
+        # 目前下注資訊顯示
+        self.Words=tk.Label(self.GameFrame, text="個組合，每組合投注金額10元x", justify="left", bg = "wheat2")
+        self.Words.grid(row=4, column=9, columnspan=2, pady=5, padx=5, sticky = "nsew")
+        self.Words2=tk.Label(self.GameFrame, text="最高可中：", justify="left", bg = "wheat2")
+        self.Words2.grid(row=5, column=9, columnspan=2, pady=5, padx=5, sticky = "nsew")
+
         
-        self.RightFrame=tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
-        self.RightFrame.pack
+        # 回傳的東西們（0時間，1隊伍A，2隊伍B，3場地，4下注種類，5下注方，6賠率，7下幾注，8sure）
+        self.bet_one_list = [time, teamA, teamB, arena, 0, 0, 0, 0, 0]
+        self.bet_two_list = [time, teamA, teamB, arena, 0, 0, 0, 0, 0]
+        self.bet_three_list = [time, teamA, teamB, arena, 0, 0, 0, 0, 0]
+        self.bet_lists = []
+        self.bet_lists.append(self.bet_one_list)
+        self.bet_lists.append(self.bet_two_list)
+        self.bet_lists.append(self.bet_three_list)
+        print(self.bet_lists)
         
     # 確認（關視窗）儲存所有下注內容
     # 每點一次按鈕都要確認一次顯示幕上的東西，不能把content寫外面？
-    def clickBtnGB1(self, Odds):
+    def clickBtnGB1(self):
         content = self.showL.cget("text")
         self.showL.configure(text=content+"\n"+"單雙（總分）　　單  　　　　　1.75", justify="left")
         self.GB1.configure(state="disabled")
         self.GB2.configure(state="disabled")
-    def clickBtnGB2(self, Odds):
+        self.bet_lists[0][4] = "單雙（總分）"
+        self.bet_lists[0][5] = "單"
+        self.bet_lists[0][6] = 1.75
+        self.bet_lists[0][8] = 1
+        print(self.bet_lists)
+    def clickBtnGB2(self):
         content = self.showL.cget("text")
         self.showL.configure(text=content+"\n"+"單雙（總分）　　雙  　　　　　1.75", justify="left")
         self.GB1.configure(state="disabled")
         self.GB2.configure(state="disabled")
-    def clickBtnGB3(self, Odds):
+        self.bet_lists[0][4] = "單雙（總分）"
+        self.bet_lists[0][5] = "雙"
+        self.bet_lists[0][6] = 1.75
+        self.bet_lists[0][8] = 1
+        print(self.bet_lists)
+    def clickBtnGB3(self):
         content = self.showL.cget("text")
-        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(Odds[1][1])+"　　 1.75", justify="left")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][1])+"　　 1.75", justify="left")
         self.GB3.configure(state="disabled")
         self.GB4.configure(state="disabled")
-    def clickBtnGB4(self, Odds):
+        self.bet_lists[1][4] = "大小（總分）"
+        self.bet_lists[1][5] = "大"
+        self.bet_lists[1][6] = 1.75
+        self.bet_lists[1][8] = 1
+        print(self.bet_lists)
+    def clickBtnGB4(self):
         content = self.showL.cget("text")
-        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(Odds[1][3])+"　　 1.75", justify="left")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][3])+"　　 1.75", justify="left")
         self.GB3.configure(state="disabled")
         self.GB4.configure(state="disabled")
-    def clickBtnGB5(self, Odds):
+        self.bet_lists[1][4] = "大小（總分）"
+        self.bet_lists[1][5] = "大"
+        self.bet_lists[1][6] = 1.75
+        self.bet_lists[1][8] = 1
+        print(self.bet_lists)
+    def clickBtnGB5(self):
         content = self.showL.cget("text")
-        self.showL.configure(text=content+"\n"+"不讓分　　　　　"+str(Odds[2][1])+"  "+str(Odds[2][2]), justify="left")
+        self.showL.configure(text=content+"\n"+"不讓分　　　　　"+str(self.Odds[2][1])+"  "+str(self.Odds[2][2]), justify="left")
         self.GB5.configure(state="disabled")
         self.GB6.configure(state="disabled")
-    def clickBtnGB6(self, Odds):
+        self.bet_lists[2][4] = "不讓分"
+        self.bet_lists[2][5] = self.Odds[2][1]
+        self.bet_lists[2][6] = self.Odds[2][2]
+        self.bet_lists[2][8] = 1
+        print(self.bet_lists)
+    def clickBtnGB6(self):
         content = self.showL.cget("text")
-        self.showL.configure(text=content+"\n"+"不讓分    "+str(Odds[2][3])+"  "+str(Odds[2][4]), justify="left")
+        self.showL.configure(text=content+"\n"+"不讓分　　　　　"+str(self.Odds[2][3])+"  "+str(self.Odds[2][4]), justify="left")
         self.GB5.configure(state="disabled")
         self.GB6.configure(state="disabled")
-
+        self.bet_lists[2][4] = "不讓分"
+        self.bet_lists[2][5] = self.Odds[2][3]
+        self.bet_lists[2][6] = self.Odds[2][4]
+        self.bet_lists[2][8] = 1
+        print(self.bet_lists)
+        
     # 取消用的函數（一次全部取消）
     def clickcancelBtn(self):
         self.GB1.configure(state="normal")
@@ -1206,25 +1264,82 @@ class GamePage(tk.Frame):
         self.GB5.configure(state="normal")
         self.GB6.configure(state="normal")
         self.showL.configure(text="") 
+        self.betnumEnt.delete(0,"end")
+        for one_list in self.bet_lists:
+            for i in range(4, 9):
+                one_list[i] = 0
+
     
-    # 這邊是確認下注函數
+    # 這邊是確認函數
     def clickokBtn(self):
         """
         下注組希望回傳的資訊形式
+        （0時間，1隊伍A，2隊伍B，3場地，4下注種類，5下注方，6賠率，7下幾注）
         """
-        pass
-
-
-
-
-
-
-
-
+        self.total_Odds = 0
+        # 確認結果
+        self.report_list = []
+        for one_list in self.bet_lists:
+            print(one_list)
+            if one_list[8] == 1:
+                the_one_list = one_list[0:-1]
+                self.total_Odds += the_one_list[6]
+                self.report_list.append(the_one_list)
+        
+        if len(self.report_list) == 0:
+            tk.messagebox.showwarning("Warning", "你尚未選擇任何下注方法！")
+        else:
+            try:
+                self.betnum=self.betnumEnt.get()
+                self.betnum = int(self.betnum)
+                print(type(self.betnum))
+                if self.betnum < 0:
+                    tk.messagebox.showwarning("Warning", "請輸入正整數")
+                    tk.betnumEnt.delete(0,"end")
+                
+                # 有選擇下注，並且輸入正確數字後，回傳list並關閉視窗
+                else:
+                    for i in range(len(self.report_list)):
+                        self.report_list[i][7]=self.betnum
+                    
+                    # 按確認後改
+                    content=self.Words.cget("text")
+                    self.Words.configure(text=str(len(self.report_list))+content+str(self.betnum))
+                    content2=self.Words2.cget("text")
+                    Max = self.total_Odds * 10 * self.betnum
+                    self.Words2.configure(text=content2+str(Max))
+                    
+                    # 鎖定所有按鍵
+                    try:
+                        self.GB1.configure(state="disabled")
+                        self.GB2.configure(state="disabled")
+                        self.GB3.configure(state="disabled")
+                        self.GB4.configure(state="disabled")
+                        self.GB5.configure(state="disabled")
+                        self.GB6.configure(state="disabled")
+                        self.cancelBtn.configure(state="disabled")
+                        self.okBtn.configure(state="disabled")
+                        self.betnumEnt.configure(state="disabled")
+                        self.betBtn.configure(state="normal")
+                    except:
+                        pass
             
-            
+            except:
+                tk.messagebox.showwarning("Warning", "請輸入正整數")
+                self.betnumEnt.delete(0,"end")
+        
+    def clickbetBtn(self):
+        try:
+            return self.report_list
+        except:
+            tk.messagebox.showwarning("Warning", "你尚未選擇任何下注方法！")
+        
+    def close_window(self):
+        self.window.destroy()
+           
 
-            
+
+           
 # HistoryPage歷史紀錄頁面
 
 class HistoryPage(tk.Frame):
