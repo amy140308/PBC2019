@@ -150,7 +150,7 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
@@ -167,7 +167,10 @@ class bet():
                 month = int(date[:m_end])
                 d_end = date.find('日')
                 day = int(date[m_end + 2 : d_end])
-                today = datetime.date.today()
+                diff = datetime.timedelta(days=1)
+                # today = datetime.date.today()
+                today = datetime.date.today() - diff
+                print("today:", today)
                 year = today.year
                 d = datetime.datetime(year, month, day)
                 if d == datetime.datetime(year, today.month, today.day + 1):
@@ -207,6 +210,7 @@ class bet():
 # 以下為試class的功能
 bet = bet()
 final_g = bet.get_data()
+print(final_g)
 
 # 抓歷史資訊
 class history():
@@ -230,7 +234,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome( executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome( executable_path = 'chromedriver.exe', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
@@ -261,9 +265,9 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath =  "/Users/yangqingwen/Downloads/data.csv" 
+                filepath =  "C:\\co-work\\data.csv" 
                 #  /Users/yangqingwen/Downloads/data.csv 
-                # 'C:\\Users\\user\\Downloads\\data.csv'
+                # 'C:\\co-work\\data.csv'
                 wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
                 rf = open(file=filepath, mode="r", encoding="utf-8")
@@ -314,9 +318,9 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath =  "/Users/yangqingwen/Downloads/data.csv"  
+        filepath = "C:\\co-work\\data.csv"
         # "/Users/yangqingwen/Downloads/data.csv" 
-        # 'C:\\Users\\user\\Downloads\\data.csv'
+        # "C:\\co-work\\data.csv"
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
         
@@ -364,7 +368,7 @@ class gamebet():
         print("***calculating odds...")
         data_list = []
         
-        team_file = "C://Users//kevin//OneDrive//Documents//GitHub//PBC2019//team.csv" #要改
+        team_file = "C:\\co-work\\team.csv" #要改
         with open(team_file, 'r', encoding='UTF-8') as csvfile:
             rows = csv.reader(csvfile)
             line = 1
@@ -479,7 +483,7 @@ def login_duty(user_info):  # user_info是list
     # 算清楚比賽結果
     game_result=[]
     # "data.csv" 
-    with open( "/Users/yangqingwen/Downloads/data.csv", 'r', encoding='utf-8') as rf:
+    with open( "C:\\co-work\\data.csv", 'r', encoding='utf-8') as rf:
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
@@ -681,7 +685,7 @@ class LoginPage(tk.Frame):
         # C:\\co-work\\userInformation.csv
         userinformation = []
         try:
-            with open ("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
+            with open ("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -718,7 +722,7 @@ class LoginPage(tk.Frame):
             # '/Users/yangqingwen/Downloads/userInformation.csv'
             # 'C:\\co-work\\userInformation.csv'
             userinformation = []
-            with open("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
+            with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -744,7 +748,7 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "a+", newline='') as f:
+            with open('C:\\co-work\\userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
@@ -817,11 +821,11 @@ class NewsPage(tk.Frame):
             elif btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                btn.configure(command=lambda: controller.show_frame("PersonalPage"))
             elif btn_txt == "歷史資料":
                 btn.configure(command=lambda: controller.show_frame("HistoryPage"))
             elif btn_txt == "賽事下注":
-                btn.configure(command = lambda: controller.show_frame("GamePage"))
+                btn.configure(command=lambda: controller.show_frame("GamePage"))
 
 
         f0=tkFont.Font(family="標楷體", size=20)
@@ -939,8 +943,9 @@ class TeamPage(tk.Frame):
             """
             記得改filepath
             """
-            # "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
-            filepath = "/Users/yangqingwen/Desktop/PBC2019/team.csv"
+            # "/Users/yangqingwen/Desktop/PBC2019/team.csv"
+            # "C:\\co-work\\team.csv"
+            filepath = "C:\\co-work\\team.csv"
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)  
             team_info = []
@@ -1023,7 +1028,7 @@ class TeamPage(tk.Frame):
                 button.configure(state="disabled")
             def Normalized(self, button):
                 self.button.configure(state="normal")
-        
+        """
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -1041,7 +1046,7 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
-        """
+        
         
         
         # 打開隊伍資訊
@@ -1131,77 +1136,77 @@ class GamePage(tk.Frame):
             # 單雙
             self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
             self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=self.clcikBtnGB1)
+            self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=clickBtnGB1)
             self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=self.clcikBtnGB2)
+            self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=clickBtnGB2)
             self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
             # 大小
             self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
             self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][1]+"  1.75", command=self.clcikBtnGB3)
+            self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][1]+"  1.75", command=clickBtnGB3)
             self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][3]+"  1.75", command=self.clcikBtnGB4)
+            self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][3]+"  1.75", command=clickBtnGB4)
             self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
             # 不讓分
             self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
             self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]),command=self.clcikBtnGB5)
+            self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]),command=clickBtnGB5)
             self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]), command=self.clcikBtnGB6)
+            self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]),command=clickBtnGB6)
             self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
 
-            self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除下注", command=self.clickcancelBtn)
+            self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除下注", command=clickcancelBtn)
             self.cancelBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
-            self.okBtn(self.GameFrame, bg="AntiqueWhite1", text="確定",command=self.clickokBtn)
+            self.okBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確定",command=clickokBtn)
             self.okBtn(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
             
             # 確認（關視窗）儲存所有下注內容
             # 每點一次按鈕都要確認一次顯示幕上的東西，不能把content寫外面？
-            def clickBtnGB1(self):
-                content = self.showL.cget("text")
-                self.showL.configure(text=content+"\n"+"單雙（總分）     單  1.75", justify="left")
-                self.GB1.configure(state="disabled")
-                self.GB2.configure(state="disabled")
-            def clickBtnGB2(self):
-                content = self.showL.cget("text")
-                self.showL.configure(text=content+"\n"+"單雙（總分）     雙  1.75", justify="left")
-                self.GB1.configure(state="disabled")
-                self.GB2.configure(state="disabled")
-            def clickBtnGB3(self):
-                content = self.showL.cget("text")
-                self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][1]+"     1.75", justify="left")
-                self.GB3.configure(state="disabled")
-                self.GB4.configure(state="disabled")
-            def clickBtnGB4(self):
-                content = self.showL.cget("text")
-                self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][3]+"     1.75", justify="left")
-                self.GB3.configure(state="disabled")
-                self.GB4.configure(state="disabled")
-            def clickBtnGB5(self):
-                content = self.showL.cget("text")
-                self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][1]+"  "+Odds[2][2], justify="left")
-                self.GB5.configure(state="disabled")
-                self.GB6.configure(state="disabled")
-            def clickBtnGB6(self):
-                content = self.showL.cget("text")
-                self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][3]+"  "+Odds[2][4], justify="left")
-                self.GB5.configure(state="disabled")
-                self.GB6.configure(state="disabled")
+        def clickBtnGB1(self):
+            content = self.showL.cget("text")
+            self.showL.configure(text=content+"\n"+"單雙（總分）     單  1.75", justify="left")
+            self.GB1.configure(state="disabled")
+            self.GB2.configure(state="disabled")
+        def clickBtnGB2(self):
+            content = self.showL.cget("text")
+            self.showL.configure(text=content+"\n"+"單雙（總分）     雙  1.75", justify="left")
+            self.GB1.configure(state="disabled")
+            self.GB2.configure(state="disabled")
+        def clickBtnGB3(self):
+            content = self.showL.cget("text")
+            self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][1]+"     1.75", justify="left")
+            self.GB3.configure(state="disabled")
+            self.GB4.configure(state="disabled")
+        def clickBtnGB4(self):
+            content = self.showL.cget("text")
+            self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][3]+"     1.75", justify="left")
+            self.GB3.configure(state="disabled")
+            self.GB4.configure(state="disabled")
+        def clickBtnGB5(self):
+            content = self.showL.cget("text")
+            self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][1]+"  "+Odds[2][2], justify="left")
+            self.GB5.configure(state="disabled")
+            self.GB6.configure(state="disabled")
+        def clickBtnGB6(self):
+            content = self.showL.cget("text")
+            self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][3]+"  "+Odds[2][4], justify="left")
+            self.GB5.configure(state="disabled")
+            self.GB6.configure(state="disabled")
 
-            # 取消用的函數（一次全部取消）
-            def clickcancelBtn(self):
-                self.GB1.configure(state="normal")
-                self.GB2.configure(state="normal")
-                self.GB3.configure(state="normal")
-                self.GB4.configure(state="normal")
-                self.GB5.configure(state="normal")
-                self.GB6.configure(state="normal")
-                self.showL.configure(text="") 
-            def clickokBtn(self):
-                """
-                下注組希望回傳的資訊形式
-                """
-                pass
+        # 取消用的函數（一次全部取消）
+        def clickcancelBtn(self):
+            self.GB1.configure(state="normal")
+            self.GB2.configure(state="normal")
+            self.GB3.configure(state="normal")
+            self.GB4.configure(state="normal")
+            self.GB5.configure(state="normal")
+            self.GB6.configure(state="normal")
+            self.showL.configure(text="") 
+        def clickokBtn(self):
+            """
+            下注組希望回傳的資訊形式
+            """
+            pass
 
 
 
@@ -1284,7 +1289,9 @@ class PersonalPage(tk.Frame):
         user_information = []
         # 抓到同帳號名使用者的資訊
         user_info=[]
-        with open("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
+        # "/Users/yangqingwen/Downloads/userInformation.csv"
+        # "C:\\co-work\\userInformation.csv"
+        with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
             rows = csv.reader(f)
             for row in rows:
                 if row[0] == username:
