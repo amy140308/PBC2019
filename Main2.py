@@ -369,6 +369,7 @@ class gamebet():
         data_list = []
         
         team_file = "C:\\co-work\\team.csv" #要改
+
         with open(team_file, 'r', encoding='UTF-8') as csvfile:
             rows = csv.reader(csvfile)
             line = 1
