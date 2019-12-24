@@ -462,16 +462,18 @@ def login_duty(user_info):  # user_info是list
     # 上次登入時間
     usr_login_timeStr=user_info[3]
     # 最後登入時間
-    login_time=datetime.datetime.today()
+    login_time=datetime.datetime.now() 
+    # print("login_time:"+str(login_time))
     # 判斷今日登入時間是否與最後登入時間相符
     # 每日登入自動新增1,000元(與上次登入的日期不一樣)
     """
-    個人資料去世ㄌ（12/23）
+    個人資料已修復 待下注
     """
-    usr_login_time=datetime.datetime.strptime(usr_login_timeStr, "%Y-%m-%d %H:%M:%S%f")
+    usr_login_time=datetime.datetime.strptime(usr_login_timeStr, "%Y-%m-%d %H:%M:%S.%f") # 2019-12-24 15:30:00
 
-    diff=login_time-usr_login_time.date
+    diff=login_time-usr_login_time
     if diff.days>0:
+        user_info[2]=int(user_info[2])
         user_info[2]+=1000
     # 判斷最近下注有沒有算清
     # 算清楚比賽結果
@@ -489,6 +491,10 @@ def login_duty(user_info):  # user_info是list
                     if user_info[4][i][4]=='不讓分':
                         if int(game_result[j][4])>int(game_result[j][5]):
                             if user_info[4][i][5]==user_info[4][i][1]:
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
                                 earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
                                 user_info[4][i][9]+=earn
@@ -497,6 +503,10 @@ def login_duty(user_info):  # user_info是list
                                 user_info[4][i][8]=='賠'
                         else:
                             if user_info[4][i][5]==user_info[4][i][2]:
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
                                 earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
                                 user_info[4][i][9]+=earn
@@ -506,6 +516,10 @@ def login_duty(user_info):  # user_info是list
                     elif user_info[4][i][4]=='單雙(總分)':
                         if total_point%2==1:
                             if user_info[4][i][5]=='單':
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
                                 earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
                                 user_info[4][i][9]+=earn
@@ -514,6 +528,10 @@ def login_duty(user_info):  # user_info是list
                                 user_info[4][i][8]=='賠'
                         else:
                             if user_info[4][i][5]=='雙':
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
                                 earn=10*user_info[4][i][7]*user_info[4][i][6]
                                 user_info[2]+=earn
                                 user_info[4][i][9]+=earn
@@ -521,6 +539,10 @@ def login_duty(user_info):  # user_info是list
                             else:
                                 user_info[4][i][8]=='賠'
                     elif user_info[4][i][4]=='大小(總分)':
+                        user_info[4][i][7]=int(user_info[4][i][7])
+                        user_info[4][i][6]=int(user_info[4][i][6])
+                        user_info[2]=int(user_info[2])
+                        user_info[4][i][9]=int(user_info[4][i][9])
                         direction=user_info[4][i][5].split('/')
                         bs=direction[0]
                         point=float(direction[1])
@@ -540,6 +562,7 @@ def login_duty(user_info):  # user_info是list
                                 user_info[4][i][8]=='賺'
                             else:
                                 user_info[4][i][8]=='賠'
+    return user_info
 
 """前台主程式開始"""
 
@@ -1085,8 +1108,8 @@ class GamePage(tk.Frame):
                 self.btn.configure(command=lambda: click_game_button(team1, team2)) 
                 self.btn.pack(side="top", pady=10, padx=5)     
         else:
-            self.NoGameLabel=tk.Label(text="今日無賽事", font=f1)
-            self.NoGameLabel.pack(anchor="n", side="top", pady=20)
+            self.NoGameLabel=tk.Label(self.F2, text="今日無賽事", font=f1, bg="lemon chiffon")
+            self.NoGameLabel.pack(anchor="ne", side="top", pady=20)
        
         
         # 點擊打開賽事下注
@@ -1174,7 +1197,7 @@ class GamePage(tk.Frame):
                 self.GB5.configure(state="normal")
                 self.GB6.configure(state="normal")
                 self.showL.configure(text="") 
-            def.clickokBtn(self):
+            def clickokBtn(self):
                 """
                 下注組希望回傳的資訊形式
                 """
@@ -1268,25 +1291,24 @@ class PersonalPage(tk.Frame):
                     for j in range(len(row)):
                         user_info.append(row[j])
                     break
-        print(user_info)
         user_info=login_duty(user_info)
 
-        f1=tkFont.Font(family="標楷體", size=30)
-        self.UsernameLbl = tk.Label(self.F2, text = "你好, "+username, font = f1, bg = "lemon chiffon")
-        self.UsernameLbl.pack(side="top", anchor= "n", pady= 20)
+        f1=tkFont.Font(family="Didot", size=20)
+        self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+".", font = f1, bg = "lemon chiffon")
+        self.UsernameLbl.pack(side="top", anchor= "nw", pady= 20)
         
         # 下注資訊紀錄：等改
-        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額： "+str(user_info[4][i][2]), font=f1, bg="lemon chiffon")
-        self.BalanceLbl.pack(side="top", anchor="center")
+        self.BalanceLbl=tk.Label(self.F2,text="Account balance： "+str(user_info[2]), font=f1, bg="lemon chiffon")
+        self.BalanceLbl.pack(side="top", anchor="w")
 
         # 我就先推測i是下注的次數？
         # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
         # 只顯示近十筆？下注如果超過一百筆可能會超過scrollbar可以滑的範圍
         
-        if len(user_info[4]) == 0:
+        if len(user_info) == 4:
             self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
-            self.ShowLbl.pack(side="top", pady=15)
-        else:
+            self.ShowLbl.pack(side="top", anchor="w",pady=15)
+        else: # 有下注資訊
             for i in range(len(user_info[4])):
                 # 下注第幾筆
                 self.BetIndexLbl=tk.Label(self.F2, text=str(i+1)+".", font = f1, bg = "lemon chiffon")
@@ -1321,6 +1343,7 @@ class PersonalPage(tk.Frame):
                 # 下注數
                 self.BetNumLbl=tk.Label(self.F2, text="下注數： "+user_info[4][i][7], bg="lemon chiffon", font=f1)
                 self.BetNumLbl.pack(side="top")
+
 
 
 
