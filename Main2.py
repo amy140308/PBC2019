@@ -744,7 +744,7 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
-            with open('C:\\co-work\\userInformation.csv', "a+", newline='') as f:
+            with open('/Users/yangqingwen/Downloads/userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
