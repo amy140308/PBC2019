@@ -911,7 +911,7 @@ class TeamPage(tk.Frame):
         self.configure(width=500, height=700, bg = "lemon chiffon")
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
-        self.createWidgets()
+        #self.createWidgets()
         
     def createWidgets(self):
         # 放賽事
@@ -1098,10 +1098,6 @@ class GamePage(tk.Frame):
         self.configure(width=500, height=700, bg = "lemon chiffon")
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
-        
-        
-        # 頁面功能 (之後可能要融合到Main_onWindows.py)
-        
         f1=tkFont.Font(size=20, family="標楷體")
         if len(final_g)>0:
             for i in range(len(final_g)):
@@ -1111,103 +1107,113 @@ class GamePage(tk.Frame):
                 team2=final_g[i][2]
                 arena=final_g[i][3]
                 self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
-                self.btn.configure(command=lambda: click_game_button(team1, team2)) 
+                self.btn.configure(command=lambda i=i: self.click_game_button(final_g[i][1], final_g[i][2])) 
                 self.btn.pack(side="top", pady=10, padx=5)     
         else:
             self.NoGameLabel=tk.Label(self.F2, text="今日無賽事", font=f1, bg="lemon chiffon")
             self.NoGameLabel.pack(anchor="ne", side="top", pady=20)
-       
+
+    # 點擊打開賽事下注
+    def click_game_button(self, teamA, teamB):
         
-        # 點擊打開賽事下注
-        def click_game_button(teamA, teamB):
-            # 可能跟隊伍team.py之後會修出來的東西要調整
-            game_bet=gamebet()
-            Odds=game_bet.odds(teamA, teamB)
+        # 可能跟隊伍team.py之後會修出來的東西要調整
+        game_bet=gamebet()
+        Odds=game_bet.odds(teamA, teamB)
+        
+        # 彈出視窗的基本介面
+        window=tk.Toplevel(self)
+        window.geometry("500x500")
+        window.configure(bg="azure")
+        self.GameCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
+        self.GameCanv.pack(side = "top", fill = "both", expand=True)
+        self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
+        self.GameFrame.pack(side = "left", fill = "both", anchor="nw", expand=True)
+        self.showL = tk.Label(self.GameFrame, bg="white", width=10, height = 10)
+        self.showL.grid(row=0, column=0, columnspan=8, rowspan=4, padx=5, pady=5, sticky = "nsew")
 
-            window=tk.Toplevel(self)
-            window.geometry("500x500")
-            window.configure(bg="azure")
-            
-            self.GameCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
-            self.GameCanv.pack(side = "top", fill = "both", expand=True)
-            self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
-            self.GameFrame.pack(side = "top", fill = "both", anchor="center", expand=True)
-            self.showL = tk.Label(self.GameFrame, bg="white", width=10, height = 10)
-            self.showL.grid(row=0, column=0, columnspan=8, rowspan=4, padx=5, pady=5, sticky = "nsew")
-            # 單雙
-            self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
-            self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=clickBtnGB1)
-            self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=clickBtnGB2)
-            self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
-            # 大小
-            self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
-            self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][1]+"  1.75", command=clickBtnGB3)
-            self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][3]+"  1.75", command=clickBtnGB4)
-            self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
-            # 不讓分
-            self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
-            self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]),command=clickBtnGB5)
-            self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]),command=clickBtnGB6)
-            self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
+        # 以下為所有按鈕跟label！！！
+        # 單雙
+        self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
+        self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
+        self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=lambda:self.clickBtnGB1(Odds))
+        self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
+        self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=lambda:self.clickBtnGB2(Odds))
+        self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
+        # 大小
+        self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
+        self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[1][1])+"  1.75", command=lambda:self.clickBtnGB3(Odds))
+        self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[1][3])+"  1.75", command=lambda:self.clickBtnGB4(Odds))
+        self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
+        # 不讓分
+        self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
+        self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]),command=lambda:self.clickBtnGB5(Odds))
+        self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]),command=lambda:self.clickBtnGB6(Odds))
+        self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
 
-            self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除下注", command=clickcancelBtn)
-            self.cancelBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
-            self.okBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確定",command=clickokBtn)
-            self.okBtn(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
-            
-            # 確認（關視窗）儲存所有下注內容
-            # 每點一次按鈕都要確認一次顯示幕上的東西，不能把content寫外面？
-        def clickBtnGB1(self):
-            content = self.showL.cget("text")
-            self.showL.configure(text=content+"\n"+"單雙（總分）     單  1.75", justify="left")
-            self.GB1.configure(state="disabled")
-            self.GB2.configure(state="disabled")
-        def clickBtnGB2(self):
-            content = self.showL.cget("text")
-            self.showL.configure(text=content+"\n"+"單雙（總分）     雙  1.75", justify="left")
-            self.GB1.configure(state="disabled")
-            self.GB2.configure(state="disabled")
-        def clickBtnGB3(self):
-            content = self.showL.cget("text")
-            self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][1]+"     1.75", justify="left")
-            self.GB3.configure(state="disabled")
-            self.GB4.configure(state="disabled")
-        def clickBtnGB4(self):
-            content = self.showL.cget("text")
-            self.showL.configure(text=content+"\n"+"大小（總分）  "+Odds[1][3]+"     1.75", justify="left")
-            self.GB3.configure(state="disabled")
-            self.GB4.configure(state="disabled")
-        def clickBtnGB5(self):
-            content = self.showL.cget("text")
-            self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][1]+"  "+Odds[2][2], justify="left")
-            self.GB5.configure(state="disabled")
-            self.GB6.configure(state="disabled")
-        def clickBtnGB6(self):
-            content = self.showL.cget("text")
-            self.showL.configure(text=content+"\n"+"不讓分    "+Odds[2][3]+"  "+Odds[2][4], justify="left")
-            self.GB5.configure(state="disabled")
-            self.GB6.configure(state="disabled")
+        self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除下注", command=self.clickcancelBtn)
+        self.cancelBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
+        self.okBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確定",command=self.clickokBtn)
+        self.okBtn.grid(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
+        
+        
+        
+        self.RightFrame=tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
+        self.RightFrame.pack
+        
+    # 確認（關視窗）儲存所有下注內容
+    # 每點一次按鈕都要確認一次顯示幕上的東西，不能把content寫外面？
+    def clickBtnGB1(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"單雙（總分）　　單  　　　　　1.75", justify="left")
+        self.GB1.configure(state="disabled")
+        self.GB2.configure(state="disabled")
+    def clickBtnGB2(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"單雙（總分）　　雙  　　　　　1.75", justify="left")
+        self.GB1.configure(state="disabled")
+        self.GB2.configure(state="disabled")
+    def clickBtnGB3(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(Odds[1][1])+"　　 1.75", justify="left")
+        self.GB3.configure(state="disabled")
+        self.GB4.configure(state="disabled")
+    def clickBtnGB4(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(Odds[1][3])+"　　 1.75", justify="left")
+        self.GB3.configure(state="disabled")
+        self.GB4.configure(state="disabled")
+    def clickBtnGB5(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"不讓分　　　　　"+str(Odds[2][1])+"  "+str(Odds[2][2]), justify="left")
+        self.GB5.configure(state="disabled")
+        self.GB6.configure(state="disabled")
+    def clickBtnGB6(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"不讓分    "+str(Odds[2][3])+"  "+str(Odds[2][4]), justify="left")
+        self.GB5.configure(state="disabled")
+        self.GB6.configure(state="disabled")
 
-        # 取消用的函數（一次全部取消）
-        def clickcancelBtn(self):
-            self.GB1.configure(state="normal")
-            self.GB2.configure(state="normal")
-            self.GB3.configure(state="normal")
-            self.GB4.configure(state="normal")
-            self.GB5.configure(state="normal")
-            self.GB6.configure(state="normal")
-            self.showL.configure(text="") 
-        def clickokBtn(self):
-            """
-            下注組希望回傳的資訊形式
-            """
-            pass
+    # 取消用的函數（一次全部取消）
+    def clickcancelBtn(self):
+        self.GB1.configure(state="normal")
+        self.GB2.configure(state="normal")
+        self.GB3.configure(state="normal")
+        self.GB4.configure(state="normal")
+        self.GB5.configure(state="normal")
+        self.GB6.configure(state="normal")
+        self.showL.configure(text="") 
+    
+    # 這邊是確認下注函數
+    def clickokBtn(self):
+        """
+        下注組希望回傳的資訊形式
+        """
+        pass
+
 
 
 

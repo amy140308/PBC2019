@@ -15,7 +15,11 @@ import time as t
 import csv
 import tkinter.messagebox 
 
- 
+"""
+12/23版本（用 Main_onWindows1222改的）
+漸層 LoginPage
+修好team的scrollbar
+"""
 
 """五個爬蟲跟四個頁面有關係"""
 
@@ -163,7 +167,10 @@ class bet():
                 month = int(date[:m_end])
                 d_end = date.find('日')
                 day = int(date[m_end + 2 : d_end])
-                today = datetime.date.today()
+                diff = datetime.timedelta(days=1)
+                # today = datetime.date.today()
+                today = datetime.date.today() - diff
+                print("today:", today)
                 year = today.year
                 d = datetime.datetime(year, month, day)
                 if d == datetime.datetime(year, today.month, today.day + 1):
@@ -203,6 +210,7 @@ class bet():
 # 以下為試class的功能
 bet = bet()
 final_g = bet.get_data()
+print(final_g)
 
 # 抓歷史資訊
 class history():
@@ -257,9 +265,9 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath = 'C:\\Users\\user\\Downloads\\data.csv'
-                # 
-                # 'C:\\Users\\user\\Downloads\\data.csv'
+                filepath =  "C:\\co-work\\data.csv" 
+                #  /Users/yangqingwen/Downloads/data.csv 
+                # 'C:\\co-work\\data.csv'
                 wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
                 rf = open(file=filepath, mode="r", encoding="utf-8")
@@ -310,9 +318,9 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = "C:\\Users\\user\\Downloads\\data.csv" 
+        filepath = "C:\\co-work\\data.csv"
         # "/Users/yangqingwen/Downloads/data.csv" 
-        # 'C:\\Users\\user\\Downloads\\data.csv'
+        # "C:\\co-work\\data.csv"
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
         
@@ -328,13 +336,9 @@ class history():
 
 """這邊開始是隊伍資訊的30個各隊資料"""
 
-# 抓各個隊伍資訊
-"""
-class Team:
-"""
 
 """
-待修
+12/23抓team.csv的更新版gamebet()
 """
 
 class gamebet():
@@ -346,8 +350,6 @@ class gamebet():
      ['不讓分', 'A隊名', A賠率, 'B隊名', B賠率]]
     """
     def odds(self, team_name_A, team_name_B):
-        print("***calculating odds...")
-        data_list = []
         
         teamnamedict = {"塞爾蒂克": "波士頓塞爾蒂克", "公牛": "芝加哥公牛", 
                     "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
@@ -363,20 +365,40 @@ class gamebet():
         team_name_A = teamnamedict[team_name_A]
         team_name_B = teamnamedict[team_name_B]
         
-        #獲得雙方隊伍勝率與平均得分
-        print("getting team", team_name_A, "stats...")
-        teamA = Team(team_name_A)
-        teamA.get_info() #勝率是int(teamA.info[4])
-        self.win_oddsA = (float(teamA.info[4][:(len(teamA.info[4])-1)]) / 100)
-        teamA.get_game() #平均得分是teamA.game[(len(teamA.game) - 1)]
-        self.score_A = teamA.game[(len(teamA.game) - 1)]
+        print("***calculating odds...")
+        data_list = []
         
-        print("getting team", team_name_B, "stats...")        
-        teamB = Team(team_name_B)
-        teamB.get_info() #勝率B是int(teamB.info[4])
-        self.win_oddsB = (float(teamB.info[4][:(len(teamB.info[4])-1)]) / 100)
-        teamB.get_game() #平均得分是teamB.game[(len(teamB.game) - 1)]
-        self.score_B = teamB.game[(len(teamB.game) - 1)]
+        team_file = "C:\\co-work\\team.csv" #要改
+
+        with open(team_file, 'r', encoding='UTF-8') as csvfile:
+            rows = csv.reader(csvfile)
+            line = 1
+            line_team_A = 0
+            line_team_B = 0
+            
+            for row in rows:
+                if row[0] == team_name_A:
+                    self.win_oddsA = (float(row[4][:(len(row[4])-1)]) / 100)
+                    line_team_A = line
+                                
+                elif row[0] == team_name_B:
+                    self.win_oddsB = (float(row[4][:(len(row[4])-1)]) / 100)
+                    line_team_B = line
+
+                if line_team_A != 0:
+                    if line == (line_team_A + 12):
+                        self.score_A = float(row[0])    
+                        
+                if line_team_B != 0: 
+                    if line == (line_team_B + 12):
+                        print(row)
+                        self.score_B = float(row[0])
+                    
+                line += 1
+                
+        print(team_name_A, self.win_oddsA, self.score_A)
+        print(team_name_B, self.win_oddsB)
+        
         
         """
         賠率公式：
@@ -389,13 +411,13 @@ class gamebet():
         """
         
         #單雙
-        data_list.append(['單雙', '單', 1.75, '雙', 1.75])
+        data_list.append(['單雙(總分)', '單', 1.75, '雙', 1.75])
         
         #大小
-        scoresum = teamA.game[(len(teamA.game) - 1)] + teamB.game[(len(teamB.game) - 1)]
+        scoresum = self.score_A + self.score_B
         scoresum = int(scoresum) + 0.5 #確保大小是以.5結尾
-        data_list.append(['大小(總分)', ('大於' + str(scoresum)), 1.75,
-                          ('小於' + str(scoresum)), 1.75])
+        data_list.append(['大小(總分)', ('大/' + str(scoresum)), 1.75,
+                          ('小/' + str(scoresum)), 1.75])
         
         #不讓分
         teamA_odds = self.win_oddsA * (1 - self.win_oddsB)
@@ -436,79 +458,119 @@ class gamebet():
         data_list.append(['不讓分', team_name_A, teamA_odds, team_name_B, teamB_odds])
         
         return data_list
-    
-    """
-    def get_bettingA(final_g) ，需要輸入當日賽程清單
-    return list：一場賽事回傳一個完整賠率清單
-    舉例：[['時間', 'A隊', 'B隊', '地點', [[單雙], [大小], [不讓分]]],
-           ['時間', 'C隊', 'D隊', '地點', [[單雙], [大小], [不讓分]]]...]
-    
-    A版本使用For迴圈一個一個計算，算出全部的賠率，非常耗時間。
-    """
-    def get_bettingA(self, final_g):
-        #先得到當日賽事資訊
-        data_list = []
-        
-        #Team與bet對照隊名用
-        teamnamedict = {"塞爾蒂克": "波士頓塞爾蒂克", "公牛": "芝加哥公牛", 
-                    "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
-                    "騎士": "克里夫蘭騎士", "黃蜂": "夏洛特黃蜂", "尼克": "紐約尼克",
-                    "活塞": "底特律活塞", "熱火": "邁阿密熱火", "76人": "費城76人",
-                    "溜馬": "印第安納溜馬", "魔術": "奧蘭多魔術", "暴龍": "多倫多暴龍", 
-                    "公鹿": "密爾瓦基公鹿", "巫師": "華盛頓巫師", "金塊": "丹佛金塊", "勇士": "金州勇士", 
-                    "獨行俠": "達拉斯獨行俠", "灰狼": "明尼蘇達灰狼", "快艇": "洛杉磯快艇",
-                    "火箭": "休士頓火箭", "雷霆": "奧克拉荷馬城雷霆", "湖人": "洛杉磯湖人", 
-                    "灰熊": "曼菲斯灰熊", "拓荒者": "波特蘭拓荒者", "太陽": "鳳凰城太陽", 
-                    "鵜鶘": "紐奧良鵜鶘", "爵士": "猶他爵士", "國王": "沙加緬度國王", "馬刺": "聖安東尼奧馬刺"}
-        
-        #for迴圈判定賠率
-        for i in range(len(final_g)):
-            data_list.append(final_g[i])
-            print('***Getting game of', teamnamedict[final_g[i][1]],"vs.", teamnamedict[final_g[i][2]])
-            odds_list = self.odds(teamnamedict[final_g[i][1]], teamnamedict[final_g[i][2]])
-            data_list[i].append(odds_list)
-            print('***Check list', data_list[i])
-            print()
-            print()
-        
-        return data_list
-
-    #判斷下幾注，賠率
-    """
-    三種寫法分別對應不同的結果?
-    """
-    #def go_bet(self):
-        
-    
-    #下注
-    """
-    def gobet 需要輸入一個清單：['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱']
-    - 從帳戶扣除應繳金額
-    - 新增一筆交易資料，此交易資料會是一個清單：
-      ['時間', 'A隊', 'B隊', '地點', '賭法', '下幾柱', '輸/贏/未交割', 盈虧]
-    - 回傳
-    """
-    #def confirm_bet(self, bet):
-        #需要一個Check Balance的函數
-        
-        
-        #從帳戶扣取應繳金額
-        #新增一筆交易資料
-        
-        
-    #結算
-    """
-    def clearance 不須輸入
-    每次開檔時需跑這個函數
-    - 從帳戶資料中讀取是否有未交割的賭注
-    - 從歷史資料中獲得結果
-    - 更新帳戶餘額與交易紀錄
-    """   
-    #def clearance(self): 
 
 
+
+# 登入當下要做的事
+# global function 
+def login_duty(user_info):  # user_info是list
+    # 上次登入時間
+    usr_login_timeStr=user_info[3]
+    # 最後登入時間
+    login_time=datetime.datetime.now() 
+    # print("login_time:"+str(login_time))
+    # 判斷今日登入時間是否與最後登入時間相符
+    # 每日登入自動新增1,000元(與上次登入的日期不一樣)
+    """
+    個人資料已修復 待下注
+    """
+    usr_login_time=datetime.datetime.strptime(usr_login_timeStr, "%Y-%m-%d %H:%M:%S.%f") # 2019-12-24 15:30:00
+
+    diff=login_time-usr_login_time
+    if diff.days>0:
+        user_info[2]=int(user_info[2])
+        user_info[2]+=1000
+    # 判斷最近下注有沒有算清
+    # 算清楚比賽結果
+    game_result=[]
+    # "data.csv" 
+    with open( "C:\\co-work\\data.csv", 'r', encoding='utf-8') as rf:
+        rows=csv.reader(rf)
+        for row in rows:
+            game_result.append(row)
+    for i in range(4, len(user_info)):
+        if user_info[4][i][8]=='未結算':
+            for j in range(len(game_result)):
+                if game_result[j][0]==user_info[4][i][0] and game_result[j][2]==user_info[4][i][1] and game_result[j][3]==user_info[4][i][2]:
+                    total_point=int(game_result[j][4])+int(game_result[j][5])
+                    if user_info[4][i][4]=='不讓分':
+                        if int(game_result[j][4])>int(game_result[j][5]):
+                            if user_info[4][i][5]==user_info[4][i][1]:
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                user_info[2]+=earn
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
+                            else:
+                                user_info[4][i][8]=='賠'
+                        else:
+                            if user_info[4][i][5]==user_info[4][i][2]:
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                user_info[2]+=earn
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
+                            else:
+                                user_info[4][i][8]=='賠'
+                    elif user_info[4][i][4]=='單雙(總分)':
+                        if total_point%2==1:
+                            if user_info[4][i][5]=='單':
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                user_info[2]+=earn
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
+                            else:
+                                user_info[4][i][8]=='賠'
+                        else:
+                            if user_info[4][i][5]=='雙':
+                                user_info[4][i][7]=int(user_info[4][i][7])
+                                user_info[4][i][6]=int(user_info[4][i][6])
+                                user_info[2]=int(user_info[2])
+                                user_info[4][i][9]=int(user_info[4][i][9])
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                user_info[2]+=earn
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
+                            else:
+                                user_info[4][i][8]=='賠'
+                    elif user_info[4][i][4]=='大小(總分)':
+                        user_info[4][i][7]=int(user_info[4][i][7])
+                        user_info[4][i][6]=int(user_info[4][i][6])
+                        user_info[2]=int(user_info[2])
+                        user_info[4][i][9]=int(user_info[4][i][9])
+                        direction=user_info[4][i][5].split('/')
+                        bs=direction[0]
+                        point=float(direction[1])
+                        if total_point>point:
+                            if bs=='大':
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                user_info[2]+=earn
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
+                            else:
+                                user_info[4][i][8]=='賠'
+                        else:
+                            if bs=='小':
+                                earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                user_info[2]+=earn
+                                user_info[4][i][9]+=earn
+                                user_info[4][i][8]=='賺'
+                            else:
+                                user_info[4][i][8]=='賠'
+    return user_info
 
 """前台主程式開始"""
+
 
 #  SportsLottery相當於開一個主視窗
 class SportsLottery(tk.Tk):
@@ -557,40 +619,64 @@ class SportsLottery(tk.Tk):
         PersonalPage.modify(username)
 
 
+class GradientCanv(tk.Canvas):
+    '''A gradient frame which uses a canvas to draw the background'''
+    def __init__(self, parent, color1="lemon chiffon", color2="misty rose", **kwargs):
+        tk.Canvas.__init__(self, parent, **kwargs)
+        self._color1 = color1
+        self._color2 = color2
+        self.bind("<Configure>", self._draw_gradient)
 
+    def _draw_gradient(self, event=None):
+        '''Draw the gradient'''
+        self.delete("gradient")
+        width = self.winfo_width()
+        height = self.winfo_height()
+        limit = width
+        (r1,g1,b1) = self.winfo_rgb(self._color1)
+        (r2,g2,b2) = self.winfo_rgb(self._color2)
+        r_ratio = float(r2-r1) / limit
+        g_ratio = float(g2-g1) / limit
+        b_ratio = float(b2-b1) / limit
+
+        for i in range(limit):
+            nr = int(r1 + (r_ratio * i))
+            ng = int(g1 + (g_ratio * i))
+            nb = int(b1 + (b_ratio * i))
+            color = "#%4.4x%4.4x%4.4x" % (nr,ng,nb)
+            self.create_line(i,0,i,height, tags=("gradient",), fill=color)
+        self.lower("gradient")
 
 class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         # self.title("運彩模擬器：登入")
-        self.configure(bg="misty rose")
-       
+        self.canvas = GradientCanv(self,width=300, height=300, color1="lemon chiffon", color2="misty rose", highlightthickness = 0, relief="sunken")
+        self.canvas.pack(side="top", fill="both", expand=True)
         # self.img=Image.open("NBALogo.gif")
         # self.img=self.img.resize((200, 200), Image.ANTIALIAS) 
         # self.img=ImageTk.PhotoImage(self.img)
         # self.canvas.create_image(0, 0, anchor="nw", image=self.img)
     
         f1=tkFont.Font(size=15, family="Didot")
-        self.l1=tk.Label(self, text="使用者名稱：", font=f1, bg="snow")
-        self.l2=tk.Label(self, text="密碼：", font=f1, bg="snow")
-        self.l1.pack(side="top", padx=10, pady=10)
+        self.l1=tk.Label(self.canvas, text="使用者名稱：", font=f1, bg="lemon chiffon")
+        self.l2=tk.Label(self.canvas, text="密碼：", font=f1, bg="lemon chiffon")
+        self.l1.pack(side="top", padx=10, pady=20)
         self.var_usr_name=tk.StringVar(self)
-        self.entry_usr_name=tk.Entry(self, textvariable=self.var_usr_name)
+        self.entry_usr_name=tk.Entry(self.canvas, textvariable=self.var_usr_name)
         self.entry_usr_name.pack()
         # 默認值
         # var_usr_name.set("")
         self.l2.pack(side="top",padx=10, pady=10) 
-
         self.var_usr_pwd=tk.StringVar()
-        self.entry_usr_pwd=tk.Entry(self, textvariable=self.var_usr_pwd) #show="*" 
+        self.entry_usr_pwd=tk.Entry(self.canvas, textvariable=self.var_usr_pwd) #show="*" 
         self.entry_usr_pwd.pack(side="top", padx=10, pady=10)
         # 以下login command之後要寫成判斷式並用configure結合
-        self.btn_login=tk.Button(self, text="登入", font=f1, command=self.usr_login)
+        self.btn_login=tk.Button(self.canvas, text="登入", font=f1, command=self.usr_login)
         self.btn_login.pack(side="right", padx=10, pady=10)
-        self.btn_signup=tk.Button(self, text="註冊", font=f1, command=self.usr_signup)
+        self.btn_signup=tk.Button(self.canvas, text="註冊", font=f1, command=self.usr_signup)
         self.btn_signup.pack(side="right", padx=10, pady=10)
-
     
     def usr_login(self):
         check = 0
@@ -600,7 +686,7 @@ class LoginPage(tk.Frame):
         # C:\\co-work\\userInformation.csv
         userinformation = []
         try:
-            with open('C:\\co-work\\userInformation.csv', "r", newline = '') as f:
+            with open ("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -637,7 +723,7 @@ class LoginPage(tk.Frame):
             # '/Users/yangqingwen/Downloads/userInformation.csv'
             # 'C:\\co-work\\userInformation.csv'
             userinformation = []
-            with open('C:\\co-work\\userInformation.csv', "r", newline = '') as f:
+            with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -736,11 +822,11 @@ class NewsPage(tk.Frame):
             elif btn_txt == "新聞介紹":
                 btn.configure(command=lambda: controller.show_frame("NewsPage"))
             elif btn_txt == "個人帳戶":
-                btn.configure(command = lambda: controller.show_frame("PersonalPage"))
+                btn.configure(command=lambda: controller.show_frame("PersonalPage"))
             elif btn_txt == "歷史資料":
                 btn.configure(command=lambda: controller.show_frame("HistoryPage"))
             elif btn_txt == "賽事下注":
-                btn.configure(command = lambda: controller.show_frame("GamePage"))
+                btn.configure(command=lambda: controller.show_frame("GamePage"))
 
 
         f0=tkFont.Font(family="標楷體", size=20)
@@ -825,7 +911,7 @@ class TeamPage(tk.Frame):
         self.configure(width=500, height=700, bg = "lemon chiffon")
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
-        self.createWidgets()
+        #self.createWidgets()
         
     def createWidgets(self):
         # 放賽事
@@ -858,6 +944,8 @@ class TeamPage(tk.Frame):
             """
             記得改filepath
             """
+            # "/Users/yangqingwen/Desktop/PBC2019/team.csv"
+            # "C:\\co-work\\team.csv"
             filepath = "C:\\co-work\\team.csv"
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)  
@@ -1010,10 +1098,6 @@ class GamePage(tk.Frame):
         self.configure(width=500, height=700, bg = "lemon chiffon")
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
-        
-        
-        # 頁面功能 (之後可能要融合到Main_onWindows.py)
-        
         f1=tkFont.Font(size=20, family="標楷體")
         if len(final_g)>0:
             for i in range(len(final_g)):
@@ -1023,50 +1107,123 @@ class GamePage(tk.Frame):
                 team2=final_g[i][2]
                 arena=final_g[i][3]
                 self.btn.configure(text=time+"\n"+team1+"vs."+team2+"\n"+arena, font="標楷體")
-                self.btn.configure(command=lambda: click_game_button(team1, team2)) 
+                self.btn.configure(command=lambda i=i: self.click_game_button(final_g[i][1], final_g[i][2])) 
                 self.btn.pack(side="top", pady=10, padx=5)     
         else:
-            self.NoGameLabel=tk.Label(text="今日無賽事", font=f1)
-            self.NoGameLabel.pack(anchor="n", side="top", pady=20)
-       
-        
-        # 點擊打開賽事下注
-        def click_game_button(teamA, teamB):
-            # 可能跟隊伍team.py之後會修出來的東西要調整
-            game_bet=gamebet()
-            Odds=game_bet.odds(teamA, teamB)
+            self.NoGameLabel=tk.Label(self.F2, text="今日無賽事", font=f1, bg="lemon chiffon")
+            self.NoGameLabel.pack(anchor="ne", side="top", pady=20)
 
-            window=tk.Toplevel(self)
-            window.geometry("500x500")
-            window.configure(bg="azure")
+    # 點擊打開賽事下注
+    def click_game_button(self, teamA, teamB):
+        
+        # 可能跟隊伍team.py之後會修出來的東西要調整
+        game_bet=gamebet()
+        Odds=game_bet.odds(teamA, teamB)
+        
+        # 彈出視窗的基本介面
+        window=tk.Toplevel(self)
+        window.geometry("500x500")
+        window.configure(bg="azure")
+        self.GameCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
+        self.GameCanv.pack(side = "top", fill = "both", expand=True)
+        self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
+        self.GameFrame.pack(side = "left", fill = "both", anchor="nw", expand=True)
+        self.showL = tk.Label(self.GameFrame, bg="white", width=10, height = 10)
+        self.showL.grid(row=0, column=0, columnspan=8, rowspan=4, padx=5, pady=5, sticky = "nsew")
+
+        # 以下為所有按鈕跟label！！！
+        # 單雙
+        self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
+        self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
+        self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=lambda:self.clickBtnGB1(Odds))
+        self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
+        self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=lambda:self.clickBtnGB2(Odds))
+        self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
+        # 大小
+        self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
+        self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[1][1])+"  1.75", command=lambda:self.clickBtnGB3(Odds))
+        self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[1][3])+"  1.75", command=lambda:self.clickBtnGB4(Odds))
+        self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
+        # 不讓分
+        self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
+        self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]),command=lambda:self.clickBtnGB5(Odds))
+        self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]),command=lambda:self.clickBtnGB6(Odds))
+        self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
+
+        self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除下注", command=self.clickcancelBtn)
+        self.cancelBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
+        self.okBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確定",command=self.clickokBtn)
+        self.okBtn.grid(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
+        
+        
+        
+        self.RightFrame=tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
+        self.RightFrame.pack
+        
+    # 確認（關視窗）儲存所有下注內容
+    # 每點一次按鈕都要確認一次顯示幕上的東西，不能把content寫外面？
+    def clickBtnGB1(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"單雙（總分）　　單  　　　　　1.75", justify="left")
+        self.GB1.configure(state="disabled")
+        self.GB2.configure(state="disabled")
+    def clickBtnGB2(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"單雙（總分）　　雙  　　　　　1.75", justify="left")
+        self.GB1.configure(state="disabled")
+        self.GB2.configure(state="disabled")
+    def clickBtnGB3(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(Odds[1][1])+"　　 1.75", justify="left")
+        self.GB3.configure(state="disabled")
+        self.GB4.configure(state="disabled")
+    def clickBtnGB4(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(Odds[1][3])+"　　 1.75", justify="left")
+        self.GB3.configure(state="disabled")
+        self.GB4.configure(state="disabled")
+    def clickBtnGB5(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"不讓分　　　　　"+str(Odds[2][1])+"  "+str(Odds[2][2]), justify="left")
+        self.GB5.configure(state="disabled")
+        self.GB6.configure(state="disabled")
+    def clickBtnGB6(self, Odds):
+        content = self.showL.cget("text")
+        self.showL.configure(text=content+"\n"+"不讓分    "+str(Odds[2][3])+"  "+str(Odds[2][4]), justify="left")
+        self.GB5.configure(state="disabled")
+        self.GB6.configure(state="disabled")
+
+    # 取消用的函數（一次全部取消）
+    def clickcancelBtn(self):
+        self.GB1.configure(state="normal")
+        self.GB2.configure(state="normal")
+        self.GB3.configure(state="normal")
+        self.GB4.configure(state="normal")
+        self.GB5.configure(state="normal")
+        self.GB6.configure(state="normal")
+        self.showL.configure(text="") 
+    
+    # 這邊是確認下注函數
+    def clickokBtn(self):
+        """
+        下注組希望回傳的資訊形式
+        """
+        pass
+
+
+
+
+
+
+
+
             
-            self.GameCanv = tk.Canvas(window, width=500, height = 500, highlightthickness=0, bg="azure")
-            self.GameCanv.pack(side = "top", fill = "both", expand=True)
-            self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
-            self.GameFrame.pack(side = "top", fill = "both", anchor="center", expand=True)
-            self.showL = tk.Label(self.GameFrame, bg="white", width=10, height = 10, text="顯示幕")
-            self.showL.grid(row=0, column=0, columnspan=8, rowspan=4, padx=5, pady=5, sticky = "nsew")
-            # 單雙
-            self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
-            self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75")
-            self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
-            self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75")
-            self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
-            # 大小
-            self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
-            self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][1]+"  1.75")
-            self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=Odds[1][3]+"  1.75")
-            self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
-            # 不讓分
-            self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
-            self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][1])+"  "+str(Odds[2][2]))
-            self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
-            self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(Odds[2][3])+"  "+str(Odds[2][4]))
-            self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
+            
+
             
 # HistoryPage歷史紀錄頁面
 
@@ -1135,15 +1292,74 @@ class PersonalPage(tk.Frame):
         self.gameBar.pack(side = "right", fill = "y")
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
     def modify(self, username):
-        f1=tkFont.Font(family="Didot", size=30)
-        UsernameLbl = tk.Label(self.F2, text="Welcome, "+username, font=f1, bg="lemon chiffon")
-        UsernameLbl.pack(side="top", anchor= "center", pady= 20)
+        # 全部的使用者資訊
+        user_information = []
+        # 抓到同帳號名使用者的資訊
+        user_info=[]
+        # "/Users/yangqingwen/Downloads/userInformation.csv"
+        # "C:\\co-work\\userInformation.csv"
+        with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
+            rows = csv.reader(f)
+            for row in rows:
+                if row[0] == username:
+                    for j in range(len(row)):
+                        user_info.append(row[j])
+                    break
+        user_info=login_duty(user_info)
 
-        # 帳戶組要給的餘額數字：
-        # read csv讀入歷史資訊和帳戶餘額
-        # 所有東西要擺在F2的Frame裡面
-        self.BalanceLbl=tk.Label(self.F2,text="帳戶餘額："+str(Balance), font=f1, bg="lemon chiffon")
-        self.BalanceLbl.pack(side="top", anchor="center",pady=20)
+        f1=tkFont.Font(family="Didot", size=20)
+        self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+".", font = f1, bg = "lemon chiffon")
+        self.UsernameLbl.pack(side="top", anchor= "nw", pady= 20)
+        
+        # 下注資訊紀錄：等改
+        self.BalanceLbl=tk.Label(self.F2,text="Account balance： "+str(user_info[2]), font=f1, bg="lemon chiffon")
+        self.BalanceLbl.pack(side="top", anchor="w")
+
+        # 我就先推測i是下注的次數？
+        # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
+        # 只顯示近十筆？下注如果超過一百筆可能會超過scrollbar可以滑的範圍
+        
+        if len(user_info) == 4:
+            self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
+            self.ShowLbl.pack(side="top", anchor="w",pady=15)
+        else: # 有下注資訊
+            for i in range(len(user_info[4])):
+                # 下注第幾筆
+                self.BetIndexLbl=tk.Label(self.F2, text=str(i+1)+".", font = f1, bg = "lemon chiffon")
+                self.BetIndexLbl.pack(sied="top")
+
+                # 下注時間
+                time = user_info[4][i][10]
+                tstr=time.strftime("%Y-%m-%d %H:%M")  
+                self.BetTimeLbl=tk.Label(self.F2, text = "下注時間： "+tstr, font = f1, bg="lemon chiffon")
+                self.BetTimeLbl.pack(side="top")
+                # 下注狀態
+
+                self.StatusLbl=tk.Label(self.F2, text="狀態： "+user_info[4][i][8], font=f1, bg="lemon chiffon") 
+                self.StatusLbl.pack(side="top")
+                # 下注賽事資訊
+
+                self.GameLbl=tk.Label(self.F2, text="賽事： "+user_info[4][i][0]+" "+user_info[4][i][1]+" vs."+user_info[4][i][2]+" "+user_info[4][i][3], font=f1, bg="lemon chiffon")
+                self.GameLbl.pack(side="top")
+
+                # 賭法
+                self.WayLbl=tk.Label(self.F2, text="賭法： "+user_info[4][i][4], bg="lemon chiffon", font=f1)
+                self.WayLbl.pack(side="top")
+
+                # 方向 什麼方向？我直接寫direction...
+                self.DirectLbl=tk.Label(self.F2, text="方向： "+user_info[4][i][5], bg="lemon chiffon", font=f1)
+                self.DirectLbl.pack(side="top")
+
+                # 賠率
+                self.OddsLbl=tk.Label(self.F2, text="賠率： "+user_info[4][i][6], bg="lemon chiffon", font=f1)
+                self.OddsLbl.pack(side="top")
+
+                # 下注數
+                self.BetNumLbl=tk.Label(self.F2, text="下注數： "+user_info[4][i][7], bg="lemon chiffon", font=f1)
+                self.BetNumLbl.pack(side="top")
+
+
+
 
 app=SportsLottery()
 app.mainloop()
