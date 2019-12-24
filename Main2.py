@@ -833,7 +833,13 @@ class NewsPage(tk.Frame):
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.FN, text="最新消息", font=f0, bg="lemon chiffon")
         self.TitleLbl.pack(side="top")
+        
+        self.Frame_List = []
+        
         for one_news in final_n:
+            self.every_news_frame = tk.Frame(self.FN, bg="floral white", width=300, height=200)
+            self.every_news_frame.pack(side="top", fill="both", expand="TRUE", anchor="nw")
+            self.Frame_List.append(self.every_news_frame)
             title=one_news[0]
             time=one_news[1]
             intro=one_news[2]
@@ -841,7 +847,6 @@ class NewsPage(tk.Frame):
                 intro=intro[:20]+"\n"+intro[21:]
             elif 40<=len(intro):
                 intro=intro[:20]+"\n"+intro[21:40]+"\n"+intro[41:]
-            
             image_url=one_news[-1]
             ssl._create_default_https_context = ssl._create_unverified_context
             u = urlopen(image_url)
@@ -850,22 +855,26 @@ class NewsPage(tk.Frame):
             self.img = Image.open(BytesIO(raw_data))
             self.img=self.img.resize((200, 100), Image.ANTIALIAS) 
             self.img=ImageTk.PhotoImage(self.img)
-            self.picLabel = tk.Label(self.FN,image=self.img)
+            
+            self.picLabel = tk.Label(self.every_news_frame,image=self.img)
             self.picLabel.image = self.img
-            self.picLabel.pack(side="top", pady=10, padx=10, anchor="w") 
+            self.picLabel.pack(side="left", pady=10, padx=10, anchor="w") 
             
             f1=tkFont.Font(size=20, family="標楷體")
             f2=tkFont.Font(size=10, family="微軟正黑體")
-            self.btn=tk.Label(self.FN, text=title, font=f1,bg="lemon chiffon", cursor="hand2")
-            self.btnsmall=tk.Label(self.FN, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify="left") # 傷兵/justify=RIGHT
+            self.btn=tk.Label(self.every_news_frame, text=title, font=f1,bg="lemon chiffon", cursor="hand2")
+            self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
+            self.btnsmall=tk.Label(self.every_news_frame, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify="left") # 傷兵/justify=RIGHT
+            self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
             
             def callback(event):
                 webbrowser.open_new(one_news[-2])
+            self.picLabel.bind("<Button-1>", callback)
             self.btn.bind("<Button-1>", callback)
             self.btnsmall.bind("<Button-1>", callback)
-            self.picLabel.bind("<Button-1>", callback)
-            self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
-            self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
+            
+            
+
         
         f0=tkFont.Font(family="標楷體", size=20)
         self.TitleLbl=tk.Label(self.FW, text="傷兵資訊", font=f0, bg="floral white")
@@ -912,7 +921,7 @@ class TeamPage(tk.Frame):
         self.configure(width=500, height=700, bg = "lemon chiffon")
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
-        #self.createWidgets()
+        self.createWidgets()
         
     def createWidgets(self):
         # 放賽事
