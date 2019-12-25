@@ -14,6 +14,7 @@ from selenium.webdriver.chrome.options import Options
 import time as t
 import csv
 import tkinter.messagebox 
+import copy
 
 """
 12/23版本（用 Main_onWindows1222改的）
@@ -150,9 +151,9 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path ='/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path ='chromedriver.exe', options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
-        # executable_path = 'C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python37\\chromedriver.exe'
+        # executable_path = 'chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
         html = driver.page_source
         driver.close()
@@ -233,7 +234,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome( executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome( executable_path = 'chromedriver.exe', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
@@ -264,7 +265,7 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath =  "/Users/yangqingwen/Downloads/data.csv" 
+                filepath =  "C:\\co-work\\data.csv" 
                 #  "/Users/yangqingwen/Downloads/data.csv" 
                 # 'C:\\co-work\\data.csv'
                 wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
@@ -317,7 +318,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = "/Users/yangqingwen/Downloads/data.csv" 
+        filepath = "C:\\co-work\\data.csv" 
         # "/Users/yangqingwen/Downloads/data.csv" 
         # "C:\\co-work\\data.csv"
         f = open(file=filepath, mode="r", encoding="utf-8")
@@ -351,15 +352,15 @@ class gamebet():
     def odds(self, team_name_A, team_name_B):
         
         teamnamedict = {"塞爾蒂克": "波士頓塞爾蒂克", "公牛": "芝加哥公牛", 
-                    "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
-                    "騎士": "克里夫蘭騎士", "黃蜂": "夏洛特黃蜂", "尼克": "紐約尼克",
-                    "活塞": "底特律活塞", "熱火": "邁阿密熱火", "76人": "費城76人",
-                    "溜馬": "印第安納溜馬", "魔術": "奧蘭多魔術", "暴龍": "多倫多暴龍", 
-                    "公鹿": "密爾瓦基公鹿", "巫師": "華盛頓巫師", "金塊": "丹佛金塊", "勇士": "金州勇士", 
-                    "獨行俠": "達拉斯獨行俠", "灰狼": "明尼蘇達灰狼", "快艇": "洛杉磯快艇",
-                    "火箭": "休士頓火箭", "雷霆": "奧克拉荷馬城雷霆", "湖人": "洛杉磯湖人", 
-                    "灰熊": "曼菲斯灰熊", "拓荒者": "波特蘭拓荒者", "太陽": "鳳凰城太陽", 
-                    "鵜鶘": "紐奧良鵜鶘", "爵士": "猶他爵士", "國王": "沙加緬度國王", "馬刺": "聖安東尼奧馬刺"}
+                        "老鷹": "亞特蘭大老鷹", "籃網": "布魯克林籃網", 
+                        "騎士": "克里夫蘭騎士", "黃蜂": "夏洛特黃蜂", "尼克": "紐約尼克",
+                        "活塞": "底特律活塞", "熱火": "邁阿密熱火", "76人": "費城76人",
+                        "溜馬": "印第安納溜馬", "魔術": "奧蘭多魔術", "暴龍": "多倫多暴龍", 
+                        "公鹿": "密爾瓦基公鹿", "巫師": "華盛頓巫師", "金塊": "丹佛金塊", "勇士": "金州勇士", 
+                        "獨行俠": "達拉斯獨行俠", "灰狼": "明尼蘇達灰狼", "快艇": "洛杉磯快艇",
+                        "火箭": "休士頓火箭", "雷霆": "奧克拉荷馬城雷霆", "湖人": "洛杉磯湖人", 
+                        "灰熊": "曼菲斯灰熊", "拓荒者": "波特蘭拓荒者", "太陽": "鳳凰城太陽", 
+                        "鵜鶘": "紐奧良鵜鶘", "爵士": "猶他爵士", "國王": "沙加緬度國王", "馬刺": "聖安東尼奧馬刺"}
         
         team_name_A = teamnamedict[team_name_A]
         team_name_B = teamnamedict[team_name_B]
@@ -367,9 +368,10 @@ class gamebet():
         print("***calculating odds...")
         data_list = []
         
-        team_file ="/Users/yangqingwen/Desktop/PBC2019/team.csv"  #要改
-        # team_file  "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
-        #  "C:\\co-work\\team.csv"
+        
+        team_file ="C:\\co-work\\team.csv"  #要改
+        # "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
+        # "C:\\co-work\\team.csv"
         with open(team_file, 'r', encoding='UTF-8') as csvfile:
             rows = csv.reader(csvfile)
             line = 1
@@ -377,6 +379,7 @@ class gamebet():
             line_team_B = 0
             
             for row in rows:
+                print(row)
                 if row[0] == team_name_A:
                     self.win_oddsA = (float(row[4][:(len(row[4])-1)]) / 100)
                     line_team_A = line
@@ -474,6 +477,13 @@ def confirm_bet(user_info, bet_list):
             bet_list[i].append(- (bet_list[i][7] * 10))
             bet_list[i].append(t.strftime("%Y-%m-%d %H:%M:%S", t.localtime()))
         
+        user_info[2]=int(user_info[2])
+        
+        # 第一次下注的話，會建立下注紀錄的list給user_info建立
+        if len(user_info)==4:
+            games_list = []
+            user_info.append(games_list)
+        
         #需要Check Balance的函數
         if user_info[2] < bet_sum:
             tk.messagebox.showWarning("Warning", "帳戶餘額不足，無法投注")
@@ -481,7 +491,6 @@ def confirm_bet(user_info, bet_list):
         
         else:   
             #從帳戶扣取應繳金額
-            user_info[2]=int(user_info[2])
             user_info[2] -= bet_sum
             
             #新增一筆交易資料
@@ -490,8 +499,8 @@ def confirm_bet(user_info, bet_list):
             
             #寫回csv裡面
             # 
-            file_address ="/Users/yangqingwen/Downloads/userInformation.csv"
-            #  "C://Users//kevin//OneDrive//Desktop//userInformation.csv"
+            file_address ="C:\\co-work\\userInformation.csv"
+            #  "C:\\co-work\\userInformation.csv"
             temp_users = []
             temp_user_info = []
             
@@ -503,6 +512,8 @@ def confirm_bet(user_info, bet_list):
                         temp_users.append(row)
             
             #將User info存進暫時清單
+            """這行完全不知道在幹嘛叫了兩千次"""
+            """可以麻煩查一下deepcopy在幹嘛，這應該不是我們要debug的範圍"""
             for i in range(len(user_info)):
                 temp_user_info = copy.deepcopy(user_info)
             
@@ -544,13 +555,13 @@ def login_duty(user_info):  # user_info是list
     # 算清楚比賽結果
     game_result=[]
     # "data.csv" 
-    #  "/Users/yangqingwen/Downloads/data.csv"
+    # "/Users/yangqingwen/Downloads/data.csv"
     # "C:\\co-work\\data.csv"
-    with open("/Users/yangqingwen/Downloads/data.csv", 'r', encoding='utf-8') as rf:
+    with open("C:\\co-work\\data.csv", 'r', encoding='utf-8') as rf:
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
-    for i in range(4, len(user_info)):
+    for i in range(4, len(user_info[4])):
         if user_info[4][i][8]=='未結算':
             for j in range(len(game_result)):
                 if game_result[j][0]==user_info[4][i][0] and game_result[j][2]==user_info[4][i][1] and game_result[j][3]==user_info[4][i][2]:
@@ -749,7 +760,7 @@ class LoginPage(tk.Frame):
         # C:\\co-work\\userInformation.csv
         userinformation = []
         try:
-            with open ('/Users/yangqingwen/Downloads/userInformation.csv' , "r", newline = '') as f:
+            with open ('C:\\co-work\\userInformation.csv' , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -786,7 +797,7 @@ class LoginPage(tk.Frame):
             # '/Users/yangqingwen/Downloads/userInformation.csv'
             # 'C:\\co-work\\userInformation.csv'
             userinformation = []
-            with open('/Users/yangqingwen/Downloads/userInformation.csv' , "r", newline = '') as f:
+            with open('C:\\co-work\\userInformation.csv' , "r", newline = '') as f:
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
@@ -812,7 +823,7 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
-            with open('/Users/yangqingwen/Downloads/userInformation.csv', "a+", newline='') as f:
+            with open('C:\\co-work\\userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
                 writer.writerow([username, password, start_money, login_time])
                 f.close()
@@ -1018,7 +1029,7 @@ class TeamPage(tk.Frame):
             """
             # "/Users/yangqingwen/Desktop/PBC2019/team.csv"
             # "C:\\co-work\\team.csv"
-            filepath = "/Users/yangqingwen/Desktop/PBC2019/team.csv"
+            filepath = "C:\\co-work\\team.csv"
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)  
             team_info = []
@@ -1095,7 +1106,7 @@ class TeamPage(tk.Frame):
                 self.GInfoLabel.configure(text=game[0]+"\n"+result+"\n"+game[2]+" vs. "+game[3]+" "+game[1])
                 self.GInfoLabel.pack(side= "top", pady=5)
 
-        
+        """
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -1114,7 +1125,7 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
         
-        """
+       
         
         # 打開隊伍資訊
         self.Team_name_List = ["亞特蘭大老鷹", "布魯克林籃網", "波士頓塞爾蒂克", "夏洛特黃蜂", "芝加哥公牛",
@@ -1394,28 +1405,26 @@ class GamePage(tk.Frame):
                 self.betnumEnt.delete(0,"end")
         
     def clickbetBtn(self):
-        try:
-            bet_list=self.report_list
-            # 全部的使用者資訊
-            user_information = []
-            # 抓到同帳號名使用者的資訊
-            user_info=[]
-            # "/Users/yangqingwen/Downloads/userInformation.csv"
-            # "C:\\co-work\\userInformation.csv"
-            with open("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
-                rows = csv.reader(f)
-                for row in rows:
-                    if row[0] == username:
-                        for j in range(len(row)):
-                            user_info.append(row[j])
-                        break
-            # 調用外部函數：login_duty（）
-            user_info=login_duty(user_info)
-            # 調用外部函數：confirm_bet()
-            confirm_bet(user_info, bet_list)
-            print("Bet confirmed!")
-        except:
-            tk.messagebox.showwarning("Warning", "你尚未選擇任何下注方法！")
+        bet_list=self.report_list
+        # 全部的使用者資訊
+        user_information = []
+        # 抓到同帳號名使用者的資訊
+        user_info=[]
+        # "/Users/yangqingwen/Downloads/userInformation.csv"
+        # "C:\\co-work\\userInformation.csv"
+        with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
+            rows = csv.reader(f)
+            for row in rows:
+                if row[0] == username:
+                    for j in range(len(row)):
+                        user_info.append(row[j])
+                    break
+        # 調用外部函數：login_duty（）
+        # user_info=login_duty(user_info)
+        # 調用外部函數：confirm_bet()
+        confirm_bet(user_info, bet_list)
+        print("Bet confirmed!")
+
         
     def close_window(self):
         self.window.destroy()
@@ -1489,18 +1498,19 @@ class PersonalPage(tk.Frame):
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
     def modify(self, username):
         # 全部的使用者資訊
-        user_information = []
+        # user_information = []
         # 抓到同帳號名使用者的資訊
         user_info=[]
         # "/Users/yangqingwen/Downloads/userInformation.csv"
         # "C:\\co-work\\userInformation.csv"
-        with open("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
+        with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
             rows = csv.reader(f)
             for row in rows:
                 if row[0] == username:
                     for j in range(len(row)):
                         user_info.append(row[j])
                     break
+        # 登入時要計算之前的下注紀錄
         user_info=login_duty(user_info)
 
         f1=tkFont.Font(family="Didot", size=20)
