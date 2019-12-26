@@ -512,6 +512,7 @@ def login_duty():  # user_info是list
     usr_login_timeStr=user_info[3]
     # 最後登入時間
     login_time=datetime.datetime.now() 
+    user_info[3] = login_time
     # print("login_time:"+str(login_time))
     # 判斷今日登入時間是否與最後登入時間相符
     # 每日登入自動新增1,000元(與上次登入的日期不一樣)
@@ -815,7 +816,7 @@ class LoginPage(tk.Frame):
             self.entry_usr_pwd.delete(0, "end")
         else:
             # 成立登入時間
-            login_time = datetime.datetime.today()
+            login_time = datetime.datetime.now()
             # 初始帳戶有10000元
             start_money = 10000
             # 下注紀錄
@@ -1522,7 +1523,7 @@ class PersonalPage(tk.Frame):
         # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
         # 只顯示近十筆？下注如果超過一百筆可能會超過scrollbar可以滑的範圍
         
-        if len(user_info) == 4:
+        if user_info[4] == []:
             self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
             self.ShowLbl.pack(side="top", anchor="w",pady=15)
         
