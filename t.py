@@ -23,17 +23,22 @@
 #    # print(List[i][2])
 import csv
 import pandas as pd
-username="123"
 
-df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
+username="mm"
 
-# 刪除使用者原本在csv檔中的那列
-# df = df.drop(df.query(username).index)
-# username為login後pass進來的使用者名稱
-df = df[df.Username != username]
-df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index = False)
+df=pd.read_csv("/Users/yangqingwen/Downloads/userInformation.csv")
+
+
+df=df[df.Username != username]
+# df.drop(index = df[df["Username"]].isin([username]), index=0)
+# df.drop_duplicates(inplace=True)
+df.to_csv("/Users/yangqingwen/Downloads/userInformation.csv", index=False)
+
 # 把修改後的user_info增加至csv檔中的最後一項
 # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
+
 df.loc[len(df)] = user_info
+
 # 存檔
-df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index = False)
+
+# df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index = False)
