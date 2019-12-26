@@ -16,6 +16,7 @@ import csv
 import tkinter.messagebox 
 import copy
 import pandas as pd
+import ast
 
 """
 12/23版本（用 Main_onWindows1222改的）
@@ -464,7 +465,7 @@ class gamebet():
         return data_list
 
 # 下注回傳 global function
-def confirm_bet(user_info, bet_list):
+def confirm_bet(bet_list):
         #user_info = ['kevin', '123', 200, 'login', [ [], [], [] ]  ]
         #user_info = [username, password, balance, login time, [ [], [], [] ]  ]
         
@@ -476,12 +477,12 @@ def confirm_bet(user_info, bet_list):
             bet_list[i].append(- (bet_list[i][7] * 10))
             bet_list[i].append(t.strftime("%Y-%m-%d %H:%M:%S", t.localtime()))
         
-        user_info[2] = int(user_info[2])
-        """
-        # 原本為空集合時
-        #　if user_info[4] == "":
-        """ 
+        print()
         
+        # 原本為空集合時
+        # if user_info[4] == "":
+
+        user_info[2] = int(user_info[2])
         
         #需要Check Balance的函數
         if user_info[2] < bet_sum:
@@ -493,15 +494,18 @@ def confirm_bet(user_info, bet_list):
             user_info[2] -= bet_sum
             
             #新增一筆交易資料
-            for i in range(len(bet_list)):
-                user_info[4].append(bet_list[i])
+            try:
+                for i in range(len(bet_list)):
+                    user_info[4].append(bet_list[i])
+            except:
+                print(user_info[4])
             
         return user_info
         
         
 # 登入當下要做的事
 # global function 
-def login_duty(user_info):  # user_info是list
+def login_duty():  # user_info是list
     # 上次登入時間
     usr_login_timeStr=user_info[3]
     # 最後登入時間
@@ -518,17 +522,18 @@ def login_duty(user_info):  # user_info是list
     if diff.days>0:
         user_info[2]=int(user_info[2])
         user_info[2]+=1000
+    
     # 判斷最近下注有沒有算清
     # 算清楚比賽結果
     game_result=[]
-    # "data.csv" 
     # "/Users/yangqingwen/Downloads/data.csv"
     # "C:\\co-work\\data.csv"
     with open("C:\\co-work\\data.csv", 'r', encoding='utf-8') as rf:
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
-    print(user_info)
+
+    user_info[4] = ast.literal_eval(user_info[4])
     
     # 第一次登入或沒有任何下注紀錄時，需要在第五個加入空集合
     if len(user_info) != 5:
@@ -536,96 +541,96 @@ def login_duty(user_info):  # user_info是list
     else:
         pass
     
-    
-    for i in range(len(user_info[4])):
-        print("進來拉丞相")
-        if user_info[4][i][8]=='未結算':
-            for j in range(len(game_result)):
-                if game_result[j][0]==user_info[4][i][0] and game_result[j][2]==user_info[4][i][1] and game_result[j][3]==user_info[4][i][2]:
-                    total_point=int(game_result[j][4])+int(game_result[j][5])
-                    if user_info[4][i][4]=='不讓分':
-                        if int(game_result[j][4])>int(game_result[j][5]):
-                            if user_info[4][i][5]==user_info[4][i][1]:
-                                user_info[4][i][7]=int(user_info[4][i][7])
-                                user_info[4][i][6]=int(user_info[4][i][6])
-                                user_info[2]=int(user_info[2])
-                                user_info[4][i][9]=int(user_info[4][i][9])
-                                earn=10*user_info[4][i][7]*user_info[4][i][6]
-                                user_info[2]+=earn
-                                user_info[4][i][9]+=earn
-                                user_info[4][i][8]=='賺'
+    if user_info[4] != []:
+        for i in range(len(user_info[4])):
+            if user_info[4][i][8]=='未結算':
+                for j in range(len(game_result)):
+                    if game_result[j][0]==user_info[4][i][0] and game_result[j][2]==user_info[4][i][1] and game_result[j][3]==user_info[4][i][2]:
+                        total_point=int(game_result[j][4])+int(game_result[j][5])
+                        if user_info[4][i][4]=='不讓分':
+                            if int(game_result[j][4])>int(game_result[j][5]):
+                                if user_info[4][i][5]==user_info[4][i][1]:
+                                    user_info[4][i][7]=int(user_info[4][i][7])
+                                    user_info[4][i][6]=int(user_info[4][i][6])
+                                    user_info[2]=int(user_info[2])
+                                    user_info[4][i][9]=int(user_info[4][i][9])
+                                    earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    user_info[2]+=earn
+                                    user_info[4][i][9]+=earn
+                                    user_info[4][i][8]=='賺'
+                                else:
+                                    user_info[4][i][8]=='賠'
                             else:
-                                user_info[4][i][8]=='賠'
-                        else:
-                            if user_info[4][i][5]==user_info[4][i][2]:
-                                user_info[4][i][7]=int(user_info[4][i][7])
-                                user_info[4][i][6]=int(user_info[4][i][6])
-                                user_info[2]=int(user_info[2])
-                                user_info[4][i][9]=int(user_info[4][i][9])
-                                earn=10*user_info[4][i][7]*user_info[4][i][6]
-                                user_info[2]+=earn
-                                user_info[4][i][9]+=earn
-                                user_info[4][i][8]=='賺'
+                                if user_info[4][i][5]==user_info[4][i][2]:
+                                    user_info[4][i][7]=int(user_info[4][i][7])
+                                    user_info[4][i][6]=int(user_info[4][i][6])
+                                    user_info[2]=int(user_info[2])
+                                    user_info[4][i][9]=int(user_info[4][i][9])
+                                    earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    user_info[2]+=earn
+                                    user_info[4][i][9]+=earn
+                                    user_info[4][i][8]=='賺'
+                                else:
+                                    user_info[4][i][8]=='賠'
+                        elif user_info[4][i][4]=='單雙(總分)':
+                            if total_point%2==1:
+                                if user_info[4][i][5]=='單':
+                                    user_info[4][i][7]=int(user_info[4][i][7])
+                                    user_info[4][i][6]=int(user_info[4][i][6])
+                                    user_info[2]=int(user_info[2])
+                                    user_info[4][i][9]=int(user_info[4][i][9])
+                                    earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    user_info[2]+=earn
+                                    user_info[4][i][9]+=earn
+                                    user_info[4][i][8]=='賺'
+                                else:
+                                    user_info[4][i][8]=='賠'
                             else:
-                                user_info[4][i][8]=='賠'
-                    elif user_info[4][i][4]=='單雙(總分)':
-                        if total_point%2==1:
-                            if user_info[4][i][5]=='單':
-                                user_info[4][i][7]=int(user_info[4][i][7])
-                                user_info[4][i][6]=int(user_info[4][i][6])
-                                user_info[2]=int(user_info[2])
-                                user_info[4][i][9]=int(user_info[4][i][9])
-                                earn=10*user_info[4][i][7]*user_info[4][i][6]
-                                user_info[2]+=earn
-                                user_info[4][i][9]+=earn
-                                user_info[4][i][8]=='賺'
+                                if user_info[4][i][5]=='雙':
+                                    user_info[4][i][7]=int(user_info[4][i][7])
+                                    user_info[4][i][6]=int(user_info[4][i][6])
+                                    user_info[2]=int(user_info[2])
+                                    user_info[4][i][9]=int(user_info[4][i][9])
+                                    earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    user_info[2]+=earn
+                                    user_info[4][i][9]+=earn
+                                    user_info[4][i][8]=='賺'
+                                else:
+                                    user_info[4][i][8]=='賠'
+                        elif user_info[4][i][4]=='大小(總分)':
+                            user_info[4][i][7]=int(user_info[4][i][7])
+                            user_info[4][i][6]=int(user_info[4][i][6])
+                            user_info[2]=int(user_info[2])
+                            user_info[4][i][9]=int(user_info[4][i][9])
+                            direction=user_info[4][i][5].split('/')
+                            bs=direction[0]
+                            point=float(direction[1])
+                            if total_point>point:
+                                if bs=='大':
+                                    earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    user_info[2]+=earn
+                                    user_info[4][i][9]+=earn
+                                    user_info[4][i][8]=='賺'
+                                else:
+                                    user_info[4][i][8]=='賠'
                             else:
-                                user_info[4][i][8]=='賠'
-                        else:
-                            if user_info[4][i][5]=='雙':
-                                user_info[4][i][7]=int(user_info[4][i][7])
-                                user_info[4][i][6]=int(user_info[4][i][6])
-                                user_info[2]=int(user_info[2])
-                                user_info[4][i][9]=int(user_info[4][i][9])
-                                earn=10*user_info[4][i][7]*user_info[4][i][6]
-                                user_info[2]+=earn
-                                user_info[4][i][9]+=earn
-                                user_info[4][i][8]=='賺'
-                            else:
-                                user_info[4][i][8]=='賠'
-                    elif user_info[4][i][4]=='大小(總分)':
-                        user_info[4][i][7]=int(user_info[4][i][7])
-                        user_info[4][i][6]=int(user_info[4][i][6])
-                        user_info[2]=int(user_info[2])
-                        user_info[4][i][9]=int(user_info[4][i][9])
-                        direction=user_info[4][i][5].split('/')
-                        bs=direction[0]
-                        point=float(direction[1])
-                        if total_point>point:
-                            if bs=='大':
-                                earn=10*user_info[4][i][7]*user_info[4][i][6]
-                                user_info[2]+=earn
-                                user_info[4][i][9]+=earn
-                                user_info[4][i][8]=='賺'
-                            else:
-                                user_info[4][i][8]=='賠'
-                        else:
-                            if bs=='小':
-                                earn=10*user_info[4][i][7]*user_info[4][i][6]
-                                user_info[2]+=earn
-                                user_info[4][i][9]+=earn
-                                user_info[4][i][8]=='賺'
-                            else:
-                                user_info[4][i][8]=='賠'
+                                if bs=='小':
+                                    earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    user_info[2]+=earn
+                                    user_info[4][i][9]+=earn
+                                    user_info[4][i][8]=='賺'
+                                else:
+                                    user_info[4][i][8]=='賠'
 
-def save_csv(username, user_info):
+def save_csv(username):
     # 讀檔
-    df=pd.read_csv("userInformation.csv")
+    df=pd.read_csv("C:\\co-work\\userInformation.csv")
 
     # 刪除使用者原本在csv檔中的那列
     # username為login後pass進來的使用者名稱
     df=df[df.Username != username]
-
+    df.to_csv('C:\\co-work\\userInformation.csv', index = False)
+    
     # 把修改後的user_info增加至csv檔中的最後一項
     # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
     df.loc[len(df)] = user_info
@@ -759,11 +764,12 @@ class LoginPage(tk.Frame):
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
+                f.close()
         except:
            pass
         # 檢查是否有此帳號
         global username
-        global password 
+        global password
         username=self.entry_usr_name.get()
         password=self.entry_usr_pwd.get()
         for i in range(len(userinformation)):
@@ -877,7 +883,7 @@ class NewsPage(tk.Frame):
         # welcome page
         self.F1=tk.Frame(self,bg="misty rose",width=500, height=300)
         self.F1.pack(side="top", fill="both",anchor="n")
-        self.F2=tk.Frame(self,bg="sienna4",width=500, height=700)
+        self.F2=tk.Frame(self,bg="lemon chiffon",width=500, height=700)
         self.F2.pack(side="top", fill="both", expand="TRUE")
         self.FN=tk.Frame(self.F2,bg="lemon chiffon",width=250, height=700)
         self.FN.pack(side="left", anchor="w",fill="both", expand="TRUE")
@@ -926,14 +932,16 @@ class NewsPage(tk.Frame):
             self.img=self.img.resize((200, 100), Image.ANTIALIAS) 
             self.img=ImageTk.PhotoImage(self.img)
             
-            self.picLabel = tk.Label(self.every_news_frame,image=self.img)
+            self.picLabel = tk.Label(self.every_news_frame, image=self.img)
             self.picLabel.image = self.img
-            self.picLabel.pack(side="left", pady=10, padx=10, anchor="w") 
+            self.picLabel.pack(side="left", pady=10, padx=10, anchor="nw") 
             
             f1=tkFont.Font(size=20, family="標楷體")
             f2=tkFont.Font(size=10, family="微軟正黑體")
-            self.btn=tk.Label(self.every_news_frame, text=title, font=f1,bg="lemon chiffon", cursor="hand2")
+            
+            self.btn=tk.Label(self.every_news_frame, text=title, font=f1, bg="lemon chiffon", cursor="hand2")
             self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
+            
             self.btnsmall=tk.Label(self.every_news_frame, text=time+"\n"+intro,font=f2, bg="lemon chiffon", justify="left") # 傷兵/justify=RIGHT
             self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
             
@@ -1209,51 +1217,50 @@ class GamePage(tk.Frame):
         self.GameFrame = tk.Frame(self.GameCanv, bg = "wheat2", width=500, height = 500)
         self.GameFrame.pack(side = "left", fill = "both", anchor="nw", expand=True)
         self.showL = tk.Label(self.GameFrame, bg="white", width=10, height = 10)
-        self.showL.grid(row=0, column=0, columnspan=8, rowspan=4, padx=5, pady=5, sticky = "nsew")
+        self.showL.grid(row=0, column=0, columnspan=40, rowspan=6, padx=5, pady=5, sticky = "nsew")
 
         # 以下為所有按鈕跟label！！！
         # 單雙
         self.GL1=tk.Label(self.GameFrame, bg="linen", text="單雙（總分）")
-        self.GL1.grid(row=4, column=0, pady=10, columnspan=2, sticky = "nsew")
+        self.GL1.grid(row=7, column=0, pady=5, columnspan=20, sticky = "nsew")
         self.GB1 = tk.Button(self.GameFrame, bg="lavender blush", text="單   1.75", command=self.clickBtnGB1)
-        self.GB1.grid(row=5, column=0, pady=10, columnspan=2, sticky = "nsew")
+        self.GB1.grid(row=8, column=0, pady=5, columnspan=20, sticky = "nsew", padx = 1)
         self.GB2 = tk.Button(self.GameFrame, bg="lavender blush", text="雙   1.75", command=self.clickBtnGB2)
-        self.GB2.grid(row=5, column=3, pady=10, columnspan=2, sticky = "nsew")
+        self.GB2.grid(row=8, column=20, pady=5, columnspan=20, sticky = "nsew", padx = 1)
         # 大小
         self.GL2=tk.Label(self.GameFrame, bg="linen", text="大小（總分）")
-        self.GL2.grid(row=6, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GL2.grid(row=9, column=0, pady=5, columnspan=20, sticky = "nsew")
         self.GB3 = tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[1][1])+"  1.75", command=self.clickBtnGB3)
-        self.GB3.grid(row=7, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB3.grid(row=10, column=0, pady=5, columnspan=20, sticky = "nsew", padx = 1)
         self.GB4 = tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[1][3])+"  1.75", command=self.clickBtnGB4)
-        self.GB4.grid(row=7, column=3, columnspan=2, pady=10, sticky = "nsew")
+        self.GB4.grid(row=10, column=20, pady=5, columnspan=20, sticky = "nsew", padx = 1)
         # 不讓分
         self.GL3= tk.Label(self.GameFrame, bg="linen", text="不讓分")
-        self.GL3.grid(row=8, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GL3.grid(row=11, column=0, pady=5, columnspan=20, sticky = "nsew")
         self.GB5=tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[2][1])+"  "+str(self.Odds[2][2]),command=self.clickBtnGB5)
-        self.GB5.grid(row=9, column=0, columnspan=2, pady=10, sticky = "nsew")
+        self.GB5.grid(row=12, column=0, pady=5, columnspan=20, sticky = "nsew", padx = 1)
         self.GB6=tk.Button(self.GameFrame, bg="lavender blush", text=str(self.Odds[2][3])+"  "+str(self.Odds[2][4]),command=self.clickBtnGB6)
-        self.GB6.grid(row=9, column=3, columnspan=2, pady=10, sticky = "nsew")
+        self.GB6.grid(row=12, column=20, pady=5, columnspan=20, sticky = "nsew", padx = 1)
         # 取消跟確認下注
         self.cancelBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="清除", command=self.clickcancelBtn)
-        self.cancelBtn.grid(row=10, column=2, columnspan=2, padx=5, pady=20, sticky="nsew")
+        self.cancelBtn.grid(row=13, column=18, columnspan=5, padx=5, pady=20, sticky="nsew")
         self.okBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確定",command=self.clickokBtn)
-        self.okBtn.grid(row=10, column=4, columnspan=2, padx=5, pady=20, sticky="nsew")
+        self.okBtn.grid(row=13, column=24, columnspan=5, padx=5, pady=20, sticky="nsew")
         self.betBtn=tk.Button(self.GameFrame, bg="AntiqueWhite1", text="確認下注",command=lambda:[self.clickbetBtn(), self.close_window()], state = "disabled")
-        self.betBtn.grid(row=10, column=6, columnspan=2, padx=5, pady=20, sticky="nsew")
+        self.betBtn.grid(row=13, column=30, columnspan=5, padx=5, pady=20, sticky="nsew")
         
         # 輸入下注數的地方
         self.betnumLbl=tk.Label(self.GameFrame, text="下注數量：", justify="left", bg = "wheat2")
-        self.betnumLbl.grid(row=3, column=9, columnspan=1, pady=5, padx=5, sticky = "nsew")
+        self.betnumLbl.grid(row=4, column=41, columnspan=5, pady=5, padx=5, sticky = "nsew")
         self.var_betnum=tk.StringVar()
         self.betnumEnt=tk.Entry(self.GameFrame, textvariable=self.var_betnum)
-        self.betnumEnt.grid(row=3, column=10, columnspan=2, pady=5, padx=5, sticky = "nsew")
+        self.betnumEnt.grid(row=4, column=46, columnspan=3, pady=5, padx=5, sticky = "nsew")
         
         # 目前下注資訊顯示
         self.Words=tk.Label(self.GameFrame, text="個組合，每組合投注金額10元x", justify="left", bg = "wheat2")
-        self.Words.grid(row=4, column=9, columnspan=2, pady=5, padx=5, sticky = "nsew")
+        self.Words.grid(row=5, column=41, columnspan=2, pady=5, padx=5, sticky = "nsew")
         self.Words2=tk.Label(self.GameFrame, text="最高可中：", justify="left", bg = "wheat2")
-        self.Words2.grid(row=5, column=9, columnspan=2, pady=5, padx=5, sticky = "nsew")
-
+        self.Words2.grid(row=6, column=41, columnspan=2, pady=5, padx=5, sticky = "nsew")
         
         # 回傳的東西們（0時間，1隊伍A，2隊伍B，3場地，4下注種類，5下注方，6賠率，7下幾注，8sure）
         self.bet_one_list = [time, teamA, teamB, arena, 0, 0, 0, 0, 0]
@@ -1287,7 +1294,7 @@ class GamePage(tk.Frame):
         self.bet_lists[0][8] = 1
     def clickBtnGB3(self):
         content = self.showL.cget("text")
-        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][1])+"　　 1.75", justify="left")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][1])+"　　  1.75", justify="left")
         self.GB3.configure(state="disabled")
         self.GB4.configure(state="disabled")
         self.bet_lists[1][4] = "大小（總分）"
@@ -1296,7 +1303,7 @@ class GamePage(tk.Frame):
         self.bet_lists[1][8] = 1
     def clickBtnGB4(self):
         content = self.showL.cget("text")
-        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][3])+"　　 1.75", justify="left")
+        self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][3])+"　　  1.75", justify="left")
         self.GB3.configure(state="disabled")
         self.GB4.configure(state="disabled")
         self.bet_lists[1][4] = "大小（總分）"
@@ -1360,12 +1367,8 @@ class GamePage(tk.Frame):
                 self.betnum=self.betnumEnt.get()
                 self.betnum = int(self.betnum)
                 
-                if self.betnum == 0:
-                    tk.messagebox.showwarning("Warning", "請輸入「下注數量」")
-                    tk.betnumEnt.delete(0,"end")
-                
-                elif self.betnum < 0:
-                    tk.messagebox.showwarning("Warning", "「下注數量」請輸入正整數")
+                if self.betnum < 0:
+                    tk.messagebox.showwarning("Warning", "「下注數量」請輸入正整數！")
                     tk.betnumEnt.delete(0,"end")
                 
                 # 有選擇下注，並且輸入正確數字後，回傳list並關閉視窗
@@ -1396,24 +1399,12 @@ class GamePage(tk.Frame):
                         pass
             
             except:
-                tk.messagebox.showwarning("Warning", "請輸入正整數")
+                tk.messagebox.showwarning("Warning", "請輸入「下注數量」！")
                 self.betnumEnt.delete(0,"end")
         
     def clickbetBtn(self):
         bet_list=self.report_list
-        # 全部的使用者資訊
-        user_information = []
-        # 抓到同帳號名使用者的資訊
-        user_info=[]
-        # "/Users/yangqingwen/Downloads/userInformation.csv"
-        # "C:\\co-work\\userInformation.csv"
-        with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
-            rows = csv.reader(f)
-            for row in rows:
-                if row[0] == username:
-                    for j in range(len(row)):
-                        user_info.append(row[j])
-                    break
+
         # 第一次登入或沒有任何下注紀錄時，需要在第五個加入空集合
         if len(user_info) != 5:
             user_info.append([])
@@ -1423,8 +1414,8 @@ class GamePage(tk.Frame):
         # 調用外部函數：login_duty（）
         # user_info=login_duty(user_info)
         # 調用外部函數：confirm_bet()
-        confirm_bet(user_info, bet_list)
-        save_csv(username, user_info)
+        confirm_bet(bet_list)
+        save_csv(username)
         print("Bet confirmed!")
 
         
@@ -1503,7 +1494,11 @@ class PersonalPage(tk.Frame):
         # 全部的使用者資訊
         # user_information = []
         # 抓到同帳號名使用者的資訊
+        
+        global user_info
+        
         user_info=[]
+        
         # "/Users/yangqingwen/Downloads/userInformation.csv"
         # "C:\\co-work\\userInformation.csv"
         with open("C:\\co-work\\userInformation.csv" , "r", newline = '') as f:
@@ -1513,9 +1508,10 @@ class PersonalPage(tk.Frame):
                     for j in range(len(row)):
                         user_info.append(row[j])
                     break
+            f.close()
         # 登入時要計算之前的下注紀錄
-        user_info=login_duty(user_info)
-        save_csv(username, user_info)
+        login_duty()
+        save_csv(username)
         
         f1=tkFont.Font(family="Didot", size=20)
         self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+".", font = f1, bg = "lemon chiffon")
@@ -1534,6 +1530,12 @@ class PersonalPage(tk.Frame):
             self.ShowLbl.pack(side="top", anchor="w",pady=15)
         
         else: # 有下注資訊
+            user_info[4] = ast.literal_eval(user_info[4])
+            for game in user_info[4]:
+                game = ast.literal_eval(game)
+            print("Debug", user_info[4])
+            
+            
             for i in range(len(user_info[4])):
                 # 下注第幾筆
                 self.BetIndexLbl=tk.Label(self.F2, text=str(i+1)+".", font = f1, bg = "lemon chiffon")
