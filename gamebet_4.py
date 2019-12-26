@@ -179,6 +179,9 @@ class gamebet():
             
         return user_info
                     
+def save_csv():
+    # 讀檔
+    df=pd.read_csv("userInformation.csv")
 
 def save_csv():
     # 讀檔
