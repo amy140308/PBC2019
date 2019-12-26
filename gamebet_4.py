@@ -179,18 +179,18 @@ class gamebet():
             
         return user_info
                     
+def save_csv():
+    # 讀檔
+    df=pd.read_csv("userInformation.csv")
 
-# 讀檔
-df=pd.read_csv("userInformation.csv")
+    # 刪除使用者原本在csv檔中的那列
+    # username為login後pass進來的使用者名稱
+    df=df[df.Username != username]
 
-# 刪除使用者原本在csv檔中的那列
-# username為login後pass進來的使用者名稱
-df=df[df.Username != '123']
-
-# 把修改後的user_info增加至csv檔中的最後一項
-# usr_list=['123', '123', 10000, '17:53'] 我隨便打的
-df.loc[len(df)] = user_info
+    # 把修改後的user_info增加至csv檔中的最後一項
+    # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
+    df.loc[len(df)] = user_info
 
 
-# 存檔
-df.to_csv('userInformation.csv', index = False)
+    # 存檔
+    df.to_csv('userInformation.csv', index = False)

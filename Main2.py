@@ -15,6 +15,7 @@ import time as t
 import csv
 import tkinter.messagebox 
 import copy
+import pandas as pd
 
 """
 12/23版本（用 Main_onWindows1222改的）
@@ -168,9 +169,9 @@ class bet():
                 month = int(date[:m_end])
                 d_end = date.find('日')
                 day = int(date[m_end + 2 : d_end])
-                diff = datetime.timedelta(days=1)
-                # today = datetime.date.today()
-                today = datetime.date.today() + diff
+                # diff = datetime.timedelta(days=1)
+                today = datetime.date.today()
+                # today = datetime.date.today() + diff
                 year = today.year
                 d = datetime.datetime(year, month, day)
                 if d == datetime.datetime(year, today.month, today.day + 1):
@@ -465,28 +466,26 @@ class gamebet():
 # 下注回傳 global function
 def confirm_bet(user_info, bet_list):
         #user_info = ['kevin', '123', 200, 'login', [ [], [], [] ]  ]
-        """
-        csv檔傳入的都是string
-        """
+        #user_info = [username, password, balance, login time, [ [], [], [] ]  ]
+        
         #計算總價金，做成交易紀錄
         bet_sum = 0
         for i in range(len(bet_list)):
-            bet_list[i][7]=int(bet_list[i][7])
             bet_sum += bet_list[i][7] * 10
             bet_list[i].append('未結算')
             bet_list[i].append(- (bet_list[i][7] * 10))
             bet_list[i].append(t.strftime("%Y-%m-%d %H:%M:%S", t.localtime()))
         
-        user_info[2]=int(user_info[2])
+        user_info[2] = int(user_info[2])
+        """
+        # 原本為空集合時
+        #　if user_info[4] == "":
+        """ 
         
-        # 第一次下注的話，會建立下注紀錄的list給user_info建立
-        if len(user_info)==4:
-            games_list = []
-            user_info.append(games_list)
         
         #需要Check Balance的函數
         if user_info[2] < bet_sum:
-            tk.messagebox.showWarning("Warning", "帳戶餘額不足，無法投注")
+            tk.messagebox.showwarning("Warning", "帳戶餘額不足，無法投注！")
             print("帳戶餘額不足，無法投注。")
         
         else:   
@@ -497,41 +496,9 @@ def confirm_bet(user_info, bet_list):
             for i in range(len(bet_list)):
                 user_info[4].append(bet_list[i])
             
-            #寫回csv裡面
-            # 
-            file_address ="C:\\co-work\\userInformation.csv"
-            #  "C:\\co-work\\userInformation.csv"
-            temp_users = []
-            temp_user_info = []
-            
-            #將資料append存進一個暫時清單
-            with open(file_address, "r", newline = '', encoding = 'UTF-8') as f:
-                rows = csv.reader(f)
-                for row in rows:
-                    if row != []:
-                        temp_users.append(row)
-            
-            #將User info存進暫時清單
-            """這行完全不知道在幹嘛叫了兩千次"""
-            """可以麻煩查一下deepcopy在幹嘛，這應該不是我們要debug的範圍"""
-            for i in range(len(user_info)):
-                temp_user_info = copy.deepcopy(user_info)
-            
-            c = 0
-            for i in range(len(temp_users)):
-                if temp_users[i][0] == temp_user_info[0]:
-                    temp_users[i] = temp_user_info
-                    c = 1
-                    
-            if c == 0:
-                temp_users.append(temp_user_info)
-                    
-            with open(file_address, "w", newline = '', encoding = 'UTF-8') as f:
-                writer = csv.writer(f)
-                for i in range(len(temp_users)):
-                    writer.writerow(temp_users[i])
-
-
+        return user_info
+        
+        
 # 登入當下要做的事
 # global function 
 def login_duty(user_info):  # user_info是list
@@ -561,7 +528,17 @@ def login_duty(user_info):  # user_info是list
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
-    for i in range(4, len(user_info[4])):
+    print(user_info)
+    
+    # 第一次登入或沒有任何下注紀錄時，需要在第五個加入空集合
+    if len(user_info) != 5:
+        user_info.append([])
+    else:
+        pass
+    
+    
+    for i in range(len(user_info[4])):
+        print("進來拉丞相")
         if user_info[4][i][8]=='未結算':
             for j in range(len(game_result)):
                 if game_result[j][0]==user_info[4][i][0] and game_result[j][2]==user_info[4][i][1] and game_result[j][3]==user_info[4][i][2]:
@@ -640,7 +617,25 @@ def login_duty(user_info):  # user_info是list
                                 user_info[4][i][8]=='賺'
                             else:
                                 user_info[4][i][8]=='賠'
-    return user_info
+
+def save_csv(username, user_info):
+    # 讀檔
+    df=pd.read_csv("userInformation.csv")
+
+    # 刪除使用者原本在csv檔中的那列
+    # username為login後pass進來的使用者名稱
+    df=df[df.Username != username]
+
+    # 把修改後的user_info增加至csv檔中的最後一項
+    # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
+    df.loc[len(df)] = user_info
+
+
+    # 存檔
+    # C:\\co-work\\userInformation.csv
+    df.to_csv('C:\\co-work\\userInformation.csv', index = False)
+
+
 
 """前台主程式開始"""
 
@@ -820,12 +815,14 @@ class LoginPage(tk.Frame):
             login_time = datetime.datetime.today()
             # 初始帳戶有10000元
             start_money = 10000
+            # 下注紀錄
+            bet_history = []
             # 使用者資料建檔(寫入csv檔)
             # filepath = '/Users/yangqingwen/Downloads/userInformation.csv'
             # "C:\\co-work\\userInformation.csv"
             with open('C:\\co-work\\userInformation.csv', "a+", newline='') as f:
                 writer=csv.writer(f)
-                writer.writerow([username, password, start_money, login_time])
+                writer.writerow([username, password, start_money, login_time, bet_history])
                 f.close()
             self.entry_usr_name.delete(0, "end")
             self.entry_usr_pwd.delete(0,"end")
@@ -1279,7 +1276,6 @@ class GamePage(tk.Frame):
         self.bet_lists[0][5] = "單"
         self.bet_lists[0][6] = 1.75
         self.bet_lists[0][8] = 1
-        print(self.bet_lists)
     def clickBtnGB2(self):
         content = self.showL.cget("text")
         self.showL.configure(text=content+"\n"+"單雙（總分）　　雙  　　　　　1.75", justify="left")
@@ -1289,7 +1285,6 @@ class GamePage(tk.Frame):
         self.bet_lists[0][5] = "雙"
         self.bet_lists[0][6] = 1.75
         self.bet_lists[0][8] = 1
-        print(self.bet_lists)
     def clickBtnGB3(self):
         content = self.showL.cget("text")
         self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][1])+"　　 1.75", justify="left")
@@ -1299,7 +1294,6 @@ class GamePage(tk.Frame):
         self.bet_lists[1][5] = "大"
         self.bet_lists[1][6] = 1.75
         self.bet_lists[1][8] = 1
-        print(self.bet_lists)
     def clickBtnGB4(self):
         content = self.showL.cget("text")
         self.showL.configure(text=content+"\n"+"大小（總分）　　"+str(self.Odds[1][3])+"　　 1.75", justify="left")
@@ -1309,7 +1303,6 @@ class GamePage(tk.Frame):
         self.bet_lists[1][5] = "大"
         self.bet_lists[1][6] = 1.75
         self.bet_lists[1][8] = 1
-        print(self.bet_lists)
     def clickBtnGB5(self):
         content = self.showL.cget("text")
         self.showL.configure(text=content+"\n"+"不讓分　　　　　"+str(self.Odds[2][1])+"  "+str(self.Odds[2][2]), justify="left")
@@ -1319,7 +1312,6 @@ class GamePage(tk.Frame):
         self.bet_lists[2][5] = self.Odds[2][1]
         self.bet_lists[2][6] = self.Odds[2][2]
         self.bet_lists[2][8] = 1
-        print(self.bet_lists)
     def clickBtnGB6(self):
         content = self.showL.cget("text")
         self.showL.configure(text=content+"\n"+"不讓分　　　　　"+str(self.Odds[2][3])+"  "+str(self.Odds[2][4]), justify="left")
@@ -1329,7 +1321,6 @@ class GamePage(tk.Frame):
         self.bet_lists[2][5] = self.Odds[2][3]
         self.bet_lists[2][6] = self.Odds[2][4]
         self.bet_lists[2][8] = 1
-        print(self.bet_lists)
         
     # 取消用的函數（一次全部取消）
     def clickcancelBtn(self):
@@ -1368,9 +1359,13 @@ class GamePage(tk.Frame):
             try:
                 self.betnum=self.betnumEnt.get()
                 self.betnum = int(self.betnum)
-                print(type(self.betnum))
-                if self.betnum < 0:
-                    tk.messagebox.showwarning("Warning", "請輸入正整數")
+                
+                if self.betnum == 0:
+                    tk.messagebox.showwarning("Warning", "請輸入「下注數量」")
+                    tk.betnumEnt.delete(0,"end")
+                
+                elif self.betnum < 0:
+                    tk.messagebox.showwarning("Warning", "「下注數量」請輸入正整數")
                     tk.betnumEnt.delete(0,"end")
                 
                 # 有選擇下注，並且輸入正確數字後，回傳list並關閉視窗
@@ -1419,10 +1414,17 @@ class GamePage(tk.Frame):
                     for j in range(len(row)):
                         user_info.append(row[j])
                     break
+        # 第一次登入或沒有任何下注紀錄時，需要在第五個加入空集合
+        if len(user_info) != 5:
+            user_info.append([])
+        else:
+            pass
+        
         # 調用外部函數：login_duty（）
         # user_info=login_duty(user_info)
         # 調用外部函數：confirm_bet()
         confirm_bet(user_info, bet_list)
+        save_csv(username, user_info)
         print("Bet confirmed!")
 
         
@@ -1496,6 +1498,7 @@ class PersonalPage(tk.Frame):
         self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
         self.gameBar.pack(side = "right", fill = "y")
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
+    
     def modify(self, username):
         # 全部的使用者資訊
         # user_information = []
@@ -1512,7 +1515,8 @@ class PersonalPage(tk.Frame):
                     break
         # 登入時要計算之前的下注紀錄
         user_info=login_duty(user_info)
-
+        save_csv(username, user_info)
+        
         f1=tkFont.Font(family="Didot", size=20)
         self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+".", font = f1, bg = "lemon chiffon")
         self.UsernameLbl.pack(side="top", anchor= "nw", pady= 20)
