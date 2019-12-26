@@ -477,7 +477,7 @@ def confirm_bet(bet_list):
             bet_list[i].append(- (bet_list[i][7] * 10))
             bet_list[i].append(t.strftime("%Y-%m-%d %H:%M:%S", t.localtime()))
         
-        print()
+        print("user_info[4]", user_info[4])
         
         # 原本為空集合時
         # if user_info[4] == "":
@@ -499,7 +499,9 @@ def confirm_bet(bet_list):
                     user_info[4].append(bet_list[i])
             except:
                 print(user_info[4])
-            
+        
+        
+        print("user_info[4] after", user_info[4])
         return user_info
         
         
@@ -532,14 +534,9 @@ def login_duty():  # user_info是list
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
-
-    user_info[4] = ast.literal_eval(user_info[4])
     
-    # 第一次登入或沒有任何下注紀錄時，需要在第五個加入空集合
-    if len(user_info) != 5:
-        user_info.append([])
-    else:
-        pass
+    # 從str轉化成list
+    user_info[4] = ast.literal_eval(user_info[4])
     
     if user_info[4] != []:
         for i in range(len(user_info[4])):
@@ -999,7 +996,7 @@ class TeamPage(tk.Frame):
         self.configure(width=500, height=700, bg = "lemon chiffon")
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
-        self.createWidgets()
+        # self.createWidgets()
         
     def createWidgets(self):
         # 放賽事
@@ -1410,7 +1407,7 @@ class GamePage(tk.Frame):
             user_info.append([])
         else:
             pass
-        
+        print("bet_list",bet_list)
         # 調用外部函數：login_duty（）
         # user_info=login_duty(user_info)
         # 調用外部函數：confirm_bet()
