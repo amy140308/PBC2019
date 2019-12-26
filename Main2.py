@@ -396,14 +396,9 @@ class gamebet():
                         
                 if line_team_B != 0: 
                     if line == (line_team_B + 12):
-                        print(row)
                         self.score_B = float(row[0])
                     
                 line += 1
-                
-        print(team_name_A, self.win_oddsA, self.score_A)
-        print(team_name_B, self.win_oddsB)
-        
         
         """
         賠率公式：
@@ -477,7 +472,7 @@ def confirm_bet(bet_list):
             bet_list[i].append(- (bet_list[i][7] * 10))
             bet_list[i].append(t.strftime("%Y-%m-%d %H:%M:%S", t.localtime()))
         
-        print("user_info[4]", user_info[4])
+        print("user_info[4] before", user_info[4])
         
         # 原本為空集合時
         # if user_info[4] == "":
@@ -487,7 +482,6 @@ def confirm_bet(bet_list):
         #需要Check Balance的函數
         if user_info[2] < bet_sum:
             tk.messagebox.showwarning("Warning", "帳戶餘額不足，無法投注！")
-            print("帳戶餘額不足，無法投注。")
         
         else:   
             #從帳戶扣取應繳金額
@@ -633,7 +627,6 @@ def save_csv(username):
     # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
     df.loc[len(df)] = user_info
 
-
     # 存檔
     # C:\\co-work\\userInformation.csv
     df.to_csv('C:\\co-work\\userInformation.csv', index = False)
@@ -762,7 +755,6 @@ class LoginPage(tk.Frame):
                 rows = csv.reader(f)
                 for row in rows:
                     userinformation.append(row)
-                f.close()
         except:
            pass
         # 檢查是否有此帳號
@@ -817,6 +809,7 @@ class LoginPage(tk.Frame):
         else:
             # 成立登入時間
             login_time = datetime.datetime.now()
+            print(login_time)
             # 初始帳戶有10000元
             start_money = 10000
             # 下注紀錄
@@ -989,6 +982,7 @@ class NewsPage(tk.Frame):
             self.picLabel.bind("<Button-1>", callback)
             self.btn.pack(side="top", pady=2,padx=10, anchor="w") # 傷兵：anchor=E
             self.btnsmall.pack(side="top",pady=2,padx=10, anchor="w") # 傷兵：anchor=E
+
 
 class TeamPage(tk.Frame):
     def __init__(self, parent, controller):
