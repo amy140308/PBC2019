@@ -508,9 +508,9 @@ def confirm_bet(bet_list):
         
 # 登入當下要做的事
 # global function 
-def login_duty():  # user_info是list
+def login_duty(user_info):  # user_info是list
     # 上次登入時間
-    print("user_info", user_info)
+    print("login_duty內的user_info", user_info)
     usr_login_timeStr=user_info[3]
     # 最後登入時間
     login_time=datetime.datetime.now() 
@@ -518,9 +518,6 @@ def login_duty():  # user_info是list
     # print("login_time:"+str(login_time))
     # 判斷今日登入時間是否與最後登入時間相符
     # 每日登入自動新增1,000元(與上次登入的日期不一樣)
-    """
-    個人資料已修復 待下注
-    """
     usr_login_time=datetime.datetime.strptime(usr_login_timeStr, "%Y-%m-%d %H:%M:%S.%f") # 2019-12-24 15:30:00
 
     diff=login_time-usr_login_time
@@ -622,14 +619,11 @@ def login_duty():  # user_info是list
                                 else:
                                     user_info[4][i][8]=='賠'
 
-def save_csv(username):
+def save_csv(username, user_info):
     # 讀檔
     # /Users/yangqingwen/Downloads/userInformation.csv
-    username="mm"
 
     df=pd.read_csv("/Users/yangqingwen/Downloads/userInformation.csv")
-
-
     df=df[df.Username != username]
     # df.drop(index = df[df["Username"]].isin([username]), index=0)
     # df.drop_duplicates(inplace=True)
@@ -637,8 +631,10 @@ def save_csv(username):
 
     # 把修改後的user_info增加至csv檔中的最後一項
     # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
-
+    user_info[3]=datetime.datetime.strftime(user_info[3], "%Y-%m-%d %H:%M:%S.%f")
     df.loc[len(df)] = user_info
+    user_info[3]=datetime.datetime.strptime(user_info[3],"%Y-%m-%d %H:%M:%S.%f")
+    return user_info
 
 
 
@@ -782,7 +778,7 @@ class LoginPage(tk.Frame):
             # 檢查密碼是否正確
             if password == user_password:
                 self.controller.show_frame("NewsPage")
-                self.controller.user_info_modify(username)
+                self.controller.user_info_modify(username)  # 進login_duty
             else:
                 tk.messagebox.showwarning("Warning", "密碼錯誤")
                 self.entry_usr_name.delete(0, "end")
@@ -1415,7 +1411,7 @@ class GamePage(tk.Frame):
         # user_info=login_duty(user_info)
         # 調用外部函數：confirm_bet()
         confirm_bet(bet_list)
-        save_csv(username)
+        user_info = save_csv(username)
         print("Bet confirmed!")
 
         
@@ -1494,14 +1490,12 @@ class PersonalPage(tk.Frame):
         # 全部的使用者資訊
         # user_information = []
         # 抓到同帳號名使用者的資訊
-        
         global user_info
-        
         user_info=[]
         
         # "/Users/yangqingwen/Downloads/userInformation.csv"
         # "C:\\co-work\\userInformation.csv"
-        with open("/Users/yangqingwen/Desktop/PBC2019/team.csv" , "r", newline = '') as f:
+        with open("/Users/yangqingwen/Downloads/userInformation.csv" , "r", newline = '') as f:
             rows = csv.reader(f)
             for row in rows:
                 if row[0] == username:
@@ -1510,8 +1504,9 @@ class PersonalPage(tk.Frame):
                     break
             f.close()
         # 登入時要計算之前的下注紀錄
-        login_duty()
-        save_csv(username)
+        print("here", user_info)
+        login_duty(user_info)
+        user_info = save_csv(username, user_info)
         
         f1=tkFont.Font(family="Didot", size=20)
         self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+".", font = f1, bg = "lemon chiffon")
@@ -1524,17 +1519,16 @@ class PersonalPage(tk.Frame):
         # 我就先推測i是下注的次數？
         # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
         # 只顯示近十筆？下注如果超過一百筆可能會超過scrollbar可以滑的範圍
-        print(user_info)
         
         
         if user_info[4] == []:
+            print("尚無下注紀錄")
             self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
             self.ShowLbl.pack(side="top", anchor="w",pady=15)
         else: # 有下注資訊
             user_info[4] = ast.literal_eval(user_info[4])
             for game in user_info[4]:
                 game = ast.literal_eval(game)
-            
             
             for i in range(len(user_info[4])):
                 # 下注第幾筆
