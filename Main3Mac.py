@@ -1477,7 +1477,6 @@ class PersonalPage(tk.Frame):
         # 抓到同帳號名使用者的資訊
         
         global user_info
-        
         user_info=[]
         
         # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
@@ -1490,13 +1489,13 @@ class PersonalPage(tk.Frame):
         login_duty()
         save_csv(username)
         
-        f1=tkFont.Font(family="Didot", size=20)
-        self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+".", font = f1, bg = "lemon chiffon")
-        self.UsernameLbl.pack(side="top", anchor= "nw", pady= 20)
+        f1=tkFont.Font(family="標楷體", size=15)
+        self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+".", font = ("標楷體", 20), bg = "lemon chiffon")
+        self.UsernameLbl.pack(side="top", anchor= "nw", pady= 20, padx=20)
         
         # 下注資訊紀錄：等改
-        self.BalanceLbl=tk.Label(self.F2,text="Account balance： "+str(user_info[2]), font=f1, bg="lemon chiffon")
-        self.BalanceLbl.pack(side="top", anchor="w")
+        self.BalanceLbl=tk.Label(self.F2,text="Account balance： "+str(user_info[2]), font = ("標楷體", 20), bg="lemon chiffon")
+        self.BalanceLbl.pack(side="top", anchor="w", padx=20)
 
         # 我就先推測i是下注的次數？
         # 疑問：這個user_info跑進來後，第一筆會是時間最早還是最新？
@@ -1504,49 +1503,49 @@ class PersonalPage(tk.Frame):
         
         if user_info[4] == []:
             self.ShowLbl=tk.Label(self.F2, text = "尚無下注紀錄", font = f1, bg = "lemon chiffon")
-            self.ShowLbl.pack(side="top", anchor="w",pady=15)
+            self.ShowLbl.pack(side="top", anchor="w" , padx=20)
         
         else: # 有下注資訊
-            user_info[4] = ast.literal_eval(user_info[4])
-            for game in user_info[4]:
-                game = ast.literal_eval(game)
-           # print("Debug", user_info[4])
+            # for game in user_info[4]:
+            #     game = ast.literal_eval(game)
             
-            
+            self.BetLbl = tk.Label(self.F2, text="您有"+ str(len(user_info[4]))+"筆下注紀錄", bg="old lace")
+            self.BetLbl.pack(side="top", anchor= "nw", pady= 20, padx=20)
             for i in range(len(user_info[4])):
                 # 下注第幾筆
                 self.BetIndexLbl=tk.Label(self.F2, text=str(i+1)+".", font = f1, bg = "lemon chiffon")
-                self.BetIndexLbl.pack(sied="top", anchor="w")
+                self.BetIndexLbl.pack(side="top", anchor="w",padx=20)
 
                 # 下注時間
                 time = user_info[4][i][10]
-                tstr=time.strftime("%Y-%m-%d %H:%M")  
-                self.BetTimeLbl=tk.Label(self.F2, text = "下注時間： "+tstr, font = f1, bg="lemon chiffon")
-                self.BetTimeLbl.pack(side="top", anchor="w")
+                # tstr=time.strftime(time, "%Y-%m-%d %H:%M")  
+                self.BetTimeLbl=tk.Label(self.F2, text = "下注時間： "+time, font = f1, bg="lemon chiffon")
+                self.BetTimeLbl.pack(side="top", anchor="w", padx=20)
                 # 下注狀態
 
                 self.StatusLbl=tk.Label(self.F2, text="狀態： "+user_info[4][i][8], font=f1, bg="lemon chiffon") 
-                self.StatusLbl.pack(side="top", anchor="w")
+                self.StatusLbl.pack(side="top", anchor="w", padx=20)
+                
                 # 下注賽事資訊
 
-                self.GameLbl=tk.Label(self.F2, text="賽事： "+user_info[4][i][0]+" "+user_info[4][i][1]+" vs."+user_info[4][i][2]+" "+user_info[4][i][3], font=f1, bg="lemon chiffon")
-                self.GameLbl.pack(side="top", anchor="w")
+                self.GameLbl=tk.Label(self.F2, text="賽事： "+user_info[4][i][0]+" "+user_info[4][i][1]+" vs."+user_info[4][i][2]+" 於"+user_info[4][i][3], font=f1, bg="lemon chiffon")
+                self.GameLbl.pack(side="top", anchor="w", padx=20)
 
                 # 賭法
                 self.WayLbl=tk.Label(self.F2, text="賭法： "+user_info[4][i][4], bg="lemon chiffon", font=f1)
-                self.WayLbl.pack(side="top", anchor="w")
+                self.WayLbl.pack(side="top", anchor="w", padx=20)
 
                 # 方向 什麼方向？我直接寫direction...
                 self.DirectLbl=tk.Label(self.F2, text="方向： "+user_info[4][i][5], bg="lemon chiffon", font=f1)
-                self.DirectLbl.pack(side="top", anchor="w")
+                self.DirectLbl.pack(side="top", anchor="w", padx=20)
 
                 # 賠率
-                self.OddsLbl=tk.Label(self.F2, text="賠率： "+user_info[4][i][6], bg="lemon chiffon", font=f1)
-                self.OddsLbl.pack(side="top", anchor="w")
+                self.OddsLbl=tk.Label(self.F2, text="賠率： "+str(user_info[4][i][6]), bg="lemon chiffon", font=f1)
+                self.OddsLbl.pack(side="top", anchor="w", padx=20)
 
                 # 下注數
-                self.BetNumLbl=tk.Label(self.F2, text="下注數： "+user_info[4][i][7], bg="lemon chiffon", font=f1)
-                self.BetNumLbl.pack(side="top", anchor="w")
+                self.BetNumLbl=tk.Label(self.F2, text="下注數： "+str(user_info[4][i][7]), bg="lemon chiffon", font=f1)
+                self.BetNumLbl.pack(side="top", anchor="w", padx=20)
 
 
 app=SportsLottery()
