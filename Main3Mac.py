@@ -1176,7 +1176,7 @@ class GamePage(tk.Frame):
                 self.btn.configure(command=lambda i=i: self.click_game_button(final_g[i])) 
                 self.btn.pack(side="top", pady=10, padx=5)     
         else:
-            self.NoGameLabel=tk.Label(self.F2, text="今日無賽事", font=f1, bg="lemon chiffon")
+            self.NoGameLabel=tk.Label(self.F2, text="明日無賽事", font=f1, bg="lemon chiffon")
             self.NoGameLabel.pack(anchor="ne", side="top", pady=20)
 
     # 點擊打開賽事下注
@@ -1190,6 +1190,7 @@ class GamePage(tk.Frame):
         # 可能跟隊伍team.py之後會修出來的東西要調整
         game_bet=gamebet()
         self.Odds=game_bet.odds(teamA, teamB)
+        # print("Odds在這", self.Odds)
         
         # 彈出視窗的基本介面
         window=tk.Toplevel(self)
@@ -1282,7 +1283,7 @@ class GamePage(tk.Frame):
         self.GB3.configure(state="disabled")
         self.GB4.configure(state="disabled")
         self.bet_lists[1][4] = "大小（總分）"
-        self.bet_lists[1][5] = "大"
+        self.bet_lists[1][5] = self.Odds[1][1]
         self.bet_lists[1][6] = 1.75
         self.bet_lists[1][8] = 1
     def clickBtnGB4(self):
@@ -1291,7 +1292,7 @@ class GamePage(tk.Frame):
         self.GB3.configure(state="disabled")
         self.GB4.configure(state="disabled")
         self.bet_lists[1][4] = "大小（總分）"
-        self.bet_lists[1][5] = "大"
+        self.bet_lists[1][5] = self.Odds[1][3]
         self.bet_lists[1][6] = 1.75
         self.bet_lists[1][8] = 1
     def clickBtnGB5(self):

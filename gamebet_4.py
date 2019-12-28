@@ -44,7 +44,7 @@ class gamebet():
         print("***calculating odds...")
         data_list = []
         
-        team_file = "C://Users//kevin//OneDrive//Documents//GitHub//PBC2019//team.csv" #要改
+        team_file = "/Users/yangqingwen/Desktop/PBC2019/team.csv" #要改
         with open(team_file, 'r', encoding='UTF-8') as csvfile:
             rows = csv.reader(csvfile)
             line = 1
@@ -197,3 +197,5 @@ def save_csv():
 
     # 存檔
     df.to_csv('userInformation.csv', index = False)
+gamebet=gamebet()
+print(gamebet.odds("金塊","灰熊"))
