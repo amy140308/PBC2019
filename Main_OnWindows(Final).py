@@ -545,9 +545,9 @@ def login_duty():  # user_info是list
                                     earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
-                                    user_info[4][i][8]=='賺'
+                                    user_info[4][i][8]='賺'
                                 else:
-                                    user_info[4][i][8]=='賠'
+                                    user_info[4][i][8]='賠'
                             else:
                                 if user_info[4][i][5]==user_info[4][i][2]:
                                     user_info[4][i][7]=int(user_info[4][i][7])
@@ -558,10 +558,10 @@ def login_duty():  # user_info是list
                                     earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
-                                    user_info[4][i][8]=='賺'
+                                    user_info[4][i][8]='賺'
                                 else:
                                     user_info[4][i][8]=='賠'
-                        elif user_info[4][i][4]=='單雙(總分)':
+                        elif user_info[4][i][4]=='單雙（總分）':
                             if total_point%2==1:
                                 if user_info[4][i][5]=='單':
                                     user_info[4][i][7]=int(user_info[4][i][7])
@@ -572,9 +572,9 @@ def login_duty():  # user_info是list
                                     earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
-                                    user_info[4][i][8]=='賺'
+                                    user_info[4][i][8]='賺'
                                 else:
-                                    user_info[4][i][8]=='賠'
+                                    user_info[4][i][8]='賠'
                             else:
                                 if user_info[4][i][5]=='雙':
                                     user_info[4][i][7]=int(user_info[4][i][7])
@@ -585,10 +585,10 @@ def login_duty():  # user_info是list
                                     earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
-                                    user_info[4][i][8]=='賺'
+                                    user_info[4][i][8]='賺'
                                 else:
                                     user_info[4][i][8]=='賠'
-                        elif user_info[4][i][4]=='大小(總分)':
+                        elif user_info[4][i][4]=='大小（總分）':
                             user_info[4][i][7]=int(user_info[4][i][7])
                             user_info[4][i][6]=int(user_info[4][i][6])
                             user_info[2]=int(user_info[2])
@@ -602,18 +602,18 @@ def login_duty():  # user_info是list
                                     earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
-                                    user_info[4][i][8]=='賺'
+                                    user_info[4][i][8]='賺'
                                 else:
-                                    user_info[4][i][8]=='賠'
+                                    user_info[4][i][8]='賠'
                             else:
                                 if bs=='小':
                                     earn=10*user_info[4][i][7]*user_info[4][i][6]
                                     earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
-                                    user_info[4][i][8]=='賺'
+                                    user_info[4][i][8]='賺'
                                 else:
-                                    user_info[4][i][8]=='賠'
+                                    user_info[4][i][8]='賠'
 
 def number_float_check(earn):
     if earn != int(earn):
