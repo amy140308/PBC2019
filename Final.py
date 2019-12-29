@@ -19,7 +19,42 @@ import pandas as pd
 import ast
 
 """
-測csv讀寫
+Final
+"""
+driverpath ='/usr/local/bin/chromedriver'
+#'/usr/local/bin/chromedriver'
+#'chromedriver.exe'
+
+datapath = "/Users/yangqingwen/Downloads/data.csv" 
+#  "/Users/yangqingwen/Downloads/data.csv" 
+# 'C:\\co-work\\data.csv'
+
+teampath = "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
+# "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
+# "C:\\co-work\\team.csv"
+
+infopath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
+# "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
+# C:\\co-work\\userInformation.csv
+
+
+Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
+                    "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
+                    "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
+                    "/Users/yangqingwen/Desktop/team_logo/LAC_logo.png","/Users/yangqingwen/Desktop/team_logo/LAL_logo.png","/Users/yangqingwen/Desktop/team_logo/MEM_logo.png","/Users/yangqingwen/Desktop/team_logo/MIA_logo.png",
+                    "/Users/yangqingwen/Desktop/team_logo/MIL_logo.png","/Users/yangqingwen/Desktop/team_logo/MIN_logo.png","/Users/yangqingwen/Desktop/team_logo/NOP_logo.png","/Users/yangqingwen/Desktop/team_logo/NYK_logo.png",
+                    "/Users/yangqingwen/Desktop/team_logo/OKC_logo.png","/Users/yangqingwen/Desktop/team_logo/ORL_logo.png","/Users/yangqingwen/Desktop/team_logo/PHI_logo.png","/Users/yangqingwen/Desktop/team_logo/PHX_logo.png",
+                    "/Users/yangqingwen/Desktop/team_logo/POR_logo.png","/Users/yangqingwen/Desktop/team_logo/SAC_logo.png","/Users/yangqingwen/Desktop/team_logo/SAS_logo.png","/Users/yangqingwen/Desktop/team_logo/TOR_logo.png",
+                    "/Users/yangqingwen/Desktop/team_logo/UTA_logo.png","/Users/yangqingwen/Desktop/team_logo/WAS_logo.png"]
+"""
+Logo_road_list = ["C:\\logo\\ATL_logo.png","C:\\logo\\BKN_logo.png","C:\\logo\\BOS_logo.png","C:\\logo\\CHA_logo.png",
+                    "C:\\logo\\CHI_logo.png","C:\\logo\\CLE_logo.png","C:\\logo\\DAL_logo.png","C:\\logo\\DEN_logo.png",
+                    "C:\\logo\\DET_logo.png","C:\\logo\\GSW_logo.png","C:\\logo\\HOU_logo.png","C:\\logo\\IND_logo.png",
+                    "C:\\logo\\LAC_logo.png","C:\\logo\\LAL_logo.png","C:\\logo\\MEM_logo.png","C:\\logo\\MIA_logo.png",
+                    "C:\\logo\\MIL_logo.png","C:\\logo\\MIN_logo.png","C:\\logo\\NOP_logo.png","C:\\logo\\NYK_logo.png",
+                    "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
+                    "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
+                    "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
 """
 
 """五個爬蟲跟四個頁面有關係"""
@@ -229,7 +264,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome( executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
+        self.driver = webdriver.Chrome( executable_path = driverpath , options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
@@ -260,12 +295,12 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath = "/Users/yangqingwen/Downloads/data.csv" 
+                
                 #  "/Users/yangqingwen/Downloads/data.csv" 
                 # 'C:\\co-work\\data.csv'
-                wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
+                wf = open(file=datapath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
-                rf = open(file=filepath, mode="r", encoding="utf-8")
+                rf = open(file=datapath, mode="r", encoding="utf-8")
                 reader = csv.reader(rf)
                 
                 #print(reader)
@@ -313,7 +348,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = "/Users/yangqingwen/Downloads/data.csv" 
+        filepath = datapath
         # "/Users/yangqingwen/Downloads/data.csv" 
         # "C:\\co-work\\data.csv"
         f = open(file=filepath, mode="r", encoding="utf-8")
@@ -333,7 +368,7 @@ class history():
 
 
 """
-12/23抓team.csv的更新版gamebet()
+12/29抓team.csv的更新版gamebet()
 """
 
 class gamebet():
@@ -364,7 +399,7 @@ class gamebet():
         data_list = []
         
         
-        team_file ="/Users/yangqingwen/Desktop/PBC2019/team.csv"    #要改
+        team_file =teampath   #要改
         # "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
         # "C:\\co-work\\team.csv"
         with open(team_file, 'r', encoding='UTF-8') as csvfile:
@@ -520,7 +555,7 @@ def login_duty():  # user_info是list
     game_result=[]
     # "/Users/yangqingwen/Downloads/data.csv"
     # "C:\\co-work\\data.csv"
-    with open( "/Users/yangqingwen/Downloads/data.csv", 'r', encoding='utf-8') as rf:
+    with open(datapath, 'r', encoding='utf-8') as rf:
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
@@ -625,12 +660,12 @@ def save_csv(username):
     # 讀檔
     # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
     # C:\\co-work\\userInformation.csv
-    df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
+    df=pd.read_csv(infopath)
 
     # 刪除使用者原本在csv檔中的那列
     # username為login後pass進來的使用者名稱
     df=df[df.Username != username]
-    df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index = False)
+    df.to_csv(infopath, index = False)
     
     # 把修改後的user_info增加至csv檔中的最後一項
     # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
@@ -639,7 +674,7 @@ def save_csv(username):
 
     # 存檔
     # C:\\co-work\\userInformation.csv
-    add_df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index = False)
+    add_df.to_csv(infopath, index = False)
 
 
 
@@ -757,7 +792,7 @@ class LoginPage(tk.Frame):
         # 讀取csv檔中的使用者資料至list
         # filepath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
         # C:\\co-work\\userInformation.csv
-        df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
+        df=pd.read_csv(infopath)
         user_info_tolist=df.values.tolist()
 
         # 檢查是否有此帳號
@@ -791,7 +826,7 @@ class LoginPage(tk.Frame):
             # r必須打開已有的文件
             # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
             # 'C:\\co-work\\userInformation.csv'
-            df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
+            df=pd.read_csv(infopath)
             user_info_tolist=df.values.tolist()
         except:
             pass 
@@ -817,11 +852,11 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
             # "C:\\co-work\\userInformation.csv"
-            df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
+            df=pd.read_csv(infopath)
             start_list=[username, password, start_money, login_time, bet_history]
             add_df=df.append(pd.Series(start_list, index=df.columns), ignore_index=True)
             print(add_df)
-            add_df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index=False)
+            add_df.to_csv(infopath, index=False)
             self.entry_usr_name.delete(0, "end")
             self.entry_usr_pwd.delete(0,"end")
             tk.messagebox.showinfo("Info", "User successfully registered.\nPlease log in.")
@@ -871,7 +906,15 @@ class NewsPage(tk.Frame):
         self.TitleLbl.pack(side="top",fill = "x", ipady = 12)
         
         self.Frame_List = []
-        
+        # print(final_n)
+        # print(final_w)
+        def callback1(event):
+            webbrowser.open_new(final_n[0][-2])
+        def callback2(event):
+            webbrowser.open_new(final_n[1][-2])
+        def callback3(event):
+            webbrowser.open_new(final_n[2][-2])
+        i=0
         for one_news in final_n:
             self.every_news_frame = tk.Frame(self.FN, width=50, height=20, bg="AntiqueWhite1")
             self.every_news_frame.pack(side="top", fill="both", anchor="nw", pady=20, padx=10, expand=True)#, expand="TRUE"
@@ -904,12 +947,21 @@ class NewsPage(tk.Frame):
             
             self.btnsmall=tk.Label(self.every_news_frame, text=time+"\n"+intro,font=f2, bg="AntiqueWhite1", justify="left", cursor="hand2") # 傷兵/justify=RIGHT
             self.btnsmall.pack(side="top",pady=2, padx=10, anchor="w") # 傷兵：anchor=E
-            
-            def callback(event):
-                webbrowser.open_new(one_news[-2])
-            self.picLabel.bind("<Button-1>", callback)
-            self.btn.bind("<Button-1>", callback)
-            self.btnsmall.bind("<Button-1>", callback) 
+          
+            if  i == 0:
+                self.picLabel.bind("<Button-1>", callback1)
+                self.btn.bind("<Button-1>", callback1)
+                self.btnsmall.bind("<Button-1>", callback1)
+            elif i ==1: 
+                self.picLabel.bind("<Button-1>", callback2)
+                self.btn.bind("<Button-1>", callback2)
+                self.btnsmall.bind("<Button-1>", callback2)
+            else:
+                self.picLabel.bind("<Button-1>", callback3)
+                self.btn.bind("<Button-1>", callback3)
+                self.btnsmall.bind("<Button-1>", callback3)
+
+            i+=1
 
         # 傷兵部分
         f0=tkFont.Font(family="標楷體", size=20)
@@ -917,7 +969,13 @@ class NewsPage(tk.Frame):
         self.TitleLbl2.pack(side="top",fill = "x", ipady = 12)
         
         self.Frame_List2 = []
-        
+        def callback4(event):
+            webbrowser.open_new(final_w[0][-2])
+        def callback5(event):
+            webbrowser.open_new(final_w[1][-2])
+        def callback6(event):
+            webbrowser.open_new(final_w[2][-2])
+        i=0
         for one_wounded in final_w:
             self.every_news_frame = tk.Frame(self.FW, width=50, height=20, bg="old lace")
             self.every_news_frame.pack(side="top", fill="both", anchor="nw", pady=20, padx=10, expand=True)#, expand="TRUE"
@@ -952,11 +1010,19 @@ class NewsPage(tk.Frame):
             self.btnsmall=tk.Label(self.every_news_frame, text=time+"\n"+intro,font=f2, bg="old lace", justify="left", cursor="hand2") 
             self.btnsmall.pack(side="top",pady=2, padx=10, anchor="w")         
             
-            def callback(event):
-                webbrowser.open_new(one_wounded[-2])
-            self.btn.bind("<Button-1>", callback)
-            self.btnsmall.bind("<Button-1>", callback)
-            self.picLabel.bind("<Button-1>", callback)
+            if i == 0: 
+                self.btn.bind("<Button-1>", callback4)
+                self.btnsmall.bind("<Button-1>", callback4)
+                self.picLabel.bind("<Button-1>", callback4)
+            elif i == 1:
+                self.btn.bind("<Button-1>", callback5)
+                self.btnsmall.bind("<Button-1>", callback5)
+                self.picLabel.bind("<Button-1>", callback5)
+            else: 
+                self.btn.bind("<Button-1>", callback6)
+                self.btnsmall.bind("<Button-1>", callback6)
+                self.picLabel.bind("<Button-1>", callback6)
+            i+=1
 
 class TeamPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -1022,7 +1088,7 @@ class TeamPage(tk.Frame):
             """
             # "/Users/yangqingwen/Desktop/PBC2019/team.csv"
             # "C:\\co-work\\team.csv"
-            filepath = "/Users/yangqingwen/Desktop/PBC2019/team.csv"
+            filepath = teampath
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)  
             team_info = []
@@ -1124,25 +1190,6 @@ class TeamPage(tk.Frame):
                 self.GInfoLabel.configure(text=game[0]+" "+result+"\n"+game[2]+" vs. "+game[3]+"\n"+"對手："+game[1], font=("標楷體", 12))
                 self.GInfoLabel.pack(side= "left", anchor="w", ipadx = 30)
 
-        
-        Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/LAC_logo.png","/Users/yangqingwen/Desktop/team_logo/LAL_logo.png","/Users/yangqingwen/Desktop/team_logo/MEM_logo.png","/Users/yangqingwen/Desktop/team_logo/MIA_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/MIL_logo.png","/Users/yangqingwen/Desktop/team_logo/MIN_logo.png","/Users/yangqingwen/Desktop/team_logo/NOP_logo.png","/Users/yangqingwen/Desktop/team_logo/NYK_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/OKC_logo.png","/Users/yangqingwen/Desktop/team_logo/ORL_logo.png","/Users/yangqingwen/Desktop/team_logo/PHI_logo.png","/Users/yangqingwen/Desktop/team_logo/PHX_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/POR_logo.png","/Users/yangqingwen/Desktop/team_logo/SAC_logo.png","/Users/yangqingwen/Desktop/team_logo/SAS_logo.png","/Users/yangqingwen/Desktop/team_logo/TOR_logo.png",
-                    "/Users/yangqingwen/Desktop/team_logo/UTA_logo.png","/Users/yangqingwen/Desktop/team_logo/WAS_logo.png"]
-        """
-        Logo_road_list = ["C:\\logo\\ATL_logo.png","C:\\logo\\BKN_logo.png","C:\\logo\\BOS_logo.png","C:\\logo\\CHA_logo.png",
-                         "C:\\logo\\CHI_logo.png","C:\\logo\\CLE_logo.png","C:\\logo\\DAL_logo.png","C:\\logo\\DEN_logo.png",
-                         "C:\\logo\\DET_logo.png","C:\\logo\\GSW_logo.png","C:\\logo\\HOU_logo.png","C:\\logo\\IND_logo.png",
-                         "C:\\logo\\LAC_logo.png","C:\\logo\\LAL_logo.png","C:\\logo\\MEM_logo.png","C:\\logo\\MIA_logo.png",
-                         "C:\\logo\\MIL_logo.png","C:\\logo\\MIN_logo.png","C:\\logo\\NOP_logo.png","C:\\logo\\NYK_logo.png",
-                         "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
-                         "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
-                         "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
-        """
        
         
         # 打開隊伍資訊
@@ -1556,7 +1603,7 @@ class PersonalPage(tk.Frame):
         
         # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
         # "C:\\co-work\\userInformation.csv"
-        df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
+        df=pd.read_csv(infopath)
         usr_info_df=df[df['Username'] == username]
         user_info_tolist=usr_info_df.values.tolist()
         user_info=user_info_tolist[0]
