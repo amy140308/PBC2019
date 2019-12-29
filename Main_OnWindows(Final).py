@@ -1249,7 +1249,7 @@ class GamePage(tk.Frame):
                 self.btn.pack(side="left", pady=20, padx=20, expand=True)
 
         else:
-            self.NoGameLabel=tk.Label(self.F2_canvas, text="明日無賽事", font=f1, bg="old lace")
+            self.NoGameLabel=tk.Label(self.F2, text="明日無賽事", font=f1, bg="old lace")
             self.NoGameLabel.pack(anchor="n", side="top", pady=15)
 
     # 點擊打開賽事下注
