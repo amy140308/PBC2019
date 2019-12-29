@@ -150,7 +150,7 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path ='chromedriver.exe', options=chrome_options)
+        driver = webdriver.Chrome(executable_path ='/usr/local/bin/chromedriver', options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
@@ -229,7 +229,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome( executable_path = 'chromedriver.exe', options=chrome_options)
+        self.driver = webdriver.Chrome( executable_path = '/usr/local/bin/chromedriver', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
@@ -260,7 +260,7 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath =  "C:\\co-work\\data.csv" 
+                filepath = "/Users/yangqingwen/Downloads/data.csv" 
                 #  "/Users/yangqingwen/Downloads/data.csv" 
                 # 'C:\\co-work\\data.csv'
                 wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
@@ -313,7 +313,7 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = "C:\\co-work\\data.csv" 
+        filepath = "/Users/yangqingwen/Downloads/data.csv" 
         # "/Users/yangqingwen/Downloads/data.csv" 
         # "C:\\co-work\\data.csv"
         f = open(file=filepath, mode="r", encoding="utf-8")
@@ -364,7 +364,7 @@ class gamebet():
         data_list = []
         
         
-        team_file ="C:\\co-work\\team.csv"   #要改
+        team_file ="/Users/yangqingwen/Desktop/PBC2019/team.csv"    #要改
         # "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
         # "C:\\co-work\\team.csv"
         with open(team_file, 'r', encoding='UTF-8') as csvfile:
@@ -520,7 +520,7 @@ def login_duty():  # user_info是list
     game_result=[]
     # "/Users/yangqingwen/Downloads/data.csv"
     # "C:\\co-work\\data.csv"
-    with open("C:\\co-work\\data.csv", 'r', encoding='utf-8') as rf:
+    with open( "/Users/yangqingwen/Downloads/data.csv", 'r', encoding='utf-8') as rf:
         rows=csv.reader(rf)
         for row in rows:
             game_result.append(row)
@@ -625,12 +625,12 @@ def save_csv(username):
     # 讀檔
     # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
     # C:\\co-work\\userInformation.csv
-    df=pd.read_csv("C:\\co-work\\userInformation.csv")
+    df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
 
     # 刪除使用者原本在csv檔中的那列
     # username為login後pass進來的使用者名稱
     df=df[df.Username != username]
-    df.to_csv("C:\\co-work\\userInformation.csv", index = False)
+    df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index = False)
     
     # 把修改後的user_info增加至csv檔中的最後一項
     # usr_list=['123', '123', 10000, '17:53'] 我隨便打的
@@ -639,7 +639,7 @@ def save_csv(username):
 
     # 存檔
     # C:\\co-work\\userInformation.csv
-    add_df.to_csv("C:\\co-work\\userInformation.csv", index = False)
+    add_df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index = False)
 
 
 
@@ -757,7 +757,7 @@ class LoginPage(tk.Frame):
         # 讀取csv檔中的使用者資料至list
         # filepath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
         # C:\\co-work\\userInformation.csv
-        df=pd.read_csv("C:\\co-work\\userInformation.csv")
+        df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
         user_info_tolist=df.values.tolist()
 
         # 檢查是否有此帳號
@@ -791,7 +791,7 @@ class LoginPage(tk.Frame):
             # r必須打開已有的文件
             # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
             # 'C:\\co-work\\userInformation.csv'
-            df=pd.read_csv("C:\\co-work\\userInformation.csv")
+            df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
             user_info_tolist=df.values.tolist()
         except:
             pass 
@@ -817,11 +817,11 @@ class LoginPage(tk.Frame):
             # 使用者資料建檔(寫入csv檔)
             # filepath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
             # "C:\\co-work\\userInformation.csv"
-            df=pd.read_csv("C:\\co-work\\userInformation.csv")
+            df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
             start_list=[username, password, start_money, login_time, bet_history]
             add_df=df.append(pd.Series(start_list, index=df.columns), ignore_index=True)
             print(add_df)
-            add_df.to_csv("C:\\co-work\\userInformation.csv", index=False)
+            add_df.to_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv", index=False)
             self.entry_usr_name.delete(0, "end")
             self.entry_usr_pwd.delete(0,"end")
             tk.messagebox.showinfo("Info", "User successfully registered.\nPlease log in.")
@@ -1022,7 +1022,7 @@ class TeamPage(tk.Frame):
             """
             # "/Users/yangqingwen/Desktop/PBC2019/team.csv"
             # "C:\\co-work\\team.csv"
-            filepath = "C:\\co-work\\team.csv"
+            filepath = "/Users/yangqingwen/Desktop/PBC2019/team.csv"
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)  
             team_info = []
@@ -1124,7 +1124,7 @@ class TeamPage(tk.Frame):
                 self.GInfoLabel.configure(text=game[0]+" "+result+"\n"+game[2]+" vs. "+game[3]+"\n"+"對手："+game[1], font=("標楷體", 12))
                 self.GInfoLabel.pack(side= "left", anchor="w", ipadx = 30)
 
-        """
+        
         Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/DET_logo.png","/Users/yangqingwen/Desktop/team_logo/GSW_logo.png","/Users/yangqingwen/Desktop/team_logo/HOU_logo.png","/Users/yangqingwen/Desktop/team_logo/IND_logo.png",
@@ -1142,7 +1142,7 @@ class TeamPage(tk.Frame):
                          "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
                          "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                          "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
-        
+        """
        
         
         # 打開隊伍資訊
@@ -1556,7 +1556,7 @@ class PersonalPage(tk.Frame):
         
         # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
         # "C:\\co-work\\userInformation.csv"
-        df=pd.read_csv("C:\\co-work\\userInformation.csv")
+        df=pd.read_csv("/Users/yangqingwen/Desktop/PBC2019/userInformation.csv")
         usr_info_df=df[df['Username'] == username]
         user_info_tolist=usr_info_df.values.tolist()
         user_info=user_info_tolist[0]
