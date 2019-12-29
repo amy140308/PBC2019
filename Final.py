@@ -185,7 +185,7 @@ class bet():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        driver = webdriver.Chrome(executable_path ='/usr/local/bin/chromedriver', options=chrome_options)
+        driver = webdriver.Chrome(executable_path = driverpath, options=chrome_options)
         # executable_path = '/usr/local/bin/chromedriver'
         # executable_path = 'chromedriver.exe'
         driver.get('https://tw.global.nba.com/schedule/#!/7')
