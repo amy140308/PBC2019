@@ -290,9 +290,9 @@ team_name = ["波士頓塞爾蒂克", "芝加哥公牛", "亞特蘭大老鷹", "
 chrome_options = Options()
 chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
 chrome_options.add_argument('--disable-gpu')  # 規避bug
-driver = webdriver.Chrome(executable_path = '/Users/amy1226/Downloads/chromedriver', options=chrome_options)
+driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
 
-filepath = '/Users/amy1226/Downloads/team.csv'
+filepath = 'C:\\co-work\\team2.csv'
 wf = open(file=filepath, mode="w", newline = '', encoding="utf-8")
 writer = csv.writer(wf)
 

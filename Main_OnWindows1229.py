@@ -374,7 +374,6 @@ class gamebet():
             line_team_B = 0
             
             for row in rows:
-                print(row)
                 if row[0] == team_name_A:
                     self.win_oddsA = (float(row[4][:(len(row[4])-1)]) / 100)
                     line_team_A = line
@@ -389,7 +388,6 @@ class gamebet():
                         
                 if line_team_B != 0: 
                     if line == (line_team_B + 12):
-                        print(row)
                         self.score_B = float(row[0])
                     
                 line += 1
@@ -480,7 +478,6 @@ def confirm_bet(bet_list):
         #需要Check Balance的函數
         if user_info[2] < bet_sum:
             tk.messagebox.showwarning("Warning", "帳戶餘額不足，無法投注！")
-            print("帳戶餘額不足，無法投注。")
         
         else:   
             #從帳戶扣取應繳金額
@@ -491,8 +488,7 @@ def confirm_bet(bet_list):
                 for i in range(len(bet_list)):
                     user_info[4].append(bet_list[i])
             except:
-                print(user_info[4])
-        
+                pass
         
         print("user_info[4] after", user_info[4])
         return user_info
@@ -546,6 +542,7 @@ def login_duty():  # user_info是list
                                     user_info[2]=int(user_info[2])
                                     user_info[4][i][9]=int(user_info[4][i][9])
                                     earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
                                     user_info[4][i][8]=='賺'
@@ -558,6 +555,7 @@ def login_duty():  # user_info是list
                                     user_info[2]=int(user_info[2])
                                     user_info[4][i][9]=int(user_info[4][i][9])
                                     earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
                                     user_info[4][i][8]=='賺'
@@ -571,6 +569,7 @@ def login_duty():  # user_info是list
                                     user_info[2]=int(user_info[2])
                                     user_info[4][i][9]=int(user_info[4][i][9])
                                     earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
                                     user_info[4][i][8]=='賺'
@@ -583,6 +582,7 @@ def login_duty():  # user_info是list
                                     user_info[2]=int(user_info[2])
                                     user_info[4][i][9]=int(user_info[4][i][9])
                                     earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
                                     user_info[4][i][8]=='賺'
@@ -599,6 +599,7 @@ def login_duty():  # user_info是list
                             if total_point>point:
                                 if bs=='大':
                                     earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
                                     user_info[4][i][8]=='賺'
@@ -607,12 +608,19 @@ def login_duty():  # user_info是list
                             else:
                                 if bs=='小':
                                     earn=10*user_info[4][i][7]*user_info[4][i][6]
+                                    earn = number_float_check(earn)
                                     user_info[2]+=earn
                                     user_info[4][i][9]+=earn
                                     user_info[4][i][8]=='賺'
                                 else:
                                     user_info[4][i][8]=='賠'
 
+def number_float_check(earn):
+    if earn != int(earn):
+        earn = int(earn)+1
+    return earn
+    
+    
 def save_csv(username):
     # 讀檔
     # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
@@ -720,7 +728,7 @@ class LoginPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         # self.title("運彩模擬器：登入")
-        self.canvas = GradientCanv(self,width=300, height=300, color1="old lace", color2="misty rose", highlightthickness = 0, relief="sunken")
+        self.canvas = GradientCanv(self,width=300, height=300, color1="lemon chiffon", color2="misty rose", highlightthickness = 0, relief="sunken")
         self.canvas.pack(side="top", fill="both", expand=True)
         # self.img=Image.open("NBALogo.gif")
         # self.img=self.img.resize((200, 200), Image.ANTIALIAS) 
@@ -1111,7 +1119,6 @@ class TeamPage(tk.Frame):
             self.RecentGameLabel.pack(side= "left", anchor="w", ipady = 5, ipadx = 10)
             
             for game in games[1:-2]:
-                # print(game)
                 self.GInfoLabel= tk.Label(self.RecentGame_frame, bg="bisque2")
 
                 if int(game[2])>int(game[3]):
@@ -1193,23 +1200,25 @@ class GamePage(tk.Frame):
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
         
+        """
         self.F2=tk.Frame(self, width=1200, height=600, bg = "old lace")
         self.F2.pack(side="top", fill="both", expand="TRUE")
-        
         """
-        self.F2_canvas = tk.Canvas(self, bg = "old lace", highlightthickness = 0, width = 500, height = 600)  #height調整canvas的長度，要手動調（或寫def）
-        self.F2_canvas.pack(side = "top",fill = "both", anchor = "n", expand = True)
+        if len(final_g) % 3 == 0:
+            GameHeight = 150 * (len(final_g)//3) + 80
+        else:
+            GameHeight = 150 * (len(final_g)//3 + 1) + 80
         
+        self.F2_canvas = tk.Canvas(self, width = 500, height = GameHeight, bg = "old lace", highlightthickness = 0)  #height調整canvas的長度，要手動調（或寫def）
+        self.F2_canvas.pack(side = "top",fill = "both", expand = True)
         # 要建立frame，透過create_widget放在canvas上面才能滾動
-        self.F2 = tk.Frame(self.F2_canvas, bg = "old lace", height = 600)
-        self.F2.pack(side = "top", fill = "both", anchor = "n" ,expand = True)
-        self.F2_canvas.create_window((0,0), window = self.F2, anchor = "n") 
-
+        self.F2 = tk.Frame(self.F2_canvas, bg = "old lace", width = 500, height = GameHeight)
+        self.F2.pack(side = "top", fill = "both" ,expand = True)
+        self.F2_canvas.create_window((0,0), window = self.F2, anchor = "nw") 
         # 滾動條
         self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
         self.gameBar.pack(side = "right", fill = "y")
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
-        """
         
         
         f1=tkFont.Font(size=20, family="標楷體")
@@ -1227,7 +1236,7 @@ class GamePage(tk.Frame):
                 
                 # 每三個建立新的Frame
                 if i % 3 == 0:
-                    self.game_frame = tk.Frame(self.F2, bg = "bisque2",width = 1000, height = 120)
+                    self.game_frame = tk.Frame(self.F2, bg = "bisque2",width = 500, height = 120)
                     Frame_List.append(self.game_frame)
                     self.game_frame.pack(side = "top", pady = 15, padx = 20, anchor = "n", fill = "x", expand = True)  
                 
@@ -1241,7 +1250,7 @@ class GamePage(tk.Frame):
                 self.btn.pack(side="left", pady=20, padx=60)
 
         else:
-            self.NoGameLabel=tk.Label(self.F2, text="明日無賽事", font=f1, bg="old lace")
+            self.NoGameLabel=tk.Label(self.F2_canvas, text="明日無賽事", font=f1, bg="old lace")
             self.NoGameLabel.pack(anchor="n", side="top", pady=15)
 
     # 點擊打開賽事下注
@@ -1255,7 +1264,6 @@ class GamePage(tk.Frame):
         # 可能跟隊伍team.py之後會修出來的東西要調整
         game_bet=gamebet()
         self.Odds=game_bet.odds(teamA, teamB)
-        # print("Odds在這", self.Odds)
         
         # 彈出視窗的基本介面
         window=tk.Toplevel(self)
@@ -1405,7 +1413,6 @@ class GamePage(tk.Frame):
         # 確認結果
         self.report_list = []
         for one_list in self.bet_lists:
-            print(one_list)
             if one_list[8] == 1:
                 the_one_list = one_list[0:-1]
                 self.total_Odds += the_one_list[6]
@@ -1432,6 +1439,7 @@ class GamePage(tk.Frame):
                     self.Words.configure(text=str(len(self.report_list))+content+str(self.betnum))
                     content2=self.Words2.cget("text")
                     Max = self.total_Odds * 10 * self.betnum
+                    Max = number_float_check(Max)
                     self.Words2.configure(text=content2+str(Max))
                     
                     # 鎖定所有按鍵
@@ -1461,7 +1469,6 @@ class GamePage(tk.Frame):
             user_info.append([])
         else:
             pass
-        print("bet_list",bet_list)
         confirm_bet(bet_list)
         save_csv(username)
         print("Bet confirmed!")
@@ -1571,7 +1578,7 @@ class PersonalPage(tk.Frame):
         self.gameBar.pack(side = "right", fill = "y")
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
         
-        self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+"."+" Your account balance is "+str(user_info[2]), font = ("標楷體", 18), bg = "old lace")
+        self.UsernameLbl = tk.Label(self.F2, text = "Hello, "+username+"."+" Your account balance is "+str(user_info[2])+".", font = ("標楷體", 18), bg = "old lace")
         self.UsernameLbl.pack(side="top", anchor= "nw", pady= 20, padx=20)
         
         # 下注資訊紀錄：等改
