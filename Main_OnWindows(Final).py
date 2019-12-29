@@ -689,7 +689,7 @@ class SportsLottery(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
     def user_info_modify(self):
-        self.geometry("1400x700")
+        self.geometry("1280x680")
         self.resizable(False, False)
         PersonalPage=self.frames["PersonalPage"]
         PersonalPage.modify()
@@ -727,7 +727,6 @@ class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        # self.title("運彩模擬器：登入")
         self.canvas = GradientCanv(self,width=300, height=300, color1="lemon chiffon", color2="misty rose", highlightthickness = 0, relief="sunken")
         self.canvas.pack(side="top", fill="both", expand=True)
         # self.img=Image.open("NBALogo.gif")
@@ -827,7 +826,6 @@ class LoginPage(tk.Frame):
             self.entry_usr_pwd.delete(0,"end")
             tk.messagebox.showinfo("Info", "User successfully registered.\nPlease log in.")
 
-
 # 登入後五個頁面共同的板塊建立方式
 def create_common_frames(self, controller):
 
@@ -850,7 +848,6 @@ def create_common_frames(self, controller):
         elif btn_txt == "個人帳戶":
             self.btn.configure(command=lambda: self.controller.show_frame("PersonalPage"))
 
-
 # NewsPage新聞頁
 class NewsPage(tk.Frame):
     
@@ -864,7 +861,7 @@ class NewsPage(tk.Frame):
         self.F2=tk.Frame(self, width=1200, height=500)
         self.F2.pack(side="top", fill="both", expand="TRUE")
         self.FN=tk.Frame(self.F2,bg="AntiqueWhite1",width=200, height=500) #AntiqueWhite1 wheat1
-        self.FN.pack(side="left", anchor="w",fill="both")
+        self.FN.pack(side="left", anchor="w",fill="both", expand=True)
         self.FW=tk.Frame(self.F2, bg="old lace", width=200, height=500)
         self.FW.pack(side="left",fill="both", expand="TRUE")
         
@@ -877,30 +874,30 @@ class NewsPage(tk.Frame):
         
         for one_news in final_n:
             self.every_news_frame = tk.Frame(self.FN, width=50, height=20, bg="AntiqueWhite1")
-            self.every_news_frame.pack(side="top", fill="both", anchor="nw", pady=20, padx=10)#, expand="TRUE"
+            self.every_news_frame.pack(side="top", fill="both", anchor="nw", pady=20, padx=10, expand=True)#, expand="TRUE"
             self.Frame_List.append(self.every_news_frame)
             title=one_news[0]
             time=one_news[1]
             intro=one_news[2]
-            if 28<=len(intro)<=56:
-                intro=intro[:28]+"\n"+intro[29:]
-            elif 56<=len(intro):
-                intro=intro[:28]+"\n"+intro[29:56]+"\n"+intro[57:]
+            if 23<=len(intro)<=46:
+                intro=intro[:23]+"\n"+intro[24:]
+            elif 46<=len(intro):
+                intro=intro[:23]+"\n"+intro[24:46]+"\n"+intro[47:]
             image_url=one_news[-1]
             ssl._create_default_https_context = ssl._create_unverified_context
             u = urlopen(image_url)
             raw_data = u.read()
             u.close()
             self.img = Image.open(BytesIO(raw_data))
-            self.img=self.img.resize((200, 120), Image.ANTIALIAS) 
+            self.img=self.img.resize((160, 96), Image.ANTIALIAS) 
             self.img=ImageTk.PhotoImage(self.img)
             
             self.picLabel = tk.Label(self.every_news_frame, image=self.img, cursor="hand2")
             self.picLabel.image = self.img
             self.picLabel.pack(side="left", pady=10, padx=10, anchor="nw") 
             
-            f1=tkFont.Font(size=15, family="微軟正黑體")
-            f2=tkFont.Font(size=11, family="微軟正黑體")
+            f1=tkFont.Font(size=14, family="微軟正黑體")
+            f2=tkFont.Font(size=10, family="微軟正黑體")
             
             self.btn=tk.Label(self.every_news_frame, text=title, font=f1, bg="AntiqueWhite1", cursor="hand2")#old lace
             self.btn.pack(side="top", pady=5, padx=10, anchor="w",) # 傷兵：anchor=E
@@ -923,15 +920,15 @@ class NewsPage(tk.Frame):
         
         for one_wounded in final_w:
             self.every_news_frame = tk.Frame(self.FW, width=50, height=20, bg="old lace")
-            self.every_news_frame.pack(side="top", fill="both", anchor="nw", pady=20, padx=10)#, expand="TRUE"
+            self.every_news_frame.pack(side="top", fill="both", anchor="nw", pady=20, padx=10, expand=True)#, expand="TRUE"
             self.Frame_List2.append(self.every_news_frame)
             title=one_wounded[0]
             time=one_wounded[1]
             intro=one_wounded[2]
-            if 25<=len(intro)<=50:
-                intro=intro[:25]+"\n"+intro[26:]
-            elif 50<=len(intro):
-                intro=intro[:25]+"\n"+intro[26:50]+"\n"+intro[51:]
+            if 22<=len(intro)<=44:
+                intro=intro[:22]+"\n"+intro[23:]
+            elif 44<=len(intro):
+                intro=intro[:22]+"\n"+intro[23:44]+"\n"+intro[45:]
             
             image_url=one_wounded[-1]
             ssl._create_default_https_context = ssl._create_unverified_context
@@ -939,15 +936,15 @@ class NewsPage(tk.Frame):
             raw_data = u.read()
             u.close()
             self.img = Image.open(BytesIO(raw_data))
-            self.img=self.img.resize((200, 120), Image.ANTIALIAS) 
+            self.img=self.img.resize((160, 96), Image.ANTIALIAS) 
             self.img=ImageTk.PhotoImage(self.img)
             
             self.picLabel = tk.Label(self.every_news_frame, image=self.img, cursor="hand2")
             self.picLabel.image = self.img
             self.picLabel.pack(side="left", pady=10, padx=10, anchor="nw") 
             
-            f1=tkFont.Font(size=15, family="微軟正黑體")
-            f2=tkFont.Font(size=11, family="微軟正黑體")
+            f1=tkFont.Font(size=14, family="微軟正黑體")
+            f2=tkFont.Font(size=10, family="微軟正黑體")
             
             self.btn=tk.Label(self.every_news_frame, text=title, font=f1,bg="old lace",cursor="hand2") #cornsilk2 gray90 
             self.btn.pack(side="top", pady=5, padx=10, anchor="w")
@@ -960,7 +957,6 @@ class NewsPage(tk.Frame):
             self.btn.bind("<Button-1>", callback)
             self.btnsmall.bind("<Button-1>", callback)
             self.picLabel.bind("<Button-1>", callback)
-            
 
 class TeamPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -1187,7 +1183,7 @@ class TeamPage(tk.Frame):
             # click_team_button 這個是打開指令的函數
             # command接執行的動作，lambda代表這個動作會在被按下的時候才執行（一定要加上i=i）
             self.button_logo.configure(command = lambda i=i:click_team_button(self.Team_name_List[i]))
-            self.button_logo.pack(side = "left", pady = 12, padx = 18, anchor = "nw", expand = True)
+            self.button_logo.pack(side = "left", pady = 12, padx = 10, anchor = "w", expand = True)
             # instance method Disabled前加self?不加？
             # self.button.bind('<Button-1>', lambda:Disabled(self.button))
 
@@ -1200,15 +1196,18 @@ class GamePage(tk.Frame):
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
         
-        """
-        self.F2=tk.Frame(self, width=1200, height=600, bg = "old lace")
-        self.F2.pack(side="top", fill="both", expand="TRUE")
-        """
+
         if len(final_g) % 3 == 0:
             GameHeight = 150 * (len(final_g)//3) + 80
         else:
             GameHeight = 150 * (len(final_g)//3 + 1) + 80
         
+
+        
+        self.F2=tk.Frame(self, width=1200, height=GameHeight, bg = "old lace")
+        self.F2.pack(side="top", fill="both", expand="TRUE")
+        
+        """
         self.F2_canvas = tk.Canvas(self, width = 500, height = GameHeight, bg = "old lace", highlightthickness = 0)  #height調整canvas的長度，要手動調（或寫def）
         self.F2_canvas.pack(side = "top",fill = "both", expand = True)
         # 要建立frame，透過create_widget放在canvas上面才能滾動
@@ -1219,7 +1218,7 @@ class GamePage(tk.Frame):
         self.gameBar = tk.Scrollbar(self.F2_canvas, orient = "vertical", command = self.F2_canvas.yview)
         self.gameBar.pack(side = "right", fill = "y")
         self.F2_canvas.configure(scrollregion = self.F2_canvas.bbox('all'), yscrollcommand = self.gameBar.set)
-        
+        """
         
         f1=tkFont.Font(size=20, family="標楷體")
         
@@ -1228,7 +1227,7 @@ class GamePage(tk.Frame):
             yesterday=datetime.datetime.now()+datetime.timedelta(days=1)    
             dstr=yesterday.strftime("%Y/%m/%d")
             self.Title=tk.Label(self.F2, text="明日賽事下注"+"("+dstr+")", font=f1, bg="old lace")
-            self.Title.pack(side="top", anchor="n", pady = 15)
+            self.Title.pack(side="top", anchor="n", pady = 15, expand=True)
             
             Frame_List = []
             
@@ -1238,7 +1237,7 @@ class GamePage(tk.Frame):
                 if i % 3 == 0:
                     self.game_frame = tk.Frame(self.F2, bg = "bisque2",width = 500, height = 120)
                     Frame_List.append(self.game_frame)
-                    self.game_frame.pack(side = "top", pady = 15, padx = 20, anchor = "n", fill = "x", expand = True)  
+                    self.game_frame.pack(side = "top", pady = 5, padx = 20, anchor = "n", fill = "x", expand = True)  
                 
                 self.btn=tk.Button(self.game_frame, height=5, width=40, relief = "raised", bg="ivory2")
                 time=final_g[i][0]
@@ -1247,7 +1246,7 @@ class GamePage(tk.Frame):
                 arena=final_g[i][3]
                 self.btn.configure(text=time+"\n"+teamA+"vs."+teamB+"\n"+arena, font="標楷體")
                 self.btn.configure(command=lambda i=i: self.click_game_button(final_g[i])) 
-                self.btn.pack(side="left", pady=20, padx=60)
+                self.btn.pack(side="left", pady=20, padx=20, expand=True)
 
         else:
             self.NoGameLabel=tk.Label(self.F2_canvas, text="明日無賽事", font=f1, bg="old lace")
