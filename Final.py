@@ -266,8 +266,7 @@ class history():
         chrome_options.add_argument('--disable-gpu')  # 規避bug
         self.driver = webdriver.Chrome( executable_path = driverpath , options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
-        # executable_path = '/usr/local/bin/chromedriver'
-        # executable_path = 'chromedriver.exe'
+        
 
     def update(self):
         stop = False  # 控制什麼時候就不用再按日期回鍵抓資訊
@@ -349,8 +348,6 @@ class history():
 
     def get_data(self, date):
         filepath = datapath
-        # "/Users/yangqingwen/Downloads/data.csv" 
-        # "C:\\co-work\\data.csv"
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
         
@@ -658,8 +655,6 @@ def number_float_check(earn):
     
 def save_csv(username):
     # 讀檔
-    # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
-    # C:\\co-work\\userInformation.csv
     df=pd.read_csv(infopath)
 
     # 刪除使用者原本在csv檔中的那列
@@ -689,10 +684,7 @@ class SportsLottery(tk.Tk):
         self.geometry("300x300")
         self.title("運彩模擬器")
         self.frames = {}
-        # self.canvas=tk.Canvas(self, width=500, height=1000)
-        # self.canvas.pack(fill=BOTH,expand=Y)
-        # canvas.configure(bg="misty rose")
-        
+
         # container中，堆疊frames，跳轉頁面用
         container = tk.Frame(self, width=500, height=700)
         container.pack(side="top", fill="both", expand="true")
@@ -790,8 +782,7 @@ class LoginPage(tk.Frame):
     
     def usr_login(self):
         # 讀取csv檔中的使用者資料至list
-        # filepath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
-        # C:\\co-work\\userInformation.csv
+
         df=pd.read_csv(infopath)
         user_info_tolist=df.values.tolist()
 
@@ -824,8 +815,6 @@ class LoginPage(tk.Frame):
         # 讀取csv檔中的使用者資料至list
         try:
             # r必須打開已有的文件
-            # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
-            # 'C:\\co-work\\userInformation.csv'
             df=pd.read_csv(infopath)
             user_info_tolist=df.values.tolist()
         except:
@@ -850,8 +839,6 @@ class LoginPage(tk.Frame):
             # 下注紀錄
             bet_history = []
             # 使用者資料建檔(寫入csv檔)
-            # filepath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
-            # "C:\\co-work\\userInformation.csv"
             df=pd.read_csv(infopath)
             start_list=[username, password, start_money, login_time, bet_history]
             add_df=df.append(pd.Series(start_list, index=df.columns), ignore_index=True)
@@ -1083,11 +1070,6 @@ class TeamPage(tk.Frame):
             self.teamCanv.create_window((0, 0), window=self.scrollableF, anchor="nw")
             """
             # 視窗的隊伍資訊
-            """
-            記得改filepath
-            """
-            # "/Users/yangqingwen/Desktop/PBC2019/team.csv"
-            # "C:\\co-work\\team.csv"
             filepath = teampath
             wf = open(file=filepath, mode="r", encoding="utf-8")
             rows = csv.reader(wf)  
@@ -1600,9 +1582,6 @@ class PersonalPage(tk.Frame):
         
         global user_info
         user_info=[]
-        
-        # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
-        # "C:\\co-work\\userInformation.csv"
         df=pd.read_csv(infopath)
         usr_info_df=df[df['Username'] == username]
         user_info_tolist=usr_info_df.values.tolist()
