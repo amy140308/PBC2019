@@ -1515,10 +1515,11 @@ class HistoryPage(tk.Frame):
         
         # 抓昨天的時間
         yesterday=datetime.datetime.now()-datetime.timedelta(days=1)    
-        dstr=yesterday.strftime("%Y/%m/%d")
+        dstr=yesterday.strftime("%Y-%m-%d")
         hist = history()
         hist.update()
         final_h = hist.get_data(dstr)
+        print(final_h)
         
         
         self.configure( width = 1200, height = ( 150 + 220 * len(final_h) ), bg = "old lace")

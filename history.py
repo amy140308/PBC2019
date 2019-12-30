@@ -41,7 +41,7 @@ class history():
         chrome_options = Options()
         chrome_options.add_argument('--headless')  # 瀏覽器不提供視覺化頁面
         chrome_options.add_argument('--disable-gpu')  # 規避bug
-        self.driver = webdriver.Chrome(executable_path = 'chromedriver.exe', options=chrome_options)
+        self.driver = webdriver.Chrome(executable_path ='/usr/local/bin/chromedriver', options=chrome_options)
         self.driver.get('https://tw.global.nba.com/schedule/#!/7')
 
     def update(self):
@@ -70,8 +70,8 @@ class history():
                 
                 d = datetime.datetime(year, month, day)
                 
-                filepath = 'C:\\Users\\user\\Downloads\\data.csv'
-                # 
+                filepath = "/Users/yangqingwen/Downloads/data.csv" 
+                # "/Users/yangqingwen/Downloads/data.csv" 
                 # 'C:\\Users\\user\\Downloads\\data.csv'
                 wf = open(file=filepath, mode="a+",newline='', encoding="utf-8")
                 writer = csv.writer(wf)
@@ -123,8 +123,8 @@ class history():
         self.driver.close()
 
     def get_data(self, date):
-        filepath = 'C:\\Users\\user\\Downloads\\data.csv'
-        # 
+        filepath = "/Users/yangqingwen/Downloads/data.csv" 
+        # "/Users/yangqingwen/Downloads/data.csv" 
         # 'C:\\Users\\user\\Downloads\\data.csv'
         f = open(file=filepath, mode="r", encoding="utf-8")
         rows = csv.reader(f)
@@ -136,7 +136,8 @@ class history():
         return data
 
 # 以下為試class的功能
-history = history()
-history.update()
-final_h = history.get_data('2019-12-16')
-print(final_h)
+yesterday=datetime.datetime.now()-datetime.timedelta(days=1)    
+dstr=yesterday.strftime("%Y-%m-%d")
+hist = history()
+hist.update()
+final_h = hist.get_data(dstr)
