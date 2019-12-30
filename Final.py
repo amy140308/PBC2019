@@ -21,22 +21,23 @@ import ast
 """
 Final
 """
-driverpath ='/usr/local/bin/chromedriver'
+driverpath ='chromedriver.exe'
 #'/usr/local/bin/chromedriver'
 #'chromedriver.exe'
 
-datapath = "/Users/yangqingwen/Downloads/data.csv" 
+datapath = 'C:\\co-work\\data.csv'
 #  "/Users/yangqingwen/Downloads/data.csv" 
 # 'C:\\co-work\\data.csv'
 
-teampath = "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
+teampath =  "C:\\co-work\\team.csv" 
 # "/Users/yangqingwen/Desktop/PBC2019/team.csv" 
 # "C:\\co-work\\team.csv"
 
-infopath = "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
+infopath = "C:\\co-work\\userInformation.csv"
 # "/Users/yangqingwen/Desktop/PBC2019/userInformation.csv"
-# C:\\co-work\\userInformation.csv
+# "C:\\co-work\\userInformation.csv"
 
+"""
 
 Logo_road_list = ["/Users/yangqingwen/Desktop/team_logo/ATL_logo.png","/Users/yangqingwen/Desktop/team_logo/BKN_logo.png","/Users/yangqingwen/Desktop/team_logo/BOS_logo.png","/Users/yangqingwen/Desktop/team_logo/CHA_logo.png",
                     "/Users/yangqingwen/Desktop/team_logo/CHI_logo.png","/Users/yangqingwen/Desktop/team_logo/CLE_logo.png","/Users/yangqingwen/Desktop/team_logo/DAL_logo.png","/Users/yangqingwen/Desktop/team_logo/DEN_logo.png",
@@ -55,7 +56,6 @@ Logo_road_list = ["C:\\logo\\ATL_logo.png","C:\\logo\\BKN_logo.png","C:\\logo\\B
                     "C:\\logo\\OKC_logo.png","C:\\logo\\ORL_logo.png","C:\\logo\\PHI_logo.png","C:\\logo\\PHX_logo.png",
                     "C:\\logo\\POR_logo.png","C:\\logo\\SAC_logo.png","C:\\logo\\SAS_logo.png","C:\\logo\\TOR_logo.png",
                     "C:\\logo\\UTA_logo.png","C:\\logo\\WAS_logo.png"]
-"""
 
 """五個爬蟲跟四個頁面有關係"""
 
@@ -1522,15 +1522,15 @@ class HistoryPage(tk.Frame):
         print(final_h)
         
         
-        self.configure( width = 1200, height = ( 150 + 220 * len(final_h) ), bg = "old lace")
+        self.configure( width = 1200, height = ( 90 + 120 * len(final_h) ), bg = "old lace")
         # 登入後五個頁面共同的板塊建立方式
         create_common_frames(self, controller)
         
-        self.F2_canvas = tk.Canvas(self, width = 500, height = ( 150 + 220 * len(final_h) ), bg = "old lace", highlightthickness = 0)  #height調整canvas的長度，要手動調（或寫def）
+        self.F2_canvas = tk.Canvas(self, width = 500, height = ( 90 + 120 * len(final_h) ), bg = "old lace", highlightthickness = 0)  #height調整canvas的長度，要手動調（或寫def）
         self.F2_canvas.pack(side = "top",fill = "both", expand = True)
         
         # 要建立frame，透過create_widget放在canvas上面才能滾動
-        self.F2 = tk.Frame(self.F2_canvas, bg = "old lace", width = 1200, height = ( 150 + 220 * len(final_h) ))
+        self.F2 = tk.Frame(self.F2_canvas, bg = "old lace", width = 1200, height = ( 90 + 120 * len(final_h) ))
         self.F2.pack(side = "top", fill = "both" ,expand = True)
         self.F2_canvas.create_window((0,0), window = self.F2, anchor = "n") 
 
@@ -1545,17 +1545,15 @@ class HistoryPage(tk.Frame):
 
         
         if len(final_h) == 0:
-            self.lbl=tk.Label(self.F2_canvas, text="昨日無賽事"+"("+dstr+")", font=f1, bg="old lace")
+            self.lbl=tk.Label(self.F2, text="昨日無賽事"+"("+dstr+")", font=f1, bg="old lace")
             self.lbl.pack(side="top", anchor="center", pady=15)
         else:
-            self.Title=tk.Label(self.F2_canvas, text="昨日賽事"+"("+dstr+")", font=f1, bg="old lace")
+            self.Title=tk.Label(self.F2, text="昨日賽事"+"("+dstr+")", font=f1, bg="old lace")
             self.Title.pack(side="top", anchor="n", pady=15)
             for i in range(len(final_h)):
-                self.lbl=tk.Label(self.F2_canvas, width=40, text=str(i+1)+"\n"+"時間："+final_h[i][1]+"\n"+"客隊："+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊："+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場："+final_h[i][6])
+                self.lbl=tk.Label(self.F2, width=40, text=str(i+1)+"\n"+"時間："+final_h[i][1]+"\n"+"客隊："+final_h[i][2]+" "+final_h[i][4]+"\n"+"主隊："+final_h[i][3]+" "+final_h[i][5]+"\n"+"賽場："+final_h[i][6])
                 self.lbl.configure(font=f2, bg="old lace", justify="center")
                 self.lbl.pack(side="top", pady=5, anchor="center")
-            self.F2_canvas.configure(height = 120 * len(final_h))
-
     
 class PersonalPage(tk.Frame):
     def __init__(self, parent, controller):
