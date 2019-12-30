@@ -202,9 +202,9 @@ class bet():
                 month = int(date[:m_end])
                 d_end = date.find('日')
                 day = int(date[m_end + 2 : d_end])
-                diff = datetime.timedelta(days=1)
-                # today = datetime.date.today()
-                today = datetime.date.today() + diff
+                # diff = datetime.timedelta(days=1)
+                today = datetime.date.today()
+                # today = datetime.date.today() + diff
                 year = today.year
                 d = datetime.datetime(year, month, day)
                 if d == datetime.datetime(year, today.month, today.day + 1):
@@ -243,7 +243,7 @@ class bet():
 
 bet = bet()
 final_g = bet.get_data()
-
+print(final_g)
 # 抓歷史資訊
 class history():
     '''
@@ -1250,7 +1250,7 @@ class GamePage(tk.Frame):
         """
         
         f1=tkFont.Font(size=20, family="標楷體")
-        
+        print(final_g)
         if len(final_g) > 0:
             # 抓明天的時間
             yesterday=datetime.datetime.now()+datetime.timedelta(days=1)    
